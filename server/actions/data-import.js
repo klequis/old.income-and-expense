@@ -7,20 +7,24 @@ import runRules from 'actions/run-rules'
 import { green, greenf, redf, yellow } from 'logger'
 
 const readCSVFile = async (file, headers = []) => {
-  if (headers.length === 0) {
-    const json = await csv({
-      trim: true,
-      checkType: true
-    }).fromFile(`data/${file}`)
-    return json
-  } else {
-    const json = await csv({
-      trim: true,
-      checkType: true,
-      noheader: true,
-      headers: headers
-    }).fromFile(`data/${file}`)
-    return json
+  try {
+    if (headers.length === 0) {
+      const json = await csv({
+        trim: true,
+        checkType: true
+      }).fromFile(`data/${file}`)
+      return json
+    } else {
+      const json = await csv({
+        trim: true,
+        checkType: true,
+        noheader: true,
+        headers: headers
+      }).fromFile(`data/${file}`)
+      return json
+    }
+  } catch (e) {
+    redf('readCSVFile ERROR:', `File ${file} not round.`)
   }
 }
 
@@ -43,8 +47,8 @@ const transformChaseChk = data => {
   })
 }
 
-const loadChaseChecking = async () => {
-  const jsonFromCsv = await readCSVFile('chase.carl.checking.2465.csv')
+const loadChaseChecking = async filename => {
+  const jsonFromCsv = await readCSVFile(filename)
   const transformedData = await transformChaseChk(jsonFromCsv)
   return transformedData
 }
@@ -87,20 +91,43 @@ const loadWellsFargoChecking = async () => {
   return transformedData
 }
 
-const dataImport = async (rulesAndData, loadRaw = false) => {
+const fileNameToObject = filename => {
+  console.log('****', filename)
+
+  const a = filename.split('.')
+  // green('a', a)
+  return {
+    institution: a[1],
+    accountType: a[2],
+    accountNumber: a[3]
+  }
+}
+
+const dataImport = async (dataRuleMap, loadRaw = false) => {
   console.log('*')
   console.log('*')
   green('****** New run ******')
   console.log('*')
   console.log('*')
+  let docsInserted = 0
   try {
-    const a = await dropCollection(DATA_COLLECTION_NAME)
-    green('dropCollection(data)', a)
-    for (let i = 0; i < rulesAndData.length; i++) {
-      
+    await dropCollection(DATA_COLLECTION_NAME)
+    if (loadRaw) {
+      await dropCollection('data-all')
+    }
+    // green('dropCollection(data)', a)
+    green('dataRuleMap.length', dataRuleMap.length)
+    for (let i = 0; i < dataRuleMap.length; i++) {
+      const fileObj = fileNameToObject(dataRuleMap[i].dataFile)
+      if (fileObj.institution === 'chase') {
+        const dataToLoad = await loadChaseChecking(dataRuleMap[i].dataFile)
+        const inserted = await insertMany(DATA_COLLECTION_NAME, dataToLoad)
+        docsInserted += inserted.length
+        await insertMany('data-all', dataToLoad)
+      }
     }
 
-    // // const dataToLoad = await loadChaseChecking()
+    // const dataToLoad = await loadChaseChecking()
     // const dataToLoad = await loadWellsFargoChecking()
     // console.log(dataToLoad)
 
@@ -124,14 +151,16 @@ const dataImport = async (rulesAndData, loadRaw = false) => {
     // }
     // const runRulesResult = await runRules()
     // green('runRulesResult', runRulesResult)
-    // return JSON.stringify([
-    //   {
-    //     operation: 'load data',
-    //     status: 'success',
-    //     numDocsLoaded: inserted.length
-    //   }
-    // ])
+    green('docsInserted', docsInserted)
+    return JSON.stringify([
+      {
+        operation: 'load data',
+        status: 'success',
+        numDocsLoaded: docsInserted
+      }
+    ])
   } catch (e) {
+    redf('dataImport ERROR: ', e.message)
     return JSON.stringify([{}])
   }
 }
