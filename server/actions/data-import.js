@@ -1,6 +1,7 @@
-import { find, dropCollection } from 'db'
-import { ACCOUNTS_COLLECTION_NAME } from 'db/constants'
+import { find, dropCollection, insertMany } from 'db'
+import { ACCOUNTS_COLLECTION_NAME, DATA_COLLECTION_NAME } from 'db/constants'
 import csv from 'csvtojson'
+import { has, filter } from 'ramda'
 // eslint-disable-next-line
 import { green, red, redf, yellow } from 'logger'
 
@@ -36,28 +37,51 @@ const successFail = (condition, message, value) => {
   }
 }
 
+const isDebit = value => (value < 0 ? value : null)
+
+const isCredit = value => (value > 0 ? value : null)
+
+// const checkNumber = value => (value ? value : null)
+
+const hasDate = has('date')
+const hasDescription = has('description')
+const hasDebit = has('debit')
+const hasCredit = has('credit')
+const hasTypeOrig = has('typeOrig')
+const hasCheckNumber = has('checkNumber')
+
 const transformData = (account, data) => {
-  yellow('data[0]', data[0])
+  // yellow('data[0]', data[0])
   // yellow('data[1]', data[1])
-  
+
   const { fieldToCol } = account
-  yellow('fieldToCol', fieldToCol)
-  const b = data.map(doc => {
-    const x = doc[`field${fieldToCol.debit.col}`]
-    yellow('x', x)
-    // const debit = doc[`field$`]
+  // yellow('fieldToCol', fieldToCol)
+  const docs = data.map(doc => {
     return {
       date: doc[`field${fieldToCol.date.col}`],
       description: doc[`field${fieldToCol.description.col}`],
-      origDescription: doc[`field${fieldToCol.description.col}`]
-      // debit: 
+      origDescription: doc[`field${fieldToCol.description.col}`],
+      debit: hasDebit(fieldToCol)
+        ? isDebit(doc[`field${fieldToCol.debit.col}`])
+        : null,
+      credit: hasCredit(fieldToCol)
+        ? isCredit(doc[`field${fieldToCol.credit.col}`])
+        : null,
+      typeOrig: hasTypeOrig(fieldToCol)
+        ? doc[`field${fieldToCol.typeOrig.col}`]
+        : null,
+      checkNumber: hasCheckNumber(fieldToCol)
+        ? doc[`field${fieldToCol.checkNumber.col}`]
+        : null,
+      omit: false
     }
   })
-  // yellow('b', b)
+  return docs.map(obj => filter(n => n !== null, obj))
 }
 
 const dataImport = async (loadRaw = false) => {
   try {
+    let docsInserted = 0
     if (loadRaw) {
       const drop = await dropCollection('data-all')
       // green('drop data-all', drop ? 'success' : 'failure')
@@ -70,19 +94,32 @@ const dataImport = async (loadRaw = false) => {
 
     for (let i = 0; i < accounts.length; i++) {
       const a = accounts[i].dataFile
-      yellow('a', a)
+      // yellow('a', a)
       const { name: dataFileName, hasHeaders } = accounts[i].dataFile
       const dataFileHasHeaders = hasHeaders === false ? hasHeaders : true
-      yellow('dataFile', dataFileName)
-      yellow('dataFileHasHeaders', dataFileHasHeaders)
+      // yellow('dataFile', dataFileName)
+      // yellow('dataFileHasHeaders', dataFileHasHeaders)
       successFail(dataFileName, 'dataFile', dataFileName)
       const rawData = await readCsvFile(dataFileName, dataFileHasHeaders)
       successFail(rawData.length > 0, `${dataFileName}.length=`, rawData.length)
       const transformedData = transformData(accounts[i], rawData)
+      // yellow('transformedData', transformedData)
+      const inserted = await insertMany(DATA_COLLECTION_NAME, transformedData)
+      // yellow('inserted', inserted)
+      docsInserted += inserted.length
     }
+    green('docsInserted', docsInserted)
+    return JSON.stringify([
+      {
+        operation: 'load data',
+        status: 'success',
+        numDocsLoaded: docsInserted
+      }
+    ])
   } catch (e) {
     redf('dataImport ERROR:', e.message)
     console.log(e)
+    return JSON.stringify([{}])
   }
 }
 
