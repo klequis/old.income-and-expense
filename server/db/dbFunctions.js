@@ -1,7 +1,7 @@
 import mongodb, { ObjectID } from 'mongodb'
-import { removeIdProp, hasProp } from 'lib'
+import { hasProp } from 'lib'
 import config from 'config'
-import { mergeRight, isEmpty, keys } from 'ramda'
+import { mergeRight, isEmpty } from 'ramda'
 // eslint-disable-next-line
 import { green, yellow } from 'logger'
 
@@ -25,17 +25,17 @@ const idStringToObjectID = obj => {
   }
 }
 
+const cfg = config()
+
 const connectDB = async () => {
   try {
-    const cfg = config()
     if (!client) {
       client = await MongoClient.connect(cfg.mongoUri, {
         useNewUrlParser: true,
         useUnifiedTopology: true
       })
     }
-    const ret = { db: client.db(cfg.dbName) }
-    return ret
+    return { db: client.db(cfg.dbName) }
   } catch (e) {
     throw new Error(e)
     // throw new Error('Unable to connect to MongoDB')

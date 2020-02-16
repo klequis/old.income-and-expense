@@ -1,5 +1,5 @@
 import { find, updateMany, findOneAndUpdate } from 'db'
-import { DATA_COLLECTION_NAME } from 'db/constants'
+import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
 import { readRules, filterBuilder, printResult } from 'actions/action-utils'
 // import writeCsvFile from 'actions/json-to-csv'
 import { hasProp } from 'lib'
@@ -24,28 +24,30 @@ const createRegex = (findValue, numAdditionalChars = 0) => {
   return new RegExp(regExAsString)
 }
 
-const rulesToRun = []
-
 const runRules = async () => {
   // await loadData(true)
   // const data = await find(DATA_COLLECTION_NAME, {})
   // yellow('runRules')
-  const { rules: allRules } = await readRules()
-  yellow('allRules', allRules)
+
+  const allRules = await find(RULES_COLLECTION_NAME, {})
+  // const rules = [allRules[0], allRules[1]]
+  const rules = allRules
+
+  // yellow('allRules', allRules)
   // const runRules = allRules.filter(r => rulesToRun.includes(r.id))
-  const runRules =
-    rulesToRun.length === 0
-      ? allRules
-      : allRules.filter(r => rulesToRun.includes(r.id))
+  // const runRules =
+  //   rulesToRun.length === 0
+  //     ? allRules
+  //     : allRules.filter(r => rulesToRun.includes(r.id))
   // const runRules = allRules
-  green('** running rules num', runRules.length)
+  // green('** running rules num', runRules.length)
 
   // console.log('runRules', runRules)
 
   // omit rules
   blue('** omit rules **')
-  for (let i = 0; i < runRules.length; i++) {
-    const rule = runRules[i]
+  for (let i = 0; i < rules.length; i++) {
+    const rule = rules[i]
     console.log('---')
     console.log(`** id: ${rule.id}`)
     const { actions, criteria } = rule
@@ -53,7 +55,7 @@ const runRules = async () => {
     const filter = filterBuilder(criteria)
     const f = await find(DATA_COLLECTION_NAME, filter)
     printFilter(filter)
-    printResult(rule.id, rule.numExpectedDocs, f.length)
+    // printResult(rule.id, rule.numExpectedDocs, f.length)
     // yellow(actions)
     for (let j = 0; j < actions.length; j++) {
       const action = actions[j]

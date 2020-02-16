@@ -1,7 +1,8 @@
-import { find, dropCollection, insertMany } from 'db'
+import { createIndex, dropCollection, find, insertMany } from 'db'
 import { ACCOUNTS_COLLECTION_NAME, DATA_COLLECTION_NAME } from 'db/constants'
 import csv from 'csvtojson'
 import { has, filter } from 'ramda'
+import runRules from './run-rules'
 // eslint-disable-next-line
 import { green, red, redf, yellow } from 'logger'
 
@@ -50,6 +51,8 @@ const hasCredit = has('credit')
 const hasTypeOrig = has('typeOrig')
 const hasCheckNumber = has('checkNumber')
 
+const toLower = value => value.toLowerCase()
+
 const transformData = (account, data) => {
   // yellow('data[0]', data[0])
   // yellow('data[1]', data[1])
@@ -68,7 +71,7 @@ const transformData = (account, data) => {
         ? isCredit(doc[`field${fieldToCol.credit.col}`])
         : null,
       typeOrig: hasTypeOrig(fieldToCol)
-        ? doc[`field${fieldToCol.typeOrig.col}`]
+        ? toLower(doc[`field${fieldToCol.typeOrig.col}`])
         : null,
       checkNumber: hasCheckNumber(fieldToCol)
         ? doc[`field${fieldToCol.checkNumber.col}`]
@@ -82,6 +85,7 @@ const transformData = (account, data) => {
 const dataImport = async (loadRaw = false) => {
   try {
     let docsInserted = 0
+    await dropCollection(DATA_COLLECTION_NAME)
     if (loadRaw) {
       const drop = await dropCollection('data-all')
       // green('drop data-all', drop ? 'success' : 'failure')
@@ -108,6 +112,16 @@ const dataImport = async (loadRaw = false) => {
       // yellow('inserted', inserted)
       docsInserted += inserted.length
     }
+    if (loadRaw) {
+      await createIndex(DATA_COLLECTION_NAME, 'description', {
+        collation: { caseLevel: true, locale: 'en_US' }
+      })
+      await createIndex(DATA_COLLECTION_NAME, 'typeOrig', {
+        collation: { caseLevel: true, locale: 'en_US' }
+      })
+    }
+    const runRulesResult = await runRules()
+    green('runRulesResult', runRulesResult)
     green('docsInserted', docsInserted)
     return JSON.stringify([
       {

@@ -55,6 +55,8 @@ const DataItem = ({ data, showOrigDesc }) => {
 
   const classes = useStyles()
 
+  green('showOrigDesc', showOrigDesc)
+
   return (
     <Paper className={classes.contentWrapper}>
       <div className={classes.date}>{format(new Date(date), 'MM/dd/yyyy')}</div>

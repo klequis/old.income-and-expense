@@ -1,7 +1,7 @@
 import React from 'react'
-import DataItem from './DataItem'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
+// import DataItem from './DataItem'
+// import List from '@material-ui/core/List'
+// import ListItem from '@material-ui/core/ListItem'
 import { makeStyles } from '@material-ui/styles'
 import MaterialTable from 'material-table'
 import { format } from 'date-fns'
@@ -58,6 +58,11 @@ const DataContainer = ({ data, showOrigDesc }) => {
         }
         title="Chase Data"
         options={{ pageSize: 1000, padding: 'dense' }}
+        detailPanel={rowData => {
+        return <div style={{ paddingLeft: 30 }}>{rowData.origDescription}</div>
+            
+          
+        }}
       />
     </div>
   )

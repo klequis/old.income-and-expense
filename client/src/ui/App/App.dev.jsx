@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 
 const App = props => {
   const [description, setDescription] = useState('')
-  const [ showOrigDesc, setShowOrigDesc] = useState(false)
+  const [ showOrigDesc, setShowOrigDesc] = useState(true)
   const [showOmitted, setShowOmitted] = useState(false)
   
 
