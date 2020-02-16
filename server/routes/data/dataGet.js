@@ -14,9 +14,6 @@ const isEmptyOrUndefined = val => {
   return isEmpty(val)
 }
 
-/**
-//  * @returns {object} [{ _id, title, completed }] and array of all todos
- */
 const dataGet = wrap(async (req, res, next) => {
   const { params } = req
   const { description, showOmitted } = params
@@ -26,8 +23,6 @@ const dataGet = wrap(async (req, res, next) => {
   const omitted = toBoolean(showOmitted) ? {} : { omit: false }
   const filter = mergeRight(desc, omitted)
   const data = await find(DATA_COLLECTION_NAME, filter)
-  // green('filter', filter)
-  // green('data', data)
   res.send(data)
 })
 

@@ -8,9 +8,7 @@ import { mergeAll } from 'ramda'
 import { blue, green, greenf, redf, yellow } from 'logger'
 
 export const readRules = async () => {
-  // green('dirName', path.join(__dirname, 'rules.json'))
   try {
-    // const rulesFullPath = path.join(__dirname, 'rules.json')
     const rulesFullPath = path.join(__dirname, 'rules-wf-chk.json')
     const rules = await fs.promises.readFile(rulesFullPath)
     const json = await JSON.parse(rules)
@@ -21,7 +19,6 @@ export const readRules = async () => {
 }
 
 export const wrappedFind = async filter => {
-  // green('filter', filter)
   return find(
     DATA_COLLECTION_NAME,
     filter,
@@ -47,28 +44,24 @@ const operationRegex = (field, value) => {
   return { [field]: { $regex: `${value}`, $options: 'im' } }
 }
 
-const createRegex = (findValue, numAdditionalChars = 0) => {
-  const regExAsString =
-    numAdditionalChars > 0
-      ? `(${findValue}).{${numAdditionalChars}}`
-      : `(${findValue})`
-  return new RegExp(regExAsString)
-}
+// const createRegex = (findValue, numAdditionalChars = 0) => {
+//   const regExAsString =
+//     numAdditionalChars > 0
+//       ? `(${findValue}).{${numAdditionalChars}}`
+//       : `(${findValue})`
+//   return new RegExp(regExAsString)
+// }
 
 const operationIn = (field, value) => {
-  // green('value', value)
   const regex = new RegExp(value)
-  // green('regex', regex)
-  const r = { [field]: { $in: [regex] } }
-  // green('r', r)
-  return r
+  return { [field]: { $in: [regex] } }
 }
 
 export const conditionBuilder = criteria => {
-  // TODO: hard coding descriptions  => origDescription
-  // Where should this logic be?
-
   // takes a single criteria object
+
+  // TODO: hard coding descriptions  => origDescription. Where should this logic be?
+
   const { field: origField, operation, value } = criteria
   const field = origField === 'description' ? 'origDescription' : origField
   switch (operation) {
@@ -92,13 +85,16 @@ export const conditionBuilder = criteria => {
 }
 
 export const filterBuilder = criteria => {
-  return mergeAll(
-    criteria.map(c => {
-      const ret = conditionBuilder(c)
-      green('condition', ret)
-      return ret
-    })
-  )
+  if (criteria.length === 1) {
+    return mergeAll(
+      criteria.map(c => {
+        return conditionBuilder(c)
+      })
+    )
+  } else {
+    const b = criteria.map(c => conditionBuilder(c))
+    return { $and: b }
+  }
 }
 
 export const printResult = (id, expectRows, actualRows) => {
@@ -106,24 +102,3 @@ export const printResult = (id, expectRows, actualRows) => {
     ? greenf(`OK: id: ${id}, expected: ${expectRows}, actual: ${actualRows}`)
     : redf(`ERROR: id: ${id}, expected: ${expectRows}, actual: ${actualRows}`)
 }
-
-// export const makeRegEx = criteria => {
-//   // operation: [beginsWith || contains]
-//   const { operation, value } = criteria
-//   let regEx
-//   if (operation === 'beginsWith') {
-//     regEx = new RegExp(`^${value}`)
-//   }
-//   if (operation === 'contains') {
-//     regEx = new RegExp(`${value}`)
-//   }
-//   return regEx
-// }
-
-// export const andCondition = (criteria, doc) => {
-//   return criteria.every(c => {
-//     const { field } = c
-//     const regEx = makeRegEx(c)
-//     return doc[field].match(regEx)
-//   })
-// }

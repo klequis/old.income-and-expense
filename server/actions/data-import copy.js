@@ -84,7 +84,7 @@ const transformWfChk = async data => {
       const b = r.checkNum !== '' ? { checkNumber: r.checkNum } : {}
       return mergeRight(a, b)
     })
-    green('d', d)
+    // green('d', d)
     return d
   } catch (e) {
     redf('transformWfChk ERROR:', e.message)
