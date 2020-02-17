@@ -3,14 +3,15 @@ import React, { useState } from 'react'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/styles'
 import DevTools from 'ui/DevTools'
-// import Nav from 'ui/Nav'
+import Nav from 'ui/Nav'
 // import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { importDataRequest } from 'store/data/actions'
+import { importDataRequest, dataReadRequest } from 'store/data/actions'
 import { getData } from 'store/data/selectors'
 // import CategoryReport from 'ui/CategoryReport'
 import RawData from 'ui/RawData'
+import DetailPanel from 'ui/DetailPanel'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -30,16 +31,16 @@ const useStyles = makeStyles({
 const App = props => {
   const [description, setDescription] = useState('')
   const [showOrigDesc, setShowOrigDesc] = useState(true)
-  
+  const [showOmitted, setShowOmitted] = useState(false)
 
   const classes = useStyles()
 
-  // const { dataReadRequest, importDataRequest /*, data*/ } = props
+  const { dataReadRequest, importDataRequest /*, data*/ } = props
 
-  // const importData = async () => {
-  //   await importDataRequest()
-  //   await dataReadRequest(description, showOmitted)
-  // }
+  const importData = async () => {
+    await importDataRequest()
+    await dataReadRequest(description, showOmitted)
+  }
 
   // const filterChanged = (name, value) => {
   //   if (name === 'descriptionFilter') {
@@ -67,12 +68,13 @@ const App = props => {
         {/* <Typography variant="h1" className={classes.appTitle} align="center">
           Finance
         </Typography> */}
-        {/* <Nav
+        <Nav
           importData={importData}
-          filterChanged={filterChanged}
-        /> */}
+          // filterChanged={filterChanged}
+        />
         {/* <Filter filterChanged={filterChanged} /> */}
         {/* <Data data={data} showOrigDesc={showOrigDesc} /> */}
+        {/* <DetailPanel /> */}
         <RawData description={description} showOrigDesc={showOrigDesc} />
         {/* <CategoryReport /> */}
       </Container>
@@ -82,7 +84,8 @@ const App = props => {
 }
 
 const actions = {
-  importDataRequest
+  importDataRequest,
+  dataReadRequest
 }
 
 const mapStateToProps = state => {

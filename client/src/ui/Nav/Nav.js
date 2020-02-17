@@ -22,13 +22,13 @@ const useStyles = makeStyles({
   }
 })
 
-const Nav = ({ importData, showOmitted, showOrigDesc, filterChanged }) => {
+const Nav = ({ importData /*, showOmitted, showOrigDesc, filterChanged */ }) => {
   
   const classes = useStyles()
 
-  const handleOptionChange = name  => event => {
-    filterChanged(name, event.target.checked)
-  }
+  // const handleOptionChange = name  => event => {
+  //   filterChanged(name, event.target.checked)
+  // }
   return (
     <div className={classes.nav}>
       <Button variant="outlined" onClick={importData}>
@@ -36,7 +36,7 @@ const Nav = ({ importData, showOmitted, showOrigDesc, filterChanged }) => {
       </Button>
       <Button variant="outlined">Reload Data</Button>
 
-      <FormGroup row>
+      {/* <FormGroup row>
         <FormControlLabel
           control={
             <Switch
@@ -58,7 +58,7 @@ const Nav = ({ importData, showOmitted, showOrigDesc, filterChanged }) => {
           }
           label="Show omitted"
         />
-      </FormGroup>
+      </FormGroup> */}
     </div>
   )
 }
