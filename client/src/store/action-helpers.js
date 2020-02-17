@@ -19,11 +19,11 @@ export const createRequestThunk = ({
   success = [],
   failure = []
 }) => {
-  console.group('createRequestThunk')
-  red('key', key)
-  red('request', request)
-  red('success', success)
-  console.groupEnd()
+  // console.group('createRequestThunk')
+  // red('key', key)
+  // red('request', request)
+  // red('success', success)
+  // console.groupEnd()
   return (...args) => async dispatch => {
     
     const requestKey = typeof key === 'function' ? key(...args) : key
