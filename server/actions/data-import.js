@@ -60,8 +60,9 @@ const transformData = (account, data) => {
     const description = removeDoubleSpace(
       doc[`field${fieldToCol.description.col}`]
     )
+    const date = new Date(doc[`field${fieldToCol.date.col}`]).toISOString()
     return {
-      date: doc[`field${fieldToCol.date.col}`],
+      date: date,
       description: description,
       origDescription: description,
       debit: hasDebit(fieldToCol)
