@@ -18,6 +18,21 @@ import { orange, green } from 'logger'
 
 // Errors are handled by fetchJson()
 export default {
+  categoryReport: {
+
+    async read() {
+      orange('api.categoryReport.read')
+      const url = `/api/reports`
+      orange('url', url)
+      const data = await fetchJson(
+        url,
+        {
+          method: 'GET'
+        }
+      )
+      return data
+    }
+  },
   data: {
     async read(description, showOmitted) {
       orange('api.data.read: description', description)

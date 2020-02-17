@@ -28,9 +28,8 @@ const jsonToCsv = json => {
     'checkNumber',
     '_id'
   ]
-  
+
   // console.log('header', header);
-  
 
   // const header = Object.keys(json[0])
   let csv = json.map(row =>

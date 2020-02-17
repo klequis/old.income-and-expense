@@ -254,6 +254,12 @@ export const createIndex = async (collection, field, options = {}) => {
   const r = await db.collection(collection).createIndex(field, options)
 }
 
+export const executeAggregate = async (collection, query) => {
+  const { db } = await connectDB()
+  const ret = await db.collection(collection).aggregate(query).toArray()
+  return ret
+}
+
 // const a = {
 //   result: { n: 1, nModified: 1, ok: 1 },
 //   connection: { id: 0, host: 'localhost', port: 27017 },

@@ -15,7 +15,7 @@ import { setValidationErrors } from 'store/validation/actions'
 
 import { createRequestThunk } from '../action-helpers'
 import api from 'api'
-import { TOAST_WARN /*, TOAST_INFO */, TOAST_INFO } from 'global-constants'
+import { TOAST_WARN } from 'global-constants'
 
 // eslint-disable-next-line
 import { purple, green, red } from 'logger'
@@ -88,6 +88,7 @@ export const dataUpdateRequest = createRequestThunk({
   failure: [logApiError]
 })
 
+// Read
 export const dataReadRequest = createRequestThunk({
   request: api.data.read,
   key: DATA_READ_REQUEST_KEY,
@@ -97,6 +98,17 @@ export const dataReadRequest = createRequestThunk({
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
   ]
 })
+
+// export const dataReadRequest2 = createRequestThunk({
+//   request: api.data.read,
+//   key: DATA_READ_REQUEST_KEY,
+//   success: [dataRead],
+//   failure: [
+//     e =>
+//       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+//   ]
+// })
+
 
 // import data
 export const importDataRequest = createRequestThunk({
