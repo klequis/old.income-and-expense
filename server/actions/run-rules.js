@@ -34,8 +34,6 @@ const runRules = async () => {
 
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
-    console.log('---')
-    console.log(`** id: ${rule.id}`)
     const { actions, criteria } = rule
     const filter = filterBuilder(criteria)
     const f = await find(DATA_COLLECTION_NAME, filter)
