@@ -11,7 +11,6 @@ import { importDataRequest, dataReadRequest } from 'store/data/actions'
 import { getData } from 'store/data/selectors'
 // import CategoryReport from 'ui/CategoryReport'
 import RawData from 'ui/RawData'
-import DetailPanel from 'ui/DetailPanel'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'

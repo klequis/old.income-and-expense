@@ -55,13 +55,14 @@ const toLower = value => value.toLowerCase()
 const removeDoubleSpace = value => value.replace(/\s{2,}/g, ' ').trim()
 
 const transformData = (account, data) => {
-  const { fieldToCol } = account
+  const { fieldToCol, acctId } = account
   const docs = data.map(doc => {
     const description = removeDoubleSpace(
       doc[`field${fieldToCol.description.col}`]
     )
     const date = new Date(doc[`field${fieldToCol.date.col}`]).toISOString()
     return {
+      acctId: acctId,
       date: date,
       description: description,
       origDescription: description,

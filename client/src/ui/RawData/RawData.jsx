@@ -30,10 +30,11 @@ const RawData = ({ dataReadRequest, data, description, showOrigDesc }) => {
   }, [dataReadRequest, description, showOmitted])
   const sorted = sortByDate(data)
   
-  yellow('sorted', sorted)
+  
   return (
     <MaterialTable
       columns={[
+        { title: 'AcctID', field: 'acctId' },
         { title: 'Date', field: 'date', type: 'date' },
         {
           title: 'Description',

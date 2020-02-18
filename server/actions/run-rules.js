@@ -2,21 +2,22 @@ import { find, updateMany, findOneAndUpdate } from 'db'
 import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
 import { filterBuilder } from 'actions/action-utils'
 import { hasProp } from 'lib'
+import { append } from 'ramda'
 
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
 
-// const printFilter = filter => {
-//   console.log('// filter')
-//   if (hasProp('$and', filter)) {
-//     const a = filter.$and
-//     yellow('filter', filter)
-//     yellow('$and:', a)
-//   } else {
-//     yellow('filter', filter)
-//   }
-//   console.log('// filter')
-// }
+const printFilter = filter => {
+  console.log('// filter')
+  if (hasProp('$and', filter)) {
+    const a = filter.$and
+    yellow('filter', filter)
+    yellow('$and:', a)
+  } else {
+    yellow('filter', filter)
+  }
+  console.log('// filter')
+}
 
 const createRegex = (findValue, numAdditionalChars = 0) => {
   const regExAsString =
@@ -31,13 +32,27 @@ const runRules = async () => {
   // yellow(typeof allRules[0]._id)
   // const rules = allRules.filter(rule => rule._id.toString() === '5e45ca2f6d8f4438b8ee5926')
   const rules = allRules
-
+  // const x = {
+  //   field: 'acctId',
+  //   operation: 'equals',
+  //   value: 'cb.eee.ddd'
+  // }
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
-    const { actions, criteria } = rule
-    const filter = filterBuilder(criteria)
+    const { actions, criteria, acct } = rule
+    yellow('acctId', acct)
+    // yellow('runRules: criteria', criteria)
+    const criteriaWithAcctId = append({
+      field: 'acctId',
+      operation: 'equals',
+      value: acct
+    }, criteria)
+    // yellow('runRules: criteriaWithAcctId', criteriaWithAcctId)
+    const filter = filterBuilder(criteriaWithAcctId)
     const f = await find(DATA_COLLECTION_NAME, filter)
-    // printFilter(filter)
+    if (criteria.length > 1) {
+      printFilter(filter)
+    }
     for (let j = 0; j < actions.length; j++) {
       const action = actions[j]
       const { findValue, numAdditionalChars } = action
@@ -88,3 +103,10 @@ const runRules = async () => {
 }
 
 export default runRules
+
+const x = {
+  $and: [
+    { typeOrig: { $eq: 'billpay' } },
+    { originalDescription: { $regex: '^Bel Air', $options: 'im' } }
+  ]
+}

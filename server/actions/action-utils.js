@@ -64,6 +64,7 @@ export const conditionBuilder = criteria => {
 
   const { field: origField, operation, value } = criteria
   const field = origField === 'description' ? 'origDescription' : origField
+  // yellow('operation', operation)
   switch (operation) {
     case 'beginsWith':
       return operationBeginsWith(field, value)
@@ -80,21 +81,24 @@ export const conditionBuilder = criteria => {
         'deleteAction ERROR: ',
         `operation ${operation} not covered in switch`
       )
-      throw new Error('conditionBuilder ERROR: unknown operation')
+      throw new Error(
+        `conditionBuilder ERROR: unknown operation '${operation}'`
+      )
   }
 }
 
 export const filterBuilder = criteria => {
-  if (criteria.length === 1) {
-    return mergeAll(
-      criteria.map(c => {
-        return conditionBuilder(c)
-      })
-    )
-  } else {
-    const b = criteria.map(c => conditionBuilder(c))
-    return { $and: b }
-  }
+  // if (criteria.length === 1) {
+  // yellow('criteria', criteria)
+  return mergeAll(
+    criteria.map(c => {
+      return conditionBuilder(c)
+    })
+  )
+  // } else {
+  //   const b = criteria.map(c => conditionBuilder(c))
+  //   return { $and: b }
+  // }
 }
 
 export const printResult = (id, expectRows, actualRows) => {
