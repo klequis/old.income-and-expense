@@ -18,6 +18,20 @@ import { orange, green } from 'logger'
 
 // Errors are handled by fetchJson()
 export default {
+  rules: {
+    async read() {
+      orange('api.rules.read')
+      const url = `/api/rules`
+      orange('url', url)
+      const data = await fetchJson(
+        url,
+        {
+          method: 'GET'
+        }
+      )
+      return data
+    }
+  },
   categoryReport: {
 
     async read() {

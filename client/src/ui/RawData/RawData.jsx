@@ -7,6 +7,7 @@ import { dataReadRequest } from 'store/data/actions'
 import { mergeRight, sortBy, prop } from 'ramda'
 import { format } from 'date-fns'
 import ChevronRight from '@material-ui/icons/ChevronRight'
+// eslint-disable-next-line
 import { yellow } from 'logger'
 
 const noWrapStyle = {
@@ -30,7 +31,6 @@ const RawData = ({ dataReadRequest, data, description, showOrigDesc }) => {
   }, [dataReadRequest, description, showOmitted])
   const sorted = sortByDate(data)
   
-  
   return (
     <MaterialTable
       columns={[
@@ -45,6 +45,7 @@ const RawData = ({ dataReadRequest, data, description, showOrigDesc }) => {
         { title: 'Debit', field: 'debit', type: 'currency' },
         { title: 'Category1', field: 'category1', cellStyle: noWrapStyle },
         { title: 'Category2', field: 'category2', cellStyle: noWrapStyle },
+        { title: 'Type', field: 'typeOrig' },
         { title: 'Omit', field: 'Omit' }
       ]}
       data={sorted.map(doc =>
@@ -71,4 +72,3 @@ const mapStateToProps = state => {
 }
 
 export default compose(connect(mapStateToProps, actions))(RawData)
-
