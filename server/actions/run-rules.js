@@ -27,6 +27,59 @@ const createRegex = (findValue, numAdditionalChars = 0) => {
   return new RegExp(regExAsString)
 }
 
+const createCategorizeUpdate = (action, rule) => {
+  let update
+  if (hasProp('category2', action)) {
+    update = {
+      $set: {
+        category1: action.category1,
+        category2: action.category2
+      },
+      $push: { rules: rule._id }
+    }
+  } else {
+    update = { $set: { category1: action.category1 }, $push: { rules: rule._id } }
+    // update = { category1: action.category1, $push: { rules: 'abc' } }
+  }
+  // green('createCategorizeUpdate: update', update)
+  return update
+}
+
+const createReplaceAllUpdate = (action, rule) => {
+  const update = {
+    $set: {
+      [action.field]: action.replaceWithValue
+    },
+    $push: { rules: rule._id }
+  }
+  // green('createReplaceAllUpdate: update', update)
+  return update
+}
+
+const createStripUpdate = (action, doc, rule) => {
+  const { findValue, numAdditionalChars } = action
+  const regex = createRegex(findValue, numAdditionalChars)
+  const update = {
+    $set: {
+      [action.field]: doc[action.field].replace(regex, '').trim(),
+      [`orig${action.field}`]: doc[action.field]
+    },
+    $push: { rules: rule._id }
+  }
+  // green('createStripUpdate: update', update)
+  return update
+}
+
+const createOmitUpdate = (rule) => {
+  const update = {
+    $set: { omit: true },
+    // $push: { rules: rule._id }
+    $push: { rules: 'abc' }
+  }
+  // green('createUpdateOmit: update', update)
+  return update
+}
+
 const runRules = async () => {
   const allRules = await find(RULES_COLLECTION_NAME, {})
   // yellow(typeof allRules[0]._id)
@@ -40,39 +93,33 @@ const runRules = async () => {
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
     const { actions, criteria, acct } = rule
-    yellow('acctId', acct)
+    // yellow('acctId', acct)
     // yellow('runRules: criteria', criteria)
-    const criteriaWithAcctId = append({
-      field: 'acctId',
-      operation: 'equals',
-      value: acct
-    }, criteria)
+    const criteriaWithAcctId = append(
+      {
+        field: 'acctId',
+        operation: 'equals',
+        value: acct
+      },
+      criteria
+    )
     // yellow('runRules: criteriaWithAcctId', criteriaWithAcctId)
     const filter = filterBuilder(criteriaWithAcctId)
     const f = await find(DATA_COLLECTION_NAME, filter)
-    if (criteria.length > 1) {
-      printFilter(filter)
-    }
     for (let j = 0; j < actions.length; j++) {
       const action = actions[j]
-      const { findValue, numAdditionalChars } = action
-      const regex = createRegex(findValue, numAdditionalChars)
+
       switch (action.action) {
         case 'omit':
-          await updateMany(DATA_COLLECTION_NAME, filter, { omit: true })
+          await updateMany(DATA_COLLECTION_NAME, filter, createOmitUpdate(rule))
           break
         case 'strip':
           for (let j = 0; j < f.length; j++) {
             const doc = f[j]
-            const origFieldValue = doc[action.field]
-            const newFieldValue = doc[action.field].replace(regex, '').trim()
             await findOneAndUpdate(
               DATA_COLLECTION_NAME,
               { _id: doc._id },
-              {
-                [action.field]: newFieldValue,
-                [`orig${action.field}`]: origFieldValue
-              }
+              createStripUpdate(action, doc, rule)
             )
           }
           break
@@ -82,18 +129,12 @@ const runRules = async () => {
             await findOneAndUpdate(
               DATA_COLLECTION_NAME,
               { _id: doc._id },
-              { [action.field]: action.replaceWithValue }
+              createReplaceAllUpdate(action, rule)
             )
           }
           break
         case 'categorize':
-          await updateMany(
-            DATA_COLLECTION_NAME,
-            filter,
-            hasProp('category2', action)
-              ? { category1: action.category1, category2: action.category2 }
-              : { category1: action.category1 }
-          )
+          await updateMany(DATA_COLLECTION_NAME, filter, createCategorizeUpdate(action, rule))
           break
         default:
           redf('unknown action type:', action.action)
@@ -110,3 +151,15 @@ const x = {
     { originalDescription: { $regex: '^Bel Air', $options: 'im' } }
   ]
 }
+
+/*
+db.getCollection('data').update(
+
+{ _id: ObjectId('5e4c329a2f5ca86454a05df3') },
+{
+  $push: { rules: 'def' },
+  $set: { description: 'a' }
+}
+
+)
+*/
