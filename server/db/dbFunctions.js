@@ -232,21 +232,37 @@ export const findOneAndUpdate = async (
     const { db } = await connectDB()
     const r = await db
       .collection(collection)
-      .findOneAndUpdate(f, { $set: update }, { returnOriginal: returnOriginal })
+      .findOneAndUpdate(f, update, { returnOriginal: returnOriginal })
     return [r.value]
   } catch (e) {
+    console.group('dbFunctions.updateMany ERROR')
+    console.log('collection', collection)
+    console.log('filter', filter)
+    console.log('update', update)
+    console.groupEnd()
     throw new Error(e.message)
   }
 }
 
-export const updateMany = async (collection, filter = {}, set) => {
-  const { db } = await connectDB()
-  const r = await db.collection(collection).updateMany(filter, { $set: set })
-  // console.log('updateMany: r', r)
-  // green('**************************')
-  // green(r.modifiedCount)
-  // green(r.matchedCount)
-  return { matchedCount: r.matchedCount, modifiedCount: r.modifiedCount }
+export const updateMany = async (collection, filter = {}, update) => {
+  try {
+    const { db } = await connectDB()
+
+    const r = await db.collection(collection).updateMany(filter, update)
+    // console.log('updateMany: r', r)
+    // green('**************************')
+    // green(r.modifiedCount)
+    // green(r.matchedCount)
+    return { matchedCount: r.matchedCount, modifiedCount: r.modifiedCount }
+  } catch (e) {
+    console.group('dbFunctions.updateMany ERROR')
+    console.log('collection', collection)
+    console.log('filter', filter)
+    console.log('update', update)
+    console.groupEnd()
+    throw new Error(e.message)
+  }
+  
 }
 
 export const createIndex = async (collection, field, options = {}) => {
