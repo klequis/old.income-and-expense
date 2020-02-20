@@ -55,7 +55,7 @@ const DataItem = ({ data, showOrigDesc }) => {
 
   const classes = useStyles()
 
-  green('showOrigDesc', showOrigDesc)
+  // green('showOrigDesc', showOrigDesc)
 
   return (
     <Paper className={classes.contentWrapper}>

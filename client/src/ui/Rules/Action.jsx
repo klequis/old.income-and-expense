@@ -9,14 +9,17 @@ import { green, redf } from 'logger'
 
 const useStyles = makeStyles({
   wrapper: {
-    backgroundColor: 'blue',
-    // padding: '4px 8px'
+    // backgroundColor: 'blue',
+    padding: '4px 8px',
+    display: 'flex',
+    // justifyContent: 'space-around',
+    alignItems: 'flex-end'
   }
 })
 
 const Action = props => {
   // receives 'action' object
-  green('props', props)
+  // green('props', props)
   const {
     action: origAction,
     field,
@@ -46,7 +49,7 @@ const Action = props => {
   }
 
   return (
-    <div className={classes.wrapper}>
+    <div id='action' className={classes.wrapper}>
       <Select name="action-select" value={action} onChange={handleChange}>
         <MenuItem value="omit">Omit</MenuItem>
         <MenuItem value="strip">Strip</MenuItem>

@@ -19,12 +19,12 @@ const Toast = ({ classes, toast }) => {
 
   if (!toast) { return null }
 
-  green('toast', toast)
+  // green('toast', toast)
   // green('toast', toast.validationErrors)
 
 
   const { level, id, message, error } = toast
-  green('toast: error', error)
+  // green('toast: error', error)
   // const wrapperStyle = classNames({
   //   [classes.wrapper]: true,
   //   [classes.info]: level === TOAST_INFO,

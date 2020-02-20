@@ -28,7 +28,7 @@ import { green, redf } from 'logger'
 */
 const useStyles = makeStyles({
   panel: {
-    backgroundColor: 'red',
+    // backgroundColor: 'red',
     padding: '4px 8px'
   }
 })
@@ -38,15 +38,15 @@ const Rule = ({ criteria, actions }) => {
   // green('actions', actions)
   const classes = useStyles()
   return (
-    <form className={classes.panel}>
-      <div>
+    <form id='rule-form' className={classes.panel}>
+      <div id='criteria'>
         <div>Criteria</div>
 
         {criteria.map(c => (
           <Criteria criteria={c} />
         ))}
       </div>
-      <div>
+      <div id='actions'>
         <div>Actions</div>
         {actions.map(a => (
           <Action action={a} />

@@ -73,8 +73,8 @@ const AddTodo = props => {
 
   const handleTitleOnBlur = e => {
     const { id, value } = e.target
-    green('id', id)
-    green('value', value)
+    // green('id', id)
+    // green('value', value)
     if (value.length <= 2) {
       setError(id, 'client - Title must be at least 3 charters long')
     } else {

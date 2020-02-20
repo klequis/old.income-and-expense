@@ -75,16 +75,19 @@ const Rules = ({ data, rulesReadRequest }) => {
   return (
     <MaterialTable
       columns={[
-        { title: 'ID', field: '_id', searchable: false },
+        // { title: 'ID', field: '_id', searchable: false },
         { title: 'Acct', field: 'acct' },
-        { title: 'Description', field: 'criteria.field' }
+        // { title: 'Description'}
+        { title: 'Description', field: 'description' }
       ]}
       data={data.map(doc => {
+        // green('doc', doc)
         return {
           _id: doc._id,
           acct: doc.acct,
           criteria: doc.criteria,
-          actions: doc.actions
+          actions: doc.actions,
+          description: doc.description
         }
       })}
       options={{
@@ -97,7 +100,7 @@ const Rules = ({ data, rulesReadRequest }) => {
       detailPanel={rowData => {
         // green('rowData', rowData.criteria)
         // return <div>HI</div>
-        return <Rule criteria={rowData.criteria} actions={rowData.actions} />
+        return <Rule style={{boder: '5px solid black', backgroundColor: 'black'}} criteria={rowData.criteria} actions={rowData.actions} />
       }}
       // icons={{
       //   Search: Search,

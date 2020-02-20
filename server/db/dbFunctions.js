@@ -201,7 +201,7 @@ export const deleteMany = async (collection, filter) => {
   try {
     const { db } = await connectDB()
     const r = await db.collection(collection).deleteMany(filter)
-    green('deleteMany: r.deletedCount', r.deletedCount)
+    // green('deleteMany: r.deletedCount', r.deletedCount)
     return r.deletedCount
   } catch (e) {
     throw new Error(e.message)
