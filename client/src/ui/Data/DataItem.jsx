@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme =>
     },
     description: {
       flexBasis: '75%',
-      backgroundColor: 'green'
+      // backgroundColor: 'green'
     },
     category: {
       // flexBasis: '10%',

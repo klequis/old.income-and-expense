@@ -20,9 +20,7 @@ import { orange, green } from 'logger'
 export default {
   rules: {
     async read() {
-      orange('api.rules.read')
       const url = `/api/rules`
-      orange('url', url)
       const data = await fetchJson(
         url,
         {

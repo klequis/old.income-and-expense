@@ -14,7 +14,7 @@ export const operators = {
 
 export const dataFields = {
   description: 'description',
-  origType: 'origType'
+  typeOrig: 'typeOrig'
 }
 
 export const actions = {

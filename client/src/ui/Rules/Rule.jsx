@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-// import TextField from '@material-ui/core/TextField'
-// import MenuItem from '@material-ui/core/MenuItem'
-// import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/styles'
 import Action from './Action'
 import Criteria from './Criteria'
@@ -28,38 +25,38 @@ import { green, redf } from 'logger'
 */
 const useStyles = makeStyles({
   panel: {
-    // backgroundColor: 'red',
-    padding: '4px 8px'
+    padding: '4px 8px 4px 48px'
+  },
+  criteria: {
+    padding: '8px 12px',
+  },
+  sectionHeading: {
+    fontSize: '1rem',
+    fontWeight: 700,
+    paddingTop: 30,
+    paddingBottom: 15
+  },
+  actions: {
+    paddingBottom: 30
   }
 })
 
 const Rule = ({ criteria, actions }) => {
-  // green('criteria', criteria)
-  // green('actions', actions)
   const classes = useStyles()
   return (
     <form id='rule-form' className={classes.panel}>
       <div id='criteria'>
-        <div>Criteria</div>
+        <div className={classes.sectionHeading}>Criteria</div>
 
         {criteria.map(c => (
           <Criteria criteria={c} />
         ))}
       </div>
-      <div id='actions'>
-        <div>Actions</div>
+      <div id='actions' className={classes.actions}>
+        <div className={classes.sectionHeading}>Actions</div>
         {actions.map(a => (
           <Action action={a} />
         ))}
-        {/* {actions.map(a => {
-          return (
-            <TextField
-              id="action.action"
-              label="action"
-              value={a.action}
-            />
-          )
-        })} */}
       </div>
     </form>
   )

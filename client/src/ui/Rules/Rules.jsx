@@ -49,7 +49,7 @@ const tableIcons = {
   )),
   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />)
   // ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
   // ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 }
@@ -75,8 +75,9 @@ const Rules = ({ data, rulesReadRequest }) => {
   return (
     <MaterialTable
       columns={[
-        // { title: 'ID', field: '_id', searchable: false },
+        
         { title: 'Acct', field: 'acct' },
+        { title: 'ID', field: '_id', searchable: false },
         // { title: 'Description'}
         { title: 'Description', field: 'description' }
       ]}
@@ -94,13 +95,22 @@ const Rules = ({ data, rulesReadRequest }) => {
         padding: 'dense',
         pageSize: 20,
         filtering: true,
-        sorting: true
+        sorting: true,
+        // rowStyle: {
+        //   backgroundColor: 'green',
+        //   boxShadow:
+        //     '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
+        //   borderRadius: '4px',
+        //   color: '#fff',
+        //   transition: 'box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+        //   backgroundColor: '#424242'
+        // }
       }}
       icons={tableIcons}
       detailPanel={rowData => {
         // green('rowData', rowData.criteria)
         // return <div>HI</div>
-        return <Rule style={{boder: '5px solid black', backgroundColor: 'black'}} criteria={rowData.criteria} actions={rowData.actions} />
+        return <Rule criteria={rowData.criteria} actions={rowData.actions} />
       }}
       // icons={{
       //   Search: Search,

@@ -9,8 +9,6 @@ export function rulesReducer(
 ) {
   switch (action.type) {
     case RULES_READ_KEY:
-      blue('state', state)
-      blue('action', action)
       return action.payload
     default:
       return state

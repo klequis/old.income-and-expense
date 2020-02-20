@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import TextField from '@material-ui/core/TextField'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
+import TextField from 'ui/elements/TextField'
+import MenuItem from 'ui/elements/MenuItem'
+import Select from 'ui/elements/Select'
 import { makeStyles } from '@material-ui/styles'
 import { dataFields, actions } from 'global-constants'
-
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'

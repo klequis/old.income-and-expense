@@ -65,10 +65,7 @@ const App = props => {
 
   return (
     <div className={classes.devWrapper}>
-      <Container fluid maxWidth={false}>
-        {/* <Typography variant="h1" className={classes.appTitle} align="center">
-          Finance
-        </Typography> */}
+      <Container maxWidth={false}>
         <Nav
           importData={importData}
           // filterChanged={filterChanged}

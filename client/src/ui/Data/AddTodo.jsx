@@ -4,7 +4,7 @@ import Add from '@material-ui/icons/Add'
 import Clear from '@material-ui/icons/Clear'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/styles'
-import { Paper } from '@material-ui/core'
+import Paper from '@material-ui/core/Paper'
 import DueDate from './DueDate'
 import IconButton from '@material-ui/core/IconButton'
 
