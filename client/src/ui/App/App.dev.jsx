@@ -12,8 +12,8 @@ import { getData } from 'store/data/selectors'
 
 // import AmountByCategoryReport from 'ui/AmountByCategoryReport'
 // import RawData from 'ui/RawData'
-import Rules from 'ui/Rules'
-// import ChangesByDataDocReport from 'ui/ChangesByDataDocReport'
+// import Rules from 'ui/Rules'
+import ChangesByDataDocReport from 'ui/ChangesByDataDocReport'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -76,8 +76,8 @@ const App = props => {
         {/* <DetailPanel /> */}
         {/* <RawData description={description} showOrigDesc={showOrigDesc} /> */}
         {/* <AmountByCategoryReport /> */}
-        <Rules />
-        {/* <ChangesByDataDocReport /> */}
+        {/* <Rules /> */}
+        <ChangesByDataDocReport />
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>

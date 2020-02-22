@@ -6,6 +6,8 @@ import { compose } from 'recompose'
 import { changesByDataDocReadRequest } from 'store/reports/actions'
 import { getChangesByDataDoc } from 'store/reports/selectors'
 import { actions as actionNames } from 'global-constants'
+import Criteria from './Criteria'
+import Actions from './Actions'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -28,84 +30,86 @@ const useStyles = makeStyles({
   }
 })
 
-const Criteria = ({ criteria }) => {
-  const classes = useStyles()
-  return criteria.map(c => (
-    <div>
-      <div className={classes.actionOrCriteria}>
+// const renderCriteria = ({ criteria }) => {
+//   green('criteria**', criteria)
+//   // const classes = useStyles()
+//   // return criteria.map(c => <div>{/* <Criteria criteria={c} /> */}</div>)
+// }
+/* <div>
         <b>field: </b>
         {c.field}, <b>operation: </b>
         {c.operation} <b>value: </b>
         {c.value}}
-      </div>
-    </div>
-  ))
-}
+      </div> */
 
-const Actions = ({ actions }) => {
-  const classes = useStyles()
-  return actions.map(a => {
-    if (a.action === actionNames.omit) {
-      return (
-        <div style={{ color: 'red' }} className={classes.actionOrCriteria}>
-          <b>Action: </b>
-          {a.action}
-        </div>
-      )
-    }
-    if (a.action === actionNames.categorize) {
-      return (
-        <div className={classes.actionOrCriteria}>
-          <b>Action: </b>
-          {a.action}: <b>Category 1: </b>
-          {a.category1}, <b>Category 2: </b>
-          {a.category2}{' '}
-        </div>
-      )
-    }
-    if (a.action === actionNames.replaceAll) {
-      return (
-        <div className={classes.actionOrCriteria}>
-          <b>Action: </b>
-          {a.action}: <b>Field: </b>
-          {a.field}, <b>Replace with: </b>
-          {a.replaceWithValue}
-        </div>
-      )
-    }
-    if (a.action === actionNames.strip) {
-      return (
-        <div className={classes.actionOrCriteria}>
-          <b>Action: </b>
-          {a.action}: <b>Field: </b>
-          {a.field}, <b>Find value: </b>
-          {a.findValue}, <b>Num add chars: </b>
-          {a.numAdditionalChars}
-        </div>
-      )
-    }
-    return null
-  })
-}
+// const Actions = ({ actions }) => {
+//   const classes = useStyles()
+//   return actions.map(a => {
+//     if (a.action === actionNames.omit) {
+//       return (
+//         <div style={{ color: 'red' }} className={classes.actionOrCriteria}>
+//           <b>Action: </b>
+//           {a.action}
+//         </div>
+//       )
+//     }
+//     if (a.action === actionNames.categorize) {
+//       return (
+//         <div className={classes.actionOrCriteria}>
+//           <b>Action: </b>
+//           {a.action}: <b>Category 1: </b>
+//           {a.category1}, <b>Category 2: </b>
+//           {a.category2}{' '}
+//         </div>
+//       )
+//     }
+//     if (a.action === actionNames.replaceAll) {
+//       return (
+//         <div className={classes.actionOrCriteria}>
+//           <b>Action: </b>
+//           {a.action}: <b>Field: </b>
+//           {a.field}, <b>Replace with: </b>
+//           {a.replaceWithValue}
+//         </div>
+//       )
+//     }
+//     if (a.action === actionNames.strip) {
+//       return (
+//         <div className={classes.actionOrCriteria}>
+//           <b>Action: </b>
+//           {a.action}: <b>Field: </b>
+//           {a.field}, <b>Find value: </b>
+//           {a.findValue}, <b>Num add chars: </b>
+//           {a.numAdditionalChars}
+//         </div>
+//       )
+//     }
+//     return null
+//   })
+// }
 
 const Rule = ({ rules }) => {
   const classes = useStyles()
   if (rules.length > 0) {
     const a = rules.map(rule => {
       const { _id, criteria, actions } = rule
+      // green('Rule: criteria', criteria)
       return (
         <div>
           <div className={classes.ruleId}>RuleId: {_id}</div>
+          {/* {criteria.map(c => <Criteria criteria={c} />)} */}
           <Criteria criteria={criteria} />
           <Actions actions={actions} />
         </div>
       )
     })
+    return a
   }
   return null
 }
 
 const ChangesByDataDocReport = ({ data, changesByDataDocReadRequest }) => {
+
   useEffect(() => {
     ;(async () => {
       try {
@@ -115,11 +119,15 @@ const ChangesByDataDocReport = ({ data, changesByDataDocReadRequest }) => {
       }
     })()
   }, [changesByDataDocReadRequest])
+
   const classes = useStyles()
+
   return (
     <div>
       {data.map(d => {
+
         const { rules } = d
+
         return (
           <Paper className={classes.item}>
             <div className={classes.description}>{d._id}</div>
