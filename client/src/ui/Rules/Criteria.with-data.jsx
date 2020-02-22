@@ -26,9 +26,7 @@ const Criteria = ({ criteria, dataReadByCriteriaRequest, data  }) => {
   const [_field, _setField] = useState(field)
   const [_operation, _setOperation] = useState(operation)
   const [_value, _setValue] = useState(value)
-
   green('**** Criteria', criteria)
-  
   useEffect(() => {
     ;(async () => {
       try {
@@ -86,16 +84,16 @@ const Criteria = ({ criteria, dataReadByCriteriaRequest, data  }) => {
         label="value"
         value={_value}
         onChange={handleChange}
-        fullWidth
+        
       />
       </div>
-      <div>
+      {/* <div>
         {data.map(doc => {
           return (
             <div>{doc.description}</div>
           )
         })}
-      </div>
+      </div> */}
     </div>
   )
 }

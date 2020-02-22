@@ -41,16 +41,15 @@ const useStyles = makeStyles({
   }
 })
 
-const Rule = ({ criteria, actions }) => {
+const Rule = ({ _id, criteria, actions }) => {
   const classes = useStyles()
   return (
     <form id='rule-form' className={classes.panel}>
       <div id='criteria'>
         <div className={classes.sectionHeading}>Criteria</div>
-
-        {criteria.map(c => (
-          <Criteria criteria={c} />
-        ))}
+        {criteria.map((c, idx) => {
+          return <Criteria key={`${_id}-${idx}`} criteria={c} />
+        })}
       </div>
       <div id='actions' className={classes.actions}>
         <div className={classes.sectionHeading}>Actions</div>

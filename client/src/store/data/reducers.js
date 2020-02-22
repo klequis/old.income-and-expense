@@ -1,10 +1,12 @@
 import { DATA_CREATE_KEY, DATA_READ_KEY } from './constants'
-// import { blue, green } from 'logger'
+
+// eslint-disable-next-line
+import { blue, green } from 'logger'
 export function dataReducer(
   state = [],
   action
 ) {
-  // blue('payload', payload)
+  // blue('state', state )
   // blue('type', type)
   // blue('action', action)
   switch (action.type) {

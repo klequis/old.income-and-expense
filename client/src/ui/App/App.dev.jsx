@@ -10,9 +10,10 @@ import { compose } from 'recompose'
 import { importDataRequest, dataReadRequest } from 'store/data/actions'
 import { getData } from 'store/data/selectors'
 
-// import CategoryReport from 'ui/CategoryReport'
+// import AmountByCategoryReport from 'ui/AmountByCategoryReport'
 // import RawData from 'ui/RawData'
-import Rules from 'ui/Rules'
+// import Rules from 'ui/Rules'
+import ChangesByDataDocReport from 'ui/ChangesByDataDocReport'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -74,8 +75,9 @@ const App = props => {
         {/* <Data data={data} showOrigDesc={showOrigDesc} /> */}
         {/* <DetailPanel /> */}
         {/* <RawData description={description} showOrigDesc={showOrigDesc} /> */}
-        {/* <CategoryReport /> */}
-        <Rules />
+        {/* <AmountByCategoryReport /> */}
+        {/* <Rules /> */}
+        <ChangesByDataDocReport />
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>

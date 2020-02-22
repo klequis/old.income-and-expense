@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
+import MenuItem from 'ui/elements/MenuItem'
+import Select from 'ui/elements/Select'
 import ActionControls from './ActionControls'
 import { makeStyles } from '@material-ui/styles'
 

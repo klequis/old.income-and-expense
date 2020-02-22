@@ -3,22 +3,22 @@ import React, { useEffect /*, useState */ } from 'react'
 import MaterialTable from 'material-table'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { categoryReportReadRequest } from 'store/categoryReport/actions'
-import { getCategoryReportData } from 'store/categoryReport/selectors'
+import { amountByCategoryReadRequest } from 'store/reports/actions'
+import { getAmountByCategory } from 'store/reports/selectors'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
 
-const CategoryReport = ({ data, categoryReportReadRequest }) => {
+const AmountByCategoryReport = ({ data, amountByCategoryReadRequest }) => {
   useEffect(() => {
     ;(async () => {
       try {
-        await categoryReportReadRequest()
+        await amountByCategoryReadRequest(('amount-by-category'))
       } catch (e) {
         console.log('TheError', e)
       }
     })()
-  }, [categoryReportReadRequest])
+  }, [amountByCategoryReadRequest])
 
   return (
     <MaterialTable
@@ -33,13 +33,13 @@ const CategoryReport = ({ data, categoryReportReadRequest }) => {
 }
 
 const actions = {
-  categoryReportReadRequest
+  amountByCategoryReadRequest
 }
 
 const mapStateToProps = state => {
   return {
-    data: getCategoryReportData(state)
+    data: getAmountByCategory(state)
   }
 }
 
-export default compose(connect(mapStateToProps, actions))(CategoryReport)
+export default compose(connect(mapStateToProps, actions))(AmountByCategoryReport)

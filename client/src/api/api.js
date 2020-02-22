@@ -3,6 +3,7 @@ import { isEmpty } from 'validator'
 
 // eslint-disable-next-line
 import { orange, green } from 'logger'
+import { redf } from 'logger'
 
 /*
     [description] && [true || false]
@@ -21,98 +22,66 @@ export default {
   rules: {
     async read() {
       const url = `/api/rules`
-      const data = await fetchJson(
-        url,
-        {
-          method: 'GET'
-        }
-      )
+      const data = await fetchJson(url, {
+        method: 'GET'
+      })
       return data
     }
   },
-  categoryReport: {
-
-    async read() {
-      orange('api.categoryReport.read')
-      const url = `/api/reports`
-      orange('url', url)
-      const data = await fetchJson(
-        url,
-        {
+  reports: {
+    async read(reportUrlPart) {
+      // orange('reportUrlPart', reportUrlPart)      
+      try {
+        const url = `/api/reports/${reportUrlPart}`
+        const data = await fetchJson(url, {
           method: 'GET'
-        }
-      )
-      return data
+        })
+        // orange('data', data)
+        return data
+      } catch (e) {
+        redf('api.data.reports ERROR', e.message)
+        console.log(e)
+      }
+      
     }
   },
   data: {
     async read(description, showOmitted) {
-      orange('api.data.read: description', description)
-      orange('api.data.read: showOmitted', showOmitted)
       // /description/:description/showOmitted/:showOmitted
-      
-      const descriptionPart = isEmpty(description) ? '' : `/description/${description}`
+      const descriptionPart = isEmpty(description)
+        ? ''
+        : `/description/${description}`
       const showOmittedPart = `/showOmitted/${showOmitted}`
-
       const url = `/api/data${descriptionPart}${showOmittedPart}`
-      orange('url', url)
-      const data = await fetchJson(
-        url,
-        {
-          method: 'GET'
-        }
-      )
-      // const data = await fetchJson(`api/todo/${userId}`, {
-      //   method: 'GET'
-      // })
+      const data = await fetchJson(url, {
+        method: 'GET'
+      })
       return data
     },
+    async readByCriteria(field, operation, value) {
+      orange('readByCriteria', `${field}, ${operation}, ${value}`)
+      try {
+        const url = `/api/data/criteria/`
+        const data = await fetchJson(url, {
+          method: 'POST',
+          body: JSON.stringify({
+            field,
+            operation,
+            value
+          })
+        })
+        return data
+      } catch (e) {
+        redf('api.data.readByCriteria ERROR', e.message)
+        console.log(e)
+      }
+    },
     async importData() {
-      orange('data.importData')
       const data = await fetchJson(`api/import`, {
         method: 'GET'
       })
       orange('importData: data', data)
       return data
     }
-    // async readById(userId, todoId) {
-    //   const data = await fetchJson(`api/todo/${userId}/${todoId}`, {
-    //     method: 'GET'
-    //   })
-    //   return data
-    // },
-    // async create(userId, todo) {
-    //   const data = await fetchJson(`api/todo/${userId}`, {
-    //     method: 'POST',
-    //     body: JSON.stringify(todo)
-    //   })
-    //   return data
-    // },
-    // async delete(userId, todoId) {
-    //   const data = await fetchJson(`api/todo/${userId}/${todoId}`, {
-    //     method: 'DELETE'
-    //   })
-    //   return data
-    // },
-    // async update(userId, todoId, todo) {
-    //   orange('api.update: userId', userId)
-    //   orange('api.update: todoId', todoId)
-    //   orange('api.update: todo', todo)
-    //   const data = await fetchJson(`api/todo/${userId}/${todoId}`, {
-    //     method: 'PATCH',
-    //     body: JSON.stringify(todo)
-    //   })
-    //   return data
-    // }
-    // async update(userId, todoId, todo) {
-    //   // orange('api.update: userId', userId)
-    //   // orange('api.update: todoId', todoId)
-    //   // orange('api.update: todo', todo)
-    //   const data = await fetchJson(`api/data/${todoId}`, {
-    //     method: 'PATCH',
-    //     body: JSON.stringify(todo)
-    //   })
-    //   return data
-    // }
   }
 }

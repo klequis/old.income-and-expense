@@ -3,6 +3,7 @@ import {
   DATA_CREATE_REQUEST_KEY,
   DATA_DELETE_REQUEST_KEY,
   DATA_READ_KEY,
+  DATA_READ_REQUEST_BY_CRITERIA_KEY,
   DATA_READ_BY_ID_REQUEST_KEY,
   DATA_READ_REQUEST_KEY,
   DATA_UPDATE_REQUEST_KEY,
@@ -36,6 +37,7 @@ export const dataAdd = newTodo => {
 
 // Read
 export const dataRead = data => {
+  purple('dataRead: data', data)
   return {
     type: DATA_READ_KEY,
     payload: data
@@ -99,16 +101,15 @@ export const dataReadRequest = createRequestThunk({
   ]
 })
 
-// export const dataReadRequest2 = createRequestThunk({
-//   request: api.data.read,
-//   key: DATA_READ_REQUEST_KEY,
-//   success: [dataRead],
-//   failure: [
-//     e =>
-//       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
-//   ]
-// })
-
+export const dataReadByCriteriaRequest = createRequestThunk({
+  request: api.data.readByCriteria,
+  key: DATA_READ_REQUEST_KEY,
+  success: [dataRead],
+  failure: [
+    e =>
+      setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+  ]
+})
 
 // import data
 export const importDataRequest = createRequestThunk({

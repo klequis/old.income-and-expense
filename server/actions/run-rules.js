@@ -35,11 +35,14 @@ const createCategorizeUpdate = (action, rule) => {
         category1: action.category1,
         category2: action.category2
       },
-      $push: { rules: rule._id }
+      $addToSet: { rules: rule._id }
     }
   } else {
-    update = { $set: { category1: action.category1 }, $push: { rules: rule._id } }
-    // update = { category1: action.category1, $push: { rules: 'abc' } }
+    update = {
+      $set: { category1: action.category1 },
+      $addToSet: { rules: rule._id }
+    }
+    // update = { category1: action.category1, $addToSet: { rules: 'abc' } }
   }
   // green('createCategorizeUpdate: update', update)
   return update
@@ -50,7 +53,7 @@ const createReplaceAllUpdate = (action, rule) => {
     $set: {
       [action.field]: action.replaceWithValue
     },
-    $push: { rules: rule._id }
+    $addToSet: { rules: rule._id }
   }
   // green('createReplaceAllUpdate: update', update)
   return update
@@ -64,17 +67,17 @@ const createStripUpdate = (action, doc, rule) => {
       [action.field]: doc[action.field].replace(regex, '').trim(),
       [`orig${action.field}`]: doc[action.field]
     },
-    $push: { rules: rule._id }
+    $addToSet: { rules: rule._id }
   }
   // green('createStripUpdate: update', update)
   return update
 }
 
-const createOmitUpdate = (rule) => {
+const createOmitUpdate = rule => {
   const update = {
     $set: { omit: true },
-    // $push: { rules: rule._id }
-    $push: { rules: 'abc' }
+    // $addToSet: { rules: rule._id }
+    $addToSet: { rules: rule._id }
   }
   // green('createUpdateOmit: update', update)
   return update
@@ -85,11 +88,7 @@ const runRules = async () => {
   // yellow(typeof allRules[0]._id)
   // const rules = allRules.filter(rule => rule._id.toString() === '5e45ca2f6d8f4438b8ee5926')
   const rules = allRules
-  // const x = {
-  //   field: 'acctId',
-  //   operation: 'equals',
-  //   value: 'cb.eee.ddd'
-  // }
+
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
     const { actions, criteria, acct } = rule
@@ -134,7 +133,11 @@ const runRules = async () => {
           }
           break
         case 'categorize':
-          await updateMany(DATA_COLLECTION_NAME, filter, createCategorizeUpdate(action, rule))
+          await updateMany(
+            DATA_COLLECTION_NAME,
+            filter,
+            createCategorizeUpdate(action, rule)
+          )
           break
         default:
           redf('unknown action type:', action.action)
@@ -144,22 +147,3 @@ const runRules = async () => {
 }
 
 export default runRules
-
-const x = {
-  $and: [
-    { typeOrig: { $eq: 'billpay' } },
-    { originalDescription: { $regex: '^Bel Air', $options: 'im' } }
-  ]
-}
-
-/*
-db.getCollection('data').update(
-
-{ _id: ObjectId('5e4c329a2f5ca86454a05df3') },
-{
-  $push: { rules: 'def' },
-  $set: { description: 'a' }
-}
-
-)
-*/

@@ -5,7 +5,7 @@ import { DATA_COLLECTION_NAME } from 'db/constants'
 // eslint-disable-next-line
 import { red, green, yellow, logRequest } from 'logger'
 
-const incomeAndExpense = wrap(async (req, res) => {
+const amountByCategory = wrap(async (req, res) => {
   // const f = await find(DATA_COLLECTION_NAME, {})
   // yellow('f', f)
   const match1 = {
@@ -60,4 +60,4 @@ const incomeAndExpense = wrap(async (req, res) => {
   res.send(ret)
 })
 
-export default incomeAndExpense
+export default amountByCategory

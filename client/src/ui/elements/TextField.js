@@ -8,6 +8,9 @@ const useStyles = makeStyles({
   root: {
     fontSize: 14,
     // color: 'green'
+  },
+  textField: {
+    marginRight:  20
   }
 })
 
@@ -22,7 +25,7 @@ const TextField = ({
   const classes = useStyles()
   return (
     <MuiTextField
-      className={className}
+      className={classes.textField}
       name={name}
       label={label}
       value={value}

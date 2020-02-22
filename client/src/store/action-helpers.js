@@ -1,12 +1,11 @@
 // eslint-disable-next-line
-import { red } from '../logger'
 import {
   requestPending,
   requestSuccess,
   requestFailed
 } from './requests/actions'
 // eslint-disable-next-line
-import { pink } from 'logger'
+import { pink, red } from 'logger'
 
 export const logError = (err, key) => {
   red(`actions.logError(key:${key})`, err)
@@ -20,9 +19,9 @@ export const createRequestThunk = ({
   failure = []
 }) => {
   // console.group('createRequestThunk')
-  // red('key', key)
-  // red('request', request)
-  // red('success', success)
+  // pink('key', key)
+  // pink('request', request)
+  // pink('success', success)
   // console.groupEnd()
   return (...args) => async dispatch => {
     
@@ -44,7 +43,8 @@ export const createRequestThunk = ({
     } catch (e) {
       await dispatch(requestFailed(e, requestKey))
       return failure.map(async actionCreator => {
-        pink('failure.actionCreator', actionCreator)
+        // pink('failure.actionCreator', actionCreator)
+        red('action.helpers.createRequestThunk Error', e.message)
         dispatch(requestFailed(e, requestKey))
         await dispatch(actionCreator(e))
       })

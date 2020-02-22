@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 })
 
 const ActionControls = ({ action: Action }) => {
-  green('action', Action)
+  green('action', Action.action)
   const { action, field, findValue, numAdditionalChars, replaceWithValue, category1, category2 } = Action
   // const [_action, _setAction] = useState(action)
   const [_field, _setField] = useState(field)
@@ -31,10 +31,10 @@ const ActionControls = ({ action: Action }) => {
 
   }
   // green('action.action', action.action)
-  if (action.action === actions.omit) {
+  if (action === actions.omit) {
     return null
   }
-  if (action.action === actions.strip) {
+  if (action === actions.strip) {
     return (
       <>
         <Select name="action.field" value={_field} onChange={handleChange}>
@@ -46,7 +46,7 @@ const ActionControls = ({ action: Action }) => {
       </>
     )
   }
-  if (action.action === actions.replaceAll) {
+  if (action === actions.replaceAll) {
     return (
       <>
         <Select name="action.field" value={_field} onChange={handleChange}>
@@ -57,10 +57,10 @@ const ActionControls = ({ action: Action }) => {
       </>
     )
   }
-  if (action.action === actions.categorize) {
+  if (action === actions.categorize) {
+    // green('categorize')
     return (
       <>
-        <TextField id={`field`} label="field" value={_field} />
         <TextField id={`category1`} label="category1" value={_category1}/>
         <TextField id={`category2`} label="category2" value={_category2} />
       </>

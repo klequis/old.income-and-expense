@@ -79,7 +79,7 @@ const Rules = ({ data, rulesReadRequest }) => {
         { title: 'Acct', field: 'acct' },
         { title: 'ID', field: '_id', searchable: false },
         // { title: 'Description'}
-        { title: 'Description', field: 'description' }
+        // { title: 'Description', field: 'description' }
       ]}
       data={data.map(doc => {
         // green('doc', doc)
@@ -90,7 +90,7 @@ const Rules = ({ data, rulesReadRequest }) => {
           actions: doc.actions,
           description: doc.description
         }
-      })}
+      })/*.filter(doc => doc._id === '5e45ca2f6d8f4438b8ee5936')*/ }
       options={{
         padding: 'dense',
         pageSize: 20,
@@ -110,7 +110,7 @@ const Rules = ({ data, rulesReadRequest }) => {
       detailPanel={rowData => {
         // green('rowData', rowData.criteria)
         // return <div>HI</div>
-        return <Rule criteria={rowData.criteria} actions={rowData.actions} />
+        return <Rule _id={rowData._id} criteria={rowData.criteria} actions={rowData.actions} />
       }}
       // icons={{
       //   Search: Search,
