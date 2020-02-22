@@ -94,16 +94,16 @@ const runRules = async () => {
     const { actions, criteria, acct } = rule
     // yellow('acctId', acct)
     // yellow('runRules: criteria', criteria)
-    const criteriaWithAcctId = append(
-      {
-        field: 'acctId',
-        operation: 'equals',
-        value: acct
-      },
-      criteria
-    )
+    // const criteriaWithAcctId = append(
+    //   {
+    //     field: 'acctId',
+    //     operation: 'equals',
+    //     value: acct
+    //   },
+    //   criteria
+    // )
     // yellow('runRules: criteriaWithAcctId', criteriaWithAcctId)
-    const filter = filterBuilder(criteriaWithAcctId)
+    const filter = filterBuilder(criteria)
     const f = await find(DATA_COLLECTION_NAME, filter)
     for (let j = 0; j < actions.length; j++) {
       const action = actions[j]

@@ -9,17 +9,13 @@ import { green, redf } from 'logger'
 
 const useStyles = makeStyles({
   wrapper: {
-    // backgroundColor: 'blue',
     padding: '4px 8px',
     display: 'flex',
-    // justifyContent: 'space-around',
     alignItems: 'flex-end'
   }
 })
 
 const Action = props => {
-  // receives 'action' object
-  // green('props', props)
   const {
     action: origAction,
     field,
@@ -29,15 +25,12 @@ const Action = props => {
     category1,
     category2
   } = props
-  const [action, setAction] = useState(origAction.action)
-  // green('action', action)
 
+  const [action, setAction] = useState(origAction.action)
   const classes = useStyles()
 
   const handleChange = event => {
     const { name, value } = event.target
-    // green('target.name', name)
-    // green('target.value', value)
     switch (name) {
       case 'action-select':
         setAction(value)
@@ -45,7 +38,6 @@ const Action = props => {
       default:
         redf('Rule.handleChange ERROR', `Unknown action ${name}`)
     }
-    // setAge(event.target.value)
   }
 
   return (

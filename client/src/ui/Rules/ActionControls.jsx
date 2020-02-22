@@ -2,22 +2,13 @@ import React, { useState } from 'react'
 import TextField from 'ui/elements/TextField'
 import MenuItem from 'ui/elements/MenuItem'
 import Select from 'ui/elements/Select'
-import { makeStyles } from '@material-ui/styles'
 import { dataFields, actions } from 'global-constants'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
 
-const useStyles = makeStyles({
-  textField: {
-    marginRight: 20
-  }
-})
-
 const ActionControls = ({ action: Action }) => {
-  green('action', Action.action)
   const { action, field, findValue, numAdditionalChars, replaceWithValue, category1, category2 } = Action
-  // const [_action, _setAction] = useState(action)
   const [_field, _setField] = useState(field)
   const [_findValue, _setFindValue] = useState(findValue)
   const [_numAdditionalChars, _setNumAdditionalChars] = useState(
@@ -30,7 +21,6 @@ const ActionControls = ({ action: Action }) => {
   const handleChange = event => {
 
   }
-  // green('action.action', action.action)
   if (action === actions.omit) {
     return null
   }
@@ -58,7 +48,6 @@ const ActionControls = ({ action: Action }) => {
     )
   }
   if (action === actions.categorize) {
-    // green('categorize')
     return (
       <>
         <TextField id={`category1`} label="category1" value={_category1}/>
@@ -66,8 +55,8 @@ const ActionControls = ({ action: Action }) => {
       </>
     )
   }
-  return null
   redf('Rule.ActionControls ERROR:', `unknown action ${action.action}`)
+  return null
 }
 
 export default ActionControls

@@ -22,23 +22,13 @@ const useStyles = makeStyles({
   }
 })
 
-const Criteria = ({ criteria, dataReadByCriteriaRequest, data }) => {
+const Criteria = ({ criteria }) => {
   const { field, operation, value } = criteria
   const [_field, _setField] = useState(field)
   const [_operation, _setOperation] = useState(operation)
   const [_value, _setValue] = useState(value)
 
   green('**** Criteria', criteria)
-
-  useEffect(() => {
-    ;(async () => {
-      try {
-        await dataReadByCriteriaRequest(_field, _operation, _value)
-      } catch (e) {
-        console.log('TheError', e)
-      }
-    })()
-  }, [dataReadByCriteriaRequest, _field, _operation, _value])
 
   const handleChange = event => {
     const { name, value } = event.target
@@ -89,11 +79,6 @@ const Criteria = ({ criteria, dataReadByCriteriaRequest, data }) => {
           onChange={handleChange}
           fullWidth
         />
-      </div>
-      <div>
-        {/* {data.map(doc => {
-          return <div>{doc.description}</div>
-        })} */}
       </div>
     </div>
   )

@@ -23,12 +23,13 @@ import { green, redf } from 'logger'
   - categorize: action, category1, category2
 
 */
+
 const useStyles = makeStyles({
   panel: {
     padding: '4px 8px 4px 48px'
   },
   criteria: {
-    padding: '8px 12px',
+    padding: '8px 12px'
   },
   sectionHeading: {
     fontSize: '1rem',
@@ -44,14 +45,14 @@ const useStyles = makeStyles({
 const Rule = ({ _id, criteria, actions }) => {
   const classes = useStyles()
   return (
-    <form id='rule-form' className={classes.panel}>
-      <div id='criteria'>
+    <form id="rule-form" className={classes.panel}>
+      <div id="criteria">
         <div className={classes.sectionHeading}>Criteria</div>
         {criteria.map((c, idx) => {
           return <Criteria key={`${_id}-${idx}`} criteria={c} />
         })}
       </div>
-      <div id='actions' className={classes.actions}>
+      <div id="actions" className={classes.actions}>
         <div className={classes.sectionHeading}>Actions</div>
         {actions.map(a => (
           <Action action={a} />
