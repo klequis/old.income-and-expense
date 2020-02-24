@@ -1,5 +1,0 @@
-# Routes
-
-
-- getData(filter = {})
-- loadData()
