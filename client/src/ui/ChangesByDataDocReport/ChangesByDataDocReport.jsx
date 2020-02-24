@@ -30,65 +30,7 @@ const useStyles = makeStyles({
   }
 })
 
-// const renderCriteria = ({ criteria }) => {
-//   green('criteria**', criteria)
-//   // const classes = useStyles()
-//   // return criteria.map(c => <div>{/* <Criteria criteria={c} /> */}</div>)
-// }
-/* <div>
-        <b>field: </b>
-        {c.field}, <b>operation: </b>
-        {c.operation} <b>value: </b>
-        {c.value}}
-      </div> */
-
-// const Actions = ({ actions }) => {
-//   const classes = useStyles()
-//   return actions.map(a => {
-//     if (a.action === actionNames.omit) {
-//       return (
-//         <div style={{ color: 'red' }} className={classes.actionOrCriteria}>
-//           <b>Action: </b>
-//           {a.action}
-//         </div>
-//       )
-//     }
-//     if (a.action === actionNames.categorize) {
-//       return (
-//         <div className={classes.actionOrCriteria}>
-//           <b>Action: </b>
-//           {a.action}: <b>Category 1: </b>
-//           {a.category1}, <b>Category 2: </b>
-//           {a.category2}{' '}
-//         </div>
-//       )
-//     }
-//     if (a.action === actionNames.replaceAll) {
-//       return (
-//         <div className={classes.actionOrCriteria}>
-//           <b>Action: </b>
-//           {a.action}: <b>Field: </b>
-//           {a.field}, <b>Replace with: </b>
-//           {a.replaceWithValue}
-//         </div>
-//       )
-//     }
-//     if (a.action === actionNames.strip) {
-//       return (
-//         <div className={classes.actionOrCriteria}>
-//           <b>Action: </b>
-//           {a.action}: <b>Field: </b>
-//           {a.field}, <b>Find value: </b>
-//           {a.findValue}, <b>Num add chars: </b>
-//           {a.numAdditionalChars}
-//         </div>
-//       )
-//     }
-//     return null
-//   })
-// }
-
-const Rule = ({ rules }) => {
+const Rule = ({ rules, updateRule }) => {
   const classes = useStyles()
   if (rules.length > 0) {
     const a = rules.map(rule => {
@@ -97,8 +39,7 @@ const Rule = ({ rules }) => {
       return (
         <div>
           <div className={classes.ruleId}>RuleId: {_id}</div>
-          {/* {criteria.map(c => <Criteria criteria={c} />)} */}
-          <Criteria criteria={criteria} />
+          <Criteria criteria={criteria} updateRule={updateRule} />
           <Actions actions={actions} />
         </div>
       )
@@ -122,6 +63,10 @@ const ChangesByDataDocReport = ({ data, changesByDataDocReadRequest }) => {
 
   const classes = useStyles()
 
+  const updateRule = ({ rule }) => {
+    green('updateRule: rule', rule)
+  }
+
   return (
     <div>
       {data.map(d => {
@@ -140,7 +85,7 @@ const ChangesByDataDocReport = ({ data, changesByDataDocReadRequest }) => {
               {rules.map(r => {
                 return (
                   <div>
-                    <Rule rules={r} />
+                    <Rule updateRule={updateRule} rules={r} />
                   </div>
                 )
               })}
