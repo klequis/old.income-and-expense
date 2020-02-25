@@ -48,16 +48,16 @@ const App = props => {
     rules
   } = props
 
-  useEffect(() => {
-    ;(async () => {
-      try {
-        await rulesReadRequest()
-        await dataReadRequest(description, showOmitted)
-      } catch (e) {
-        console.log('TheError', e)
-      }
-    })()
-  }, [rulesReadRequest, dataReadRequest, description, showOmitted])
+  // useEffect(() => {
+  //   ;(async () => {
+  //     try {
+  //       await rulesReadRequest()
+  //       // await dataReadRequest(description, showOmitted)
+  //     } catch (e) {
+  //       console.log('TheError', e)
+  //     }
+  //   })()
+  // }, [rulesReadRequest, dataReadRequest, description, showOmitted])
 
   const importData = async () => {
     await importDataRequest()

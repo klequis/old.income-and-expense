@@ -1,9 +1,14 @@
 import wrap from 'routes/wrap'
 import { executeAggregate } from 'db/dbFunctions'
 import { DATA_COLLECTION_NAME /*, RULES_COLLECTION_NAME */ } from 'db/constants'
+import { sortBy, compose, toLower, prop } from 'ramda'
 
 // eslint-disable-next-line
 import { red, green, logRequest } from 'logger'
+
+// const sortByNameCaseInsensitive = sortBy(compose(toLower, prop('name')))
+
+const sortByOrig = sortBy(compose(toLower, prop('_id')))
 
 const changesByDataDoc = wrap(async (req, res, next) => {
   const group1 = {
@@ -26,7 +31,8 @@ const changesByDataDoc = wrap(async (req, res, next) => {
     }
     return x
   })
-  res.send(a)
+  const b = sortByOrig(a)
+  res.send(b)
 })
 
 export default changesByDataDoc

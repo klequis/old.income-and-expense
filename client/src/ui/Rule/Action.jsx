@@ -3,6 +3,7 @@ import MenuItem from 'ui/elements/MenuItem'
 import Select from 'ui/elements/Select'
 import ActionControls from './ActionControls'
 import { makeStyles } from '@material-ui/styles'
+import shortid from 'shortid'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -41,7 +42,7 @@ const Action = props => {
   }
 
   return (
-    <div id='action' className={classes.wrapper}>
+    <div key={shortid.generate()} className={classes.wrapper}>
       <Select name="action-select" value={action} onChange={handleChange}>
         <MenuItem value="omit">Omit</MenuItem>
         <MenuItem value="strip">Strip</MenuItem>
