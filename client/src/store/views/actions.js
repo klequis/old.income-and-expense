@@ -1,8 +1,8 @@
 import {
   AMOUNT_BY_CATEGORY_READ_KEY,
   AMOUNT_BY_CATEGORY_READ_REQUEST_KEY,
-  CHANGES_BY_DATA_DOC_READ_KEY,
-  CHANGES_BY_DATA_DOC_READ_REQUEST_KEY
+  DATA_CHANGES_READ_KEY,
+  DATA_CHANGES_READ_REQUEST_KEY
 } from './constants'
 import { setToast } from 'store/toast/actions'
 import { createRequestThunk } from '../action-helpers'
@@ -19,17 +19,17 @@ export const amountByCategoryRead = data => {
   }
 }
 
-export const changesByDataDocRead = data => {
+const dataChangesRead = data => {
   // yellow('changesByDataDocRead: data', data)
 
   return {
-    type: CHANGES_BY_DATA_DOC_READ_KEY,
+    type: DATA_CHANGES_READ_KEY,
     payload: data
   }
 }
 
 export const amountByCategoryReadRequest = createRequestThunk({
-  request: api.reports.read,
+  request: api.views.read,
   key: AMOUNT_BY_CATEGORY_READ_REQUEST_KEY,
   success: [amountByCategoryRead],
   failure: [
@@ -38,10 +38,10 @@ export const amountByCategoryReadRequest = createRequestThunk({
   ]
 })
 
-export const changesByDataDocReadRequest = createRequestThunk({
-  request: api.reports.read,
-  key: CHANGES_BY_DATA_DOC_READ_REQUEST_KEY,
-  success: [changesByDataDocRead],
+export const dataChangesReadRequest = createRequestThunk({
+  request: api.views.read,
+  key: DATA_CHANGES_READ_REQUEST_KEY,
+  success: [dataChangesRead],
   failure: [
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })

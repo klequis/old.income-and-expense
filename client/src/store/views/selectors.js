@@ -2,6 +2,6 @@ export function getAmountByCategory(state) {
   return state.amountByCategory
 }
 
-export function getChangesByDataDoc(state) {
-  return state.changesByDataDoc
+export function getDataChanges(state) {
+  return state.dataChanges
 }

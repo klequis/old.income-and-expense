@@ -28,18 +28,18 @@ export default {
       return data
     }
   },
-  reports: {
-    async read(reportUrlPart) {
+  views: {
+    async read(viewUrlPart) {
       // orange('reportUrlPart', reportUrlPart)      
       try {
-        const url = `/api/reports/${reportUrlPart}`
+        const url = `/api/views/${viewUrlPart}`
         const data = await fetchJson(url, {
           method: 'GET'
         })
         // orange('data', data)
         return data
       } catch (e) {
-        redf('api.data.reports ERROR', e.message)
+        redf('api.data.views ERROR', e.message)
         console.log(e)
       }
       

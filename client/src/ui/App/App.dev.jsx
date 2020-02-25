@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // import Data from 'ui/Data'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/styles'
@@ -8,12 +8,15 @@ import Nav from 'ui/Nav'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { importDataRequest, dataReadRequest } from 'store/data/actions'
+import { rulesReadRequest } from 'store/rules/actions'
+import { getRules } from 'store/rules/selectors'
 import { getData } from 'store/data/selectors'
 
 // import AmountByCategoryReport from 'ui/AmountByCategoryReport'
 // import RawData from 'ui/RawData'
 // import Rules from 'ui/Rules'
-import ChangesByDataDocReport from 'ui/ChangesByDataDocReport'
+// import ChangesByDataDocReport from 'ui/ChangesByDataDocReport'
+import DataChanges from 'ui/DataChanges'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -37,11 +40,27 @@ const App = props => {
 
   const classes = useStyles()
 
-  const { dataReadRequest, importDataRequest /*, data*/ } = props
+  const {
+    dataReadRequest,
+    importDataRequest,
+    rulesReadRequest,
+    data,
+    rules
+  } = props
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        await rulesReadRequest()
+        await dataReadRequest(description, showOmitted)
+      } catch (e) {
+        console.log('TheError', e)
+      }
+    })()
+  }, [rulesReadRequest, dataReadRequest, description, showOmitted])
 
   const importData = async () => {
     await importDataRequest()
-    await dataReadRequest(description, showOmitted)
   }
 
   // const filterChanged = (name, value) => {
@@ -63,7 +82,7 @@ const App = props => {
   //   setOptions({ ...options, [name]: event.target.checked })
   //   filterChanged()
   // }
-
+  
   return (
     <div className={classes.devWrapper}>
       <Container maxWidth={false}>
@@ -77,7 +96,7 @@ const App = props => {
         {/* <RawData description={description} showOrigDesc={showOrigDesc} /> */}
         {/* <AmountByCategoryReport /> */}
         {/* <Rules /> */}
-        <ChangesByDataDocReport />
+        <DataChanges />
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>
@@ -86,12 +105,14 @@ const App = props => {
 
 const actions = {
   importDataRequest,
-  dataReadRequest
+  dataReadRequest,
+  rulesReadRequest
 }
 
 const mapStateToProps = state => {
   return {
-    data: getData(state)
+    data: getData(state),
+    rules: getRules(state)
   }
 }
 

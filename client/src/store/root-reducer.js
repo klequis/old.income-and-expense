@@ -4,14 +4,14 @@ import { requestsReducer } from './requests/reducers'
 import { toastReducer } from './toast/reducers'
 import { validationErrorsReducer } from './validation/reducers'
 import { userReducer } from './user/reducers'
-import { amountByCategoryReducer, changesByDataDocReducer } from './reports/reducers'
+import { amountByCategoryReducer, dataChangesReducer } from './views/reducers'
 
 import { rulesReducer } from './rules/reducers'
 
 const rootReducer = combineReducers({
   data: dataReducer,
   amountByCategory: amountByCategoryReducer,
-  changesByDataDoc: changesByDataDocReducer,
+  dataChanges: dataChangesReducer,
   requests: requestsReducer,
   rules: rulesReducer,
   toast: toastReducer,

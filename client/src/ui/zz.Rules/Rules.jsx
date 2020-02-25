@@ -3,8 +3,8 @@ import React, { useEffect, forwardRef /*, useState */ } from 'react'
 import MaterialTable from 'material-table'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { rulesReadRequest } from 'store/rules/actions'
-import { getRules } from 'store/rules/selectors'
+
+
 import Rule from './Rule'
 // import Search from '@material-ui/icons/Search'
 // import FirstPage from '@material-ui/icons/FirstPage'

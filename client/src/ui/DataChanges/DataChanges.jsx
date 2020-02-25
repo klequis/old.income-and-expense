@@ -4,11 +4,13 @@ import { makeStyles } from '@material-ui/styles'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { dataChangesReadRequest } from 'store/views/actions'
+import Rule from 'ui/Rule'
+import { getRules } from 'store/rules/selectors'
 import { getDataChanges } from 'store/views/selectors'
-import Rule from './Rule'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
+
 
 const useStyles = makeStyles({
   item: {
@@ -23,30 +25,38 @@ const useStyles = makeStyles({
   }
 })
 
-const ChangesByDataDocReport = ({ data, dataChangesReadRequest }) => {
+const DataChanges = ({ data, rules, dataChangesReadRequest }) => {
+  
   useEffect(() => {
     ;(async () => {
       try {
-        await dataChangesReadRequest('changes-by-data-doc')
+        await dataChangesReadRequest('data-changes')
       } catch (e) {
         console.log('TheError', e)
       }
     })()
   }, [dataChangesReadRequest])
 
+
+  const getRule = (ruleId) => {
+    return rules.find(r => r._id === ruleId )
+  }
+
   const classes = useStyles()
 
   const updateRule = ({ rule }) => {
     green('updateRule: rule', rule)
   }
-
+  // green('data', data)
   return (
     <div>
       {data.map(d => {
         const { rules } = d
-
+        // green('d', d)
+        // green('rules', rules)
         return (
           <Paper className={classes.item}>
+            
             <div className={classes.description}>{d._id}</div>
             <div>
               {d.orig.map(o => (
@@ -54,11 +64,9 @@ const ChangesByDataDocReport = ({ data, dataChangesReadRequest }) => {
               ))}
             </div>
             <div>
-              {rules.map(r => {
+              {rules.map(ruleId => {
                 return (
-                  <div>
-                    <Rule updateRule={updateRule} rules={r} />
-                  </div>
+                  <Rule updateRule={updateRule} rule={getRule(ruleId)} />
                 )
               })}
             </div>
@@ -75,10 +83,11 @@ const actions = {
 
 const mapStateToProps = state => {
   return {
-    data: getDataChanges(state)
+    data: getDataChanges(state),
+    rules: getRules(state)
   }
 }
 
 export default compose(connect(mapStateToProps, actions))(
-  ChangesByDataDocReport
+  DataChanges
 )

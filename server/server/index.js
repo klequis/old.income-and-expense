@@ -7,7 +7,7 @@ import config from '../config'
 import data from 'routes/data'
 import importData from 'routes/import-data'
 import categories from 'routes/categories'
-import reports from 'routes/reports'
+import views from 'routes/views'
 import rules from 'routes/rules'
 import debug from 'debug'
 
@@ -87,7 +87,7 @@ app.use((req, res, next) => {
 app.use('/api/data', data)
 app.use('/api/import', importData)
 app.use('/api/categories', categories)
-app.use('/api/reports', reports)
+app.use('/api/views', views)
 app.use('/api/rules', rules)
 
 app.get('*', function(req, res) {

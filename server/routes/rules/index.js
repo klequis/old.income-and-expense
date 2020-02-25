@@ -5,6 +5,7 @@ import updateRule from './update-rule'
 const router = express.Router()
 
 router.get('/', rules)
-router.patch('/:ruleid', updateRule)
+    
+router.patch('/ruleid/:ruleid', updateRule)
 
 export default router

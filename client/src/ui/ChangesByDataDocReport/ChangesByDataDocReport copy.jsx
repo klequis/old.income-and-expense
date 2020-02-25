@@ -3,22 +3,22 @@ import React, { useEffect /*, useState */ } from 'react'
 import MaterialTable from 'material-table'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { changesByDataDocReadRequest } from 'store/reports/actions'
-import { getChangesByDataDoc } from 'store/reports/selectors'
+import { dataChangesReadRequest } from 'store/views/actions'
+import { getDataChanges } from 'store/views/selectors'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
 
-const ChangesByDataDocReport = ({ data, changesByDataDocReadRequest }) => {
+const ChangesByDataDocReport = ({ data, dataChangesReadRequest }) => {
   useEffect(() => {
     ;(async () => {
       try {
-        await changesByDataDocReadRequest('changes-by-data-doc')
+        await dataChangesReadRequest('changes-by-data-doc')
       } catch (e) {
         console.log('TheError', e)
       }
     })()
-  }, [changesByDataDocReadRequest])
+  }, [dataChangesReadRequest])
 
   return (
     <MaterialTable
@@ -37,12 +37,12 @@ const ChangesByDataDocReport = ({ data, changesByDataDocReadRequest }) => {
 }
 
 const actions = {
-  changesByDataDocReadRequest
+  dataChangesReadRequest
 }
 
 const mapStateToProps = state => {
   return {
-    data: getChangesByDataDoc(state)
+    data: getDataChanges(state)
   }
 }
 

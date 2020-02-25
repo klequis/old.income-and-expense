@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Select from 'ui/elements/Select'
 import MenuItem from 'ui/elements/MenuItem'
 import { makeStyles } from '@material-ui/styles'
@@ -30,8 +30,12 @@ const Criterion = ({ criteria }) => {
 
   const handleChange = event => {
     const { name, value } = event.target
+    green('name', name)
+    green('value', value)
+    
     switch (name) {
       case 'criteria.field':
+        green('value', value)        
         _setField(value)
         break
       case 'criteria.operation':

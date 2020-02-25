@@ -3,8 +3,8 @@ import React, { useEffect /*, useState */ } from 'react'
 import MaterialTable from 'material-table'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { amountByCategoryReadRequest } from 'store/reports/actions'
-import { getAmountByCategory } from 'store/reports/selectors'
+import { amountByCategoryReadRequest } from 'store/views/actions'
+import { getAmountByCategory } from 'store/views/selectors'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'

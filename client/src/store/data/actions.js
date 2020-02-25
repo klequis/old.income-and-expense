@@ -37,7 +37,6 @@ export const dataAdd = newTodo => {
 
 // Read
 export const dataRead = data => {
-  purple('dataRead: data', data)
   return {
     type: DATA_READ_KEY,
     payload: data
