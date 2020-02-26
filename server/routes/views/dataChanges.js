@@ -14,6 +14,8 @@ const changesByDataDoc = wrap(async (req, res, next) => {
   const group1 = {
     $group: {
       _id: '$description',
+      cat1: { $addToSet: '$category1' },
+      cat2: { $addToSet: '$category2' },
       orig: { $push: '$origDescription' },
       rules: { $addToSet: '$rules' }
     }
@@ -27,6 +29,8 @@ const changesByDataDoc = wrap(async (req, res, next) => {
     const x = {
       _id: r._id,
       orig: r.orig,
+      category1: r.cat1,
+      category2: r.cat2,
       rules: flatRules
     }
     return x

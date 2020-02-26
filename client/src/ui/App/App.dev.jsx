@@ -13,10 +13,12 @@ import { getRules } from 'store/rules/selectors'
 import { getData } from 'store/data/selectors'
 
 // import AmountByCategoryReport from 'ui/AmountByCategoryReport'
-// import RawData from 'ui/RawData'
+import RawData from 'ui/RawData'
 // import Rules from 'ui/Rules'
 // import ChangesByDataDocReport from 'ui/ChangesByDataDocReport'
 import DataChanges from 'ui/DataChanges'
+import { withRouter } from 'react-router'
+import { Route, Switch } from 'react-router-dom'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -48,16 +50,20 @@ const App = props => {
     rules
   } = props
 
-  // useEffect(() => {
-  //   ;(async () => {
-  //     try {
-  //       await rulesReadRequest()
-  //       // await dataReadRequest(description, showOmitted)
-  //     } catch (e) {
-  //       console.log('TheError', e)
-  //     }
-  //   })()
-  // }, [rulesReadRequest, dataReadRequest, description, showOmitted])
+  const currentPath = props.location.pathname
+  // green('App: currentPath', currentPath)
+  useEffect(() => {
+    ;(async () => {
+      try {
+        if (currentPath === '/') {
+          // await rulesReadRequest()
+          await dataReadRequest(description, showOmitted)
+        }
+      } catch (e) {
+        console.log('TheError', e)
+      }
+    })()
+  }, [rulesReadRequest, dataReadRequest, description, showOmitted])
 
   const importData = async () => {
     await importDataRequest()
@@ -82,7 +88,7 @@ const App = props => {
   //   setOptions({ ...options, [name]: event.target.checked })
   //   filterChanged()
   // }
-  
+
   return (
     <div className={classes.devWrapper}>
       <Container maxWidth={false}>
@@ -90,13 +96,16 @@ const App = props => {
           importData={importData}
           // filterChanged={filterChanged}
         />
+        <switch>
+          <Route exact path="/" component={RawData} />
+          <Route exact path="/data-changes" component={DataChanges} />
+        </switch>
         {/* <Filter filterChanged={filterChanged} /> */}
         {/* <Data data={data} showOrigDesc={showOrigDesc} /> */}
         {/* <DetailPanel /> */}
         {/* <RawData description={description} showOrigDesc={showOrigDesc} /> */}
         {/* <AmountByCategoryReport /> */}
         {/* <Rules /> */}
-        <DataChanges />
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>
@@ -116,4 +125,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default compose(connect(mapStateToProps, actions))(App)
+export default compose(withRouter, connect(mapStateToProps, actions))(App)

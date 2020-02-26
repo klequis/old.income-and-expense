@@ -10,6 +10,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import theme from './theme'
 import DateFnsUtils from '@date-io/date-fns'
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 const store = configureStore()
 
@@ -38,7 +39,9 @@ const renderApp = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <App />
+            <Router>
+              <App />
+            </Router>
           </MuiPickersUtilsProvider>
         </ThemeProvider>
       </Provider>

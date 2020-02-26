@@ -9,6 +9,7 @@ import Rule from 'ui/Rule'
 import { getRules } from 'store/rules/selectors'
 import { getDataChanges } from 'store/views/selectors'
 import shortid from 'shortid'
+import { isNil } from 'ramda'
 
 // eslint-disable-next-line
 import { green, blue, red } from 'logger'
@@ -39,6 +40,7 @@ const useStyles = makeStyles({
 
 const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRequest }) => {
   let [pageIdx, setPageIdx] = useState(0)
+  let [gotoIdx, setGotoIdx] = useState(0)
   let [loading, setLoading] = useState(true)
 
   const classes = useStyles()
@@ -53,14 +55,27 @@ const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRe
         console.log('TheError', e)
       }
     })()
-  }, [dataChangesReadRequest])
+  }, [dataChangesReadRequest, rulesReadRequest])
 
   const getRule = ruleId => {
-    return rules.find(r => r._id === ruleId)
+    const r = rules.find(r => r._id === ruleId)
+    if (isNil(r)) {
+      red('DataChangesContainer.getRule ERROR', `rule ${ruleId} not found`)
+      return []
+    }
+    return r
   }
 
-  const updateRule = ({ rule }) => {
-    green('updateRule: rule', rule)
+  const handleGotoChange = e => {
+    const value = e.target.value
+    setGotoIdx(value)
+    if (value !== '') {
+     setPageIdx(value) 
+    }
+  }
+
+  const handleCreateButtonClick = e => {
+
   }
 
   if (loading) return <h1>Loading</h1>
@@ -78,11 +93,20 @@ const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRe
           Previous
         </button>
         <button onClick={() => setPageIdx(pageIdx + 1)}>Next</button>
+        <div>
+          <input type='text' value={gotoIdx} onChange={handleGotoChange} />
+        </div>
       </div>
       <Paper className={classes.paper}>
         <div className={classes.modifiedValue}>
           <b>Modified value</b>
           <div>{data[pageIdx]._id}</div>
+          {
+            data[pageIdx].category1.map(c => <div key={shortid.generate()}>{c}</div>)
+          }
+          {
+            data[pageIdx].category2.map(c => <div key={shortid.generate()}>{c}</div>)
+          }
         </div>
         <b>Original value(s)</b>
         <div>
@@ -92,11 +116,12 @@ const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRe
         </div>
         <div>
           <div className={classes.rulesTitle}>Rules</div>
+          <button onChange={handleCreateButtonClick}>New</button>
           {data[pageIdx].rules.map(ruleId => {
+            green('ruleId', ruleId)
             return (
               <Rule
                 key={shortid.generate()}
-                updateRule={updateRule}
                 rule={getRule(ruleId)}
               />
             )

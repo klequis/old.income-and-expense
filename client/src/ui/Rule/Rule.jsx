@@ -3,6 +3,10 @@ import Criteria from './Criteria'
 import Actions from './Actions'
 import { makeStyles } from '@material-ui/styles'
 import shortid from 'shortid'
+import { connect } from 'react-redux'
+import { ruleUpdateRequest } from 'store/rules/actions'
+import replaceArrayItem from 'lib'
+import { isEmpty } from 'ramda'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -32,12 +36,21 @@ const useStyles = makeStyles({
   }
 })
 
-const Rule = ({ rule, updateRule }) => {
+const Rule = ({ rule }) => {
   const classes = useStyles()
   const { _id, actions, criteria } = rule
   const key1 = shortid.generate()
   const key2 = shortid.generate()
-  // green('rule', rule)
+  green('rule', rule)
+
+  const updateRule = ({ criterion = {}, action = {} }) => {
+    if (!isEmpty(action)) {
+      green('updateRule: action', action)
+    } else {
+      green('updateRule: criterion', criterion)
+    }
+  }
+  
   return (
     // <div>hi ya</div>
     <div key={key1} className={classes.rule}>
@@ -56,7 +69,17 @@ const Rule = ({ rule, updateRule }) => {
   )
 }
 
-export default Rule
+const actions = {
+  ruleUpdateRequest
+}
+
+const mapStateToProps = state => {
+  return {
+    data: {}
+  }
+}
+
+export default connect(mapStateToProps, actions)(Rule)
 
 /*
 import React from 'react'

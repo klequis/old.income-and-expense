@@ -5,8 +5,10 @@ import shortid from 'shortid'
 // eslint-disable-next-line
 import { green, red } from 'logger'
 
-const Criteria = ({ criteria }) => {
-  return criteria.map(c => <Criterion key={shortid.generate()} criteria={c} />)
+const Criteria = ({ criteria, updateRule }) => {
+  return criteria.map(c => (
+    <Criterion key={shortid.generate()} criterion={c} updateRule={updateRule} />
+  ))
 }
 
 export default Criteria

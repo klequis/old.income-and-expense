@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Select from 'ui/elements/Select'
-import MenuItem from 'ui/elements/MenuItem'
+import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/styles'
 import { operators, dataFields } from 'global-constants'
 import TextField from 'ui/elements/TextField'

@@ -51,10 +51,7 @@ const DataChanges = ({ data, rules, dataChangesReadRequest }) => {
 
   const classes = useStyles()
 
-  const updateRule = ({ rule }) => {
-    green('updateRule: rule', rule)
-  }
-  // green('data', data)
+    // green('data', data)
   // green('pageIdx', pageIdx)
 
   if (data.length === 0) return null

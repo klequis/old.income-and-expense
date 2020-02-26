@@ -5,6 +5,7 @@ import { green, redf } from 'logger'
 
 
 const MenuItem = ({ value, children }) => {
+  green('MenuItem: value', value)
   return (
     <MuiMenuItem
       value={value}

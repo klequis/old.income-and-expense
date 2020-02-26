@@ -4,6 +4,7 @@ import { isEmpty } from 'validator'
 // eslint-disable-next-line
 import { orange, green } from 'logger'
 import { redf } from 'logger'
+import { dataReadByIdRequest } from 'store/data/actions'
 
 /*
     [description] && [true || false]
@@ -26,11 +27,41 @@ export default {
         method: 'GET'
       })
       return data
+    },
+    async rulesReadById(ruleId) {
+      const url = `api/rules/${ruleId}`
+      const data = await fetchJson(url, {
+        method: 'GET'
+      })
+      return data
+    },
+    async create(rule) {
+      const url = `api/rules`
+      const data = await fetchJson(url, {
+        method: 'POST',
+        body: JSON.stringify(rule)
+      })
+      return data
+    },
+    async delete(ruleId) {
+      const url = `api/rules/${ruleId}`
+      const data = await fetchJson(url, {
+        method: 'DELETE'
+      })
+      return data
+    },
+    async update(rule) {
+      const url = `api/rules`
+      const data = await fetchJson(url, {
+        method: 'PATCH',
+        body: JSON.stringify(rule)
+      })
+      return data
     }
   },
   views: {
     async read(viewUrlPart) {
-      // orange('reportUrlPart', reportUrlPart)      
+      // orange('reportUrlPart', reportUrlPart)
       try {
         const url = `/api/views/${viewUrlPart}`
         const data = await fetchJson(url, {
@@ -42,7 +73,6 @@ export default {
         redf('api.data.views ERROR', e.message)
         console.log(e)
       }
-      
     }
   },
   data: {

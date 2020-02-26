@@ -9,7 +9,7 @@ export const operators = {
   contains: 'contains',
   equals: 'equals',
   regex: 'regex',
-  in: '$in'
+  in: 'in'
 }
 
 export const dataFields = {
