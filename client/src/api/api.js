@@ -50,8 +50,8 @@ export default {
       })
       return data
     },
-    async update(rule) {
-      const url = `api/rules`
+    async update(_id, rule) {
+      const url = `api/rules/ruleid/${_id}`
       const data = await fetchJson(url, {
         method: 'PATCH',
         body: JSON.stringify(rule)

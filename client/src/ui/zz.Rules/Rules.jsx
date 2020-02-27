@@ -76,7 +76,7 @@ const Rules = ({ data, rulesReadRequest }) => {
     <MaterialTable
       columns={[
         
-        { title: 'Acct', field: 'acct' },
+        { title: 'Acct', field: 'acctId' },
         { title: 'ID', field: '_id', searchable: false },
         // { title: 'Description'}
         // { title: 'Description', field: 'description' }
@@ -85,7 +85,7 @@ const Rules = ({ data, rulesReadRequest }) => {
         // green('doc', doc)
         return {
           _id: doc._id,
-          acct: doc.acct,
+          acctId: doc.acctId,
           criteria: doc.criteria,
           actions: doc.actions,
           description: doc.description

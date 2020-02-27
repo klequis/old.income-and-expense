@@ -49,14 +49,17 @@ const Actions = ({ handleEditCriterionClick, editMode, updateRule }) => {
 }
 
 const Criterion = ({ criterion, updateRule }) => {
-  const { field, operation, value } = criterion
+  const { _id, field, operation, value } = criterion
+  // green('Criterion: criterion', criterion)
   const [editMode, setEditMode] = useState(false)
 
   const [values, setValues] = useState({
-    field: field,
-    operation: operation,
-    value: value
+    _id,
+    field,
+    operation,
+    value
   })
+  // green('Criterion: values', values)
 
   const handleChange = event => {
     const { name, value } = event.target
@@ -64,15 +67,21 @@ const Criterion = ({ criterion, updateRule }) => {
   }
 
   const _updateRule = () => {
-    const { field, operation, value } = values
-    updateRule({ criterion: { field, operation, value }})
+    const { _id, field, operation, value } = values
+    console.group('Criterion._updateRule')
+    green('_id', _id)
+    green('field', field)
+    green('operation', operation)
+    green('value', value)
+    console.groupEnd()
+    updateRule({ newCriterion: { _id, field, operation, value }})
   }
 
   const handleEditCriterionClick = () => setEditMode(!editMode)
 
   const classes = useStyles()
 
-  if (editMode.mode === false) {
+  if (editMode === false) {
     // green('editMode', false)
     return (
       <div className={classes.notEditMode}>

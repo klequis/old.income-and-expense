@@ -83,11 +83,16 @@ const createOmitUpdate = rule => {
   return update
 }
 
-const runRules = async () => {
-  const allRules = await find(RULES_COLLECTION_NAME, {})
-  // yellow(typeof allRules[0]._id)
-  // const rules = allRules.filter(rule => rule._id.toString() === '5e45ca2f6d8f4438b8ee5926')
-  const rules = allRules
+const runRules = async (passedInRules = []) => {
+  let rules
+  if (passedInRules.length === 0) {
+    rules = passedInRules
+  } else {
+    // yellow(typeof allRules[0]._id)
+    // const rules = allRules.filter(rule => rule._id.toString() === '5e45ca2f6d8f4438b8ee5926')
+    const allRules = await find(RULES_COLLECTION_NAME, {})
+    rules = allRules
+  }
 
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]

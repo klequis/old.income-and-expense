@@ -5,8 +5,8 @@ import { makeStyles } from '@material-ui/styles'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { ruleUpdateRequest } from 'store/rules/actions'
-import replaceArrayItem from 'lib'
-import { isEmpty } from 'ramda'
+// import replaceArrayItem from 'lib'
+import { isEmpty, insert, findIndex, propEq, remove, prop } from 'ramda'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -36,23 +36,46 @@ const useStyles = makeStyles({
   }
 })
 
-const Rule = ({ rule }) => {
+const replaceCriterion = (criteria, criterion) => {
+  const idx = findIndex(propEq('_id', prop('_id', criterion)))(criteria)
+  const r = insert(idx, criterion, remove(idx, 1, criteria))
+  // console.group('replaceCriterion')
+  // green('criteria', criteria)
+  // green('criterion', criterion)
+  // green('idx', idx)
+  // green('r', r)
+  // console.groupEnd()
+  return r
+}
+
+const Rule = ({ rule, ruleUpdateRequest }) => {
   const classes = useStyles()
   const { _id, actions, criteria } = rule
   const key1 = shortid.generate()
   const key2 = shortid.generate()
   green('rule', rule)
 
-  const updateRule = ({ criterion = {}, action = {} }) => {
-    if (!isEmpty(action)) {
-      green('updateRule: action', action)
+  const updateRule = async ({ newCriterion = {}, newAction = {} }) => {
+    if (!isEmpty(newAction)) {
+      green('updateRule: newAction', newAction)
     } else {
-      green('updateRule: criterion', criterion)
+      const { criteria } = rule
+      console.group('updateRule')
+      green('updateRule: criteria', criteria)
+      green('updateRule: newCriterion', newCriterion)
+      console.groupEnd()
+      const replacedCriteria = replaceCriterion(criteria, newCriterion)
+
+      // const mergedCriterion = mergeRight(criterion, newCriterion)
+      // green('updateRule: mergedCriterion', mergedCriterion)
+      // const newRule = mergeRight(rule, { criteria: newCriterion })
+      // green('updateRule: newRule', newRule)
+      // const r = await ruleUpdateRequest(_id, mergeRight(rule, criterion))
+      // green('r', r)
     }
   }
-  
+
   return (
-    // <div>hi ya</div>
     <div key={key1} className={classes.rule}>
       <div>
         <div className={classes.ruleId}>RuleId: {_id}</div>

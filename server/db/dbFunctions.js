@@ -49,6 +49,17 @@ export const close = async () => {
   client = undefined
 }
 
+export const findOneAndReplace = async (collection, filter, replacement) => {
+  try {
+    const { db } = await connectDB()
+    const r = await db.collection(collection).findOneAndReplace(filter, replacement)
+    green('r', r)
+    return r.ops
+  } catch (e) {
+    throw new Error(e.message)
+  }
+}
+
 /**
  *
  * @param {string} collection the name of a collection
@@ -57,8 +68,7 @@ export const close = async () => {
  * @returns {object}
  */
 export const insertMany = async (collection, data) => {
-  // TODO: Allows insertion of _id. Should it? If yes they should be
-  // converted to ObjectID
+  // TODO: Allows insertion of _id. Should it? If yes, should they be converted to ObjectID
   try {
     const { db } = await connectDB()
     const r = await db.collection(collection).insertMany(data)

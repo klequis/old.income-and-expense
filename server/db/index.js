@@ -10,6 +10,7 @@ export {
   findById,
   findOne,
   findOneAndDelete,
+  findOneAndReplace,
   findOneAndUpdate,
   insertMany,
   insertOne,
