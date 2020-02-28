@@ -86,6 +86,8 @@ const createOmitUpdate = rule => {
 const runRules = async (passedInRules = []) => {
   let rules
   if (passedInRules.length === 0) {
+    const ruleIds = rules.map(rule => rule._id)
+    green('running rules', ruleIds)
     rules = passedInRules
   } else {
     // yellow(typeof allRules[0]._id)
@@ -96,7 +98,7 @@ const runRules = async (passedInRules = []) => {
 
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
-    const { actions, criteria, acct } = rule
+    const { actions, criteria } = rule
     // yellow('acctId', acct)
     // yellow('runRules: criteria', criteria)
     // const criteriaWithAcctId = append(
