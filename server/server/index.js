@@ -14,30 +14,10 @@ import debug from 'debug'
 // eslint-disable-next-line
 import { redf, red, green } from '../logger'
 
-// debug
-// debug is not working in 'testLocal'. Maybe take this code out
-// debug.enable('testLocal')
-// console.log(2, debug.enabled('testLocal'))
 const lServer = debug('server')
 const lServerError = debug('server:ERROR')
 
 const cfg = config()
-
-// const jwt = require('express-jwt')
-// const jwksRsa = require('jwks-rsa')
-
-// If not used, see below, token check is off
-// const checkJwt = jwt({
-//   secret: jwksRsa.expressJwtSecret({
-//     cache: true,
-//     rateLimit: true,
-//     jwksRequestsPerMinute: 5,
-//     jwksUri: cfg.auth0.jwksUri
-//   }),
-//   audience: cfg.auth0.apiIdentifier,
-//   issuer: cfg.auth0.auth0Domain,
-//   algorithm: cfg.auth0.algorithm
-// })
 
 const app = express()
 
@@ -55,35 +35,11 @@ app.get('/health', async (req, res) => {
   }
 })
 
-// red('WARNING: token check is off!!')
-// app.use(checkJwt)
-
 app.use((req, res, next) => {
   res.header('Content-Type', 'application/json')
   next()
 })
 
-// '/api/v1/stories/:storyId/elements/:elementId'
-
-// http://localhost:3030/api/data/description/one/showOmitted/two
-// app.get('/api/data/description/:description/showOmitted/:showOmitted', function(
-//   req,
-//   res
-// ) {
-//   const { params } = req
-//   green('params', params)
-//   const { storyId, elementId} = params
-//   green('story', storyId)
-//   green('element', elementId)
-//   // Now we automatically get the story and element in the request object
-//   const d = { story: storyId, element: elementId }
-//   green('d', d)
-//   const json = JSON.stringify(d)
-//   green('json', json)
-//   res.send('hi')
-// })
-
-// app.use('/api/todo', todo)
 app.use('/api/data', data)
 app.use('/api/import', importData)
 app.use('/api/categories', categories)
