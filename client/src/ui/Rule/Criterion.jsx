@@ -75,6 +75,19 @@ const Criterion = ({ criterion, updateRule }) => {
     green('value', value)
     console.groupEnd()
     updateRule({ newCriterion: { _id, field, operation, value }})
+
+    // TODO: 1. make server return updated todo
+    // TODO: 2. update rules in redux
+    // TODO: 3. UI should ubpate in response to redux update
+
+    // TODO: but how about updating the records?
+    // TODO: should the query above also get the matching records
+    // TODO: will the current page be empty or go away
+    // TODO: should edit rule be in a modal and changes only applied when user click button on modal?
+
+
+
+    setEditMode(false)
   }
 
   const handleEditCriterionClick = () => setEditMode(!editMode)
