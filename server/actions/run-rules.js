@@ -11,10 +11,10 @@ const printFilter = filter => {
   console.log('// filter')
   if (hasProp('$and', filter)) {
     const a = filter.$and
-    yellow('filter', filter)
-    yellow('$and:', a)
+    // yellow('filter', filter)
+    // yellow('$and:', a)
   } else {
-    yellow('filter', filter)
+    // yellow('filter', filter)
   }
   console.log('// filter')
 }
@@ -84,7 +84,7 @@ const createOmitUpdate = rule => {
 }
 
 const runRules = async (passedInRules = []) => {
-  green('passedInRules', passedInRules)
+  // green('passedInRules', passedInRules)
   let rules
   if (passedInRules.length !== 0) {
     rules = passedInRules

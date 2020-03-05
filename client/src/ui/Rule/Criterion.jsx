@@ -7,6 +7,13 @@ import TextField from 'ui/elements/TextField'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { getData } from 'store/data/selectors'
+
+import RemoveIcon from '@material-ui/icons/Remove'
+import CancelIcon from '@material-ui/icons/Cancel'
+import DoneIcon from '@material-ui/icons/Done'
+
+import IconButton from '@material-ui/core/IconButton'
+
 // import { dataReadByCriteriaRequest } from 'store/data/actions'
 import { mergeRight } from 'ramda'
 
@@ -28,30 +35,17 @@ const useStyles = makeStyles({
     marginLeft: 35
   },
   notEditMode: {
-    display: 'flex'
+    display: 'flex',
+    alignItems: 'center'
   },
   notEditModeField: {
     marginRight: 20
   }
 })
 
-const Actions = ({ handleEditCriterionClick, editMode, updateRule }) => {
-  green('Actions: editMode', editMode)
-  const classes = useStyles()
-  return (
-    <div className={classes.actions}>
-      <button onClick={handleEditCriterionClick}>
-        {editMode ? 'Cancel' : 'Edit Criteria'}
-      </button>
-      {editMode ? <button onClick={updateRule}>Apply</button> : null}
-    </div>
-  )
-}
-
-const Criterion = ({ criterion, updateRule }) => {
+const Criterion = ({ criterion, updateCriterion, editMode }) => {
   const { _id, field, operation, value } = criterion
   // green('Criterion: criterion', criterion)
-  const [editMode, setEditMode] = useState(false)
 
   const [values, setValues] = useState({
     _id,
@@ -66,31 +60,29 @@ const Criterion = ({ criterion, updateRule }) => {
     setValues(mergeRight(values, { [name]: value }))
   }
 
-  const _updateRule = () => {
-    const { _id, field, operation, value } = values
-    console.group('Criterion._updateRule')
-    green('_id', _id)
-    green('field', field)
-    green('operation', operation)
-    green('value', value)
-    console.groupEnd()
-    updateRule({ newCriterion: { _id, field, operation, value }})
+  // const _updateRule = () => {
+  //   const { _id, field, operation, value } = values
+  //   console.group('Criterion._updateRule')
+  //   green('_id', _id)
+  //   green('field', field)
+  //   green('operation', operation)
+  //   green('value', value)
+  //   console.groupEnd()
+  //   updateRule({ newCriterion: { _id, field, operation, value }})
 
-    // TODO: 1. make server return updated todo
-    // TODO: 2. update rules in redux
-    // TODO: 3. UI should ubpate in response to redux update
+  //   // TODO: 1. make server return updated todo
+  //   // TODO: 2. update rules in redux
+  //   // TODO: 3. UI should ubpate in response to redux update
 
-    // TODO: but how about updating the records?
-    // TODO: should the query above also get the matching records
-    // TODO: will the current page be empty or go away
-    // TODO: should edit rule be in a modal and changes only applied when user click button on modal?
+  //   // TODO: but how about updating the records?
+  //   // TODO: should the query above also get the matching records
+  //   // TODO: will the current page be empty or go away
+  //   // TODO: should edit rule be in a modal and changes only applied when user click button on modal?
 
+  //   setEditMode(false)
+  // }
 
-
-    setEditMode(false)
-  }
-
-  const handleEditCriterionClick = () => setEditMode(!editMode)
+  // const handleEditCriterionClick = () => setEditMode(!editMode)
 
   const classes = useStyles()
 
@@ -101,11 +93,6 @@ const Criterion = ({ criterion, updateRule }) => {
         <div className={classes.notEditModeField}>{field}</div>
         <div className={classes.notEditModeField}>{operation}</div>
         <div className={classes.notEditModeField}>{value}</div>
-        <Actions
-          handleEditCriterionClick={handleEditCriterionClick}
-          editMode={editMode}
-          updateRule={_updateRule}
-        />
       </div>
     )
   } else {
@@ -145,11 +132,15 @@ const Criterion = ({ criterion, updateRule }) => {
           />
         </div>
         <div className={classes.actions}>
-          <Actions
-            handleEditCriterionClick={handleEditCriterionClick}
-            editMode={editMode}
-            updateRule={_updateRule}
-          />
+          <IconButton>
+            <CancelIcon />
+          </IconButton>
+          <IconButton>
+            <DoneIcon />
+          </IconButton>
+          <IconButton>
+            <RemoveIcon />
+          </IconButton>
         </div>
       </div>
     )

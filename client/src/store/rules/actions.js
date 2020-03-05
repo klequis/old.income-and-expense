@@ -56,6 +56,7 @@ export const ruleCreateRequest = createRequestThunk({
 })
 
 const ruleUpdate = data => {
+  yellow('actions.ruleUpdate: data', data)
   return {
     type: RULE_UPDATE_KEY,
     payload: data

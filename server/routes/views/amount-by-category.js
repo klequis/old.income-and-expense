@@ -56,7 +56,7 @@ const amountByCategory = wrap(async (req, res) => {
 
   const ret = await executeAggregate(DATA_COLLECTION_NAME, q)
 
-  yellow('ret.length', ret.length)
+  // yellow('ret.length', ret.length)
   res.send(ret)
 })
 

@@ -5,10 +5,9 @@ import { RULES_COLLECTION_NAME } from 'db/constants'
 // eslint-disable-next-line
 import { red, green, yellow, logRequest } from 'logger'
 
-const rules = wrap(async (req, res) => {
+const getRules = wrap(async (req, res) => {
   const f = await find(RULES_COLLECTION_NAME, {})
-
   res.send(f)
 })
 
-export default rules
+export default getRules

@@ -1,12 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Criteria from './Criteria'
 import Actions from './Actions'
 import { makeStyles } from '@material-ui/styles'
+import EditIcon from '@material-ui/icons/Edit'
+import SaveIcon from '@material-ui/icons/Save'
+import CancelIcon from '@material-ui/icons/Cancel'
+import AddIcon from '@material-ui/icons/Add'
+
+import IconButton from '@material-ui/core/IconButton'
+
 import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { ruleUpdateRequest } from 'store/rules/actions'
 // import replaceArrayItem from 'lib'
-import { mergeRight, isEmpty, insert, findIndex, propEq, remove, prop } from 'ramda'
+import {
+  mergeRight,
+  isEmpty,
+  insert,
+  findIndex,
+  propEq,
+  remove,
+  prop
+} from 'ramda'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -33,73 +48,98 @@ const useStyles = makeStyles({
     fontWeight: 'bold',
     paddingTop: 16,
     paddingBottom: 4
+  },
+  ruleTitle: {
+    display: 'flex',
+    alignItems: 'center'
   }
 })
 
-const replaceCriterion = (criteria, criterion) => {
-
-  // prop('_id', criterion): gets value of _id prop from criterion, e.g., '123'
-  // propEq('_id', prop('_id', criterion)): returns true if value of prop is { _id: '123' }
-  // findIndex(propEq(...)(criteria): returns index of { _id: '123' }
-  // where 123 is a MongoDB ObjectID
-  const idx = findIndex(propEq('_id', prop('_id', criterion)))(criteria)
-
-  // idx: position to insert at
-  // newCriterion: value to insert
-  // R.remove(idx, 1, criteria): remove criterion at position idx
-  const r = insert(idx, criterion, remove(idx, 1, criteria))
-
-  // console.group('replaceCriterion')
-  // green('criteria', criteria)
-  // green('criterion', criterion)
-  // green('idx', idx)
-  // green('r', r)
-  // console.groupEnd()
-
-  return r
-}
-
 const Rule = ({ rule, ruleUpdateRequest }) => {
-  const classes = useStyles()
   const { _id, actions, criteria } = rule
+  const [ruleId, setRuleId] = useState(_id)
+  const [ruleActions, setRuleActions] = useState(actions)
+  const [ruleCriteria, setRuleCriteria] = useState(criteria)
+  const [editMode, setEditMode] = useState(false)
+
+  const classes = useStyles()
+
   const key1 = shortid.generate()
   const key2 = shortid.generate()
   green('rule', rule)
 
-  const updateRule = async ({ newCriterion = {}, newAction = {} }) => {
-    if (!isEmpty(newAction)) {
-      green('updateRule: newAction', newAction)
-    } else {
+  // TODO: updateRule code goes into applyRule
+  // const updateRule = async ({ newCriterion = {}, newAction = {} }) => {
+  //   if (!isEmpty(newAction)) {
+  //     green('updateRule: newAction', newAction)
+  //   } else {
+  //     const { criteria } = rule
+  //     const replacedCriteria = replaceCriterion(criteria, newCriterion)
+  //     const newRule = mergeRight(rule, { criteria: replacedCriteria })
 
-      const { criteria } = rule
-      const replacedCriteria = replaceCriterion(criteria, newCriterion)
-      const newRule = mergeRight(rule, {criteria: replacedCriteria } )
+  //     console.group('updateRule')
+  //     green('criteria', criteria)
+  //     green('newCriterion', newCriterion)
+  //     green('replacedCriteria', replacedCriteria)
+  //     green('newRule', newRule)
+  //     console.groupEnd()
+  //     const r = await ruleUpdateRequest(_id, newRule)
+  //     green('r', r)
+  //   }
+  // }
 
-
-      console.group('updateRule')
-      green('criteria', criteria)
-      green('newCriterion', newCriterion)
-      green('replacedCriteria', replacedCriteria)
-      green('newRule', newRule)
-      console.groupEnd()
-      const r = await ruleUpdateRequest(_id, newRule)
-      green('r', r)
-
-    }
+  const applyRule = async () => {
+    // const newRule = mergeRight(rule, { criteria: newCriteria })
+    // and same for actions
+    // const r = await ruleUpdateRequest(_id, newRule)
+    // green('Rule.applyRule: r', r)
   }
+
+  const updateCriterion = newCriterion => {
+    const criterionId = prop('_id', newCriterion)
+    const idx = findIndex(propEq('_id', criterionId))(ruleCriteria)
+    const newCriteria = insert(idx, newCriterion, remove(idx, 1, ruleCriteria))
+    setRuleCriteria(newCriteria)
+  }
+
+  const updateAction = newAction => {
+    const actionId = prop('_id', newAction)
+    const idx = findIndex(propEq('_id', actionId))(ruleActions)
+    const newActions = insert(idx, newAction, remove(idx, 1, ruleActions))
+    setRuleActions(newActions)
+  }
+
+  const handleEditRuleClick = () => setEditMode(!editMode)
 
   return (
     <div key={key1} className={classes.rule}>
       <div>
-        <div className={classes.ruleId}>RuleId: {_id}</div>
-        <div className={classes.criteriaTitle}>Criteria</div>
-        <Criteria key={key2} criteria={criteria} updateRule={updateRule} />
+        
+        <div className={classes.ruleTitle}>
+          <div className={classes.ruleId}>RuleId: {_id}</div>
+          <IconButton onClick={handleEditRuleClick}>
+            {editMode ? <CancelIcon /> : <EditIcon />}
+          </IconButton>
+          {editMode ? (
+            <IconButton onClick={applyRule}>
+              <SaveIcon />
+            </IconButton>
+          ) : null}
+        </div>
+        <div className={classes.criteriaTitle}>Criteria <IconButton><AddIcon /></IconButton></div>
+        <Criteria
+          key={key2}
+          criteria={criteria}
+          editMode={editMode}
+          updateCriterion={updateCriterion}
+        />
         <div className={classes.actionsTitle}>Actions</div>
-        <Actions key={shortid.generate()} actions={actions} />
-      </div>
-      <div>
-        {/* <button className={classes.actionButton}>Update</button> */}
-        {/* <button className={classes.actionButton}>Delete</button> */}
+        <Actions
+          key={shortid.generate()}
+          actions={actions}
+          editMode={editMode}
+          updateAction={updateAction}
+        />
       </div>
     </div>
   )

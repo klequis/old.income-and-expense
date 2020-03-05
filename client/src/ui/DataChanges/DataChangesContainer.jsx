@@ -74,11 +74,31 @@ const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRe
     }
   }
 
-  const handleCreateButtonClick = e => {
+  if (loading) return <h1>Loading</h1>
 
+  const origValues = data[pageIdx].orig.map(o => (
+    <div key={shortid.generate()}>{o}</div>
+  ))
+
+  const groupOrigValues = (array) => {
+    const grouped = array.reduce((acc, str) => {
+      // acc.push(str)
+      const key = str
+      if (!acc[key]) {
+        acc[key] = []
+        
+      }
+      acc[key].push(str)
+      return acc
+    }, {})
+    green('obj', )
+    return Object.keys(grouped).map(key => {
+      return `${key} (${grouped[key].length})`
+    })
   }
 
-  if (loading) return <h1>Loading</h1>
+  // green('grouped', groupOrigValues(data[pageIdx].orig))
+
 
   return (
     <div>
@@ -110,13 +130,13 @@ const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRe
         </div>
         <b>Original value(s)</b>
         <div>
-          {data[pageIdx].orig.map(o => (
+          {/* {data[pageIdx].orig.map(o => (
             <div key={shortid.generate()}>{o}</div>
-          ))}
+          ))} */}
+          {groupOrigValues(data[pageIdx].orig)}
         </div>
         <div>
           <div className={classes.rulesTitle}>Rules</div>
-          <button onChange={handleCreateButtonClick}>New</button>
           {data[pageIdx].rules.map(ruleId => {
             green('ruleId', ruleId)
             return (

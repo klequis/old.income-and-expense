@@ -6,7 +6,9 @@
 
 import app from 'server'
 import request from 'supertest'
-import { green } from 'logger'
+
+// eslint-disable-next-line
+import { green, yellow, redf } from 'logger'
 
 const invalidMethodErrMsg = receivedMethod => {
   return `'method' must be one of ['post', 'delete', 'get', 'patch']. Received ${receivedMethod}`
@@ -28,59 +30,70 @@ const sendRequest = async ({
   uri = '',
   status,
   body,
-  contentType = /json/
+  contentType = /json/,
+  log = false
 }) => {
-  logSendRequest(method, uri, status, body, contentType)
+  try {
+    if (log) {
+      logSendRequest(method, uri, status, body, contentType)
+    }
 
-  const methodToLower = method.toLowerCase()
+    const methodToLower = method.toLowerCase()
 
-  const validMethod = ['post', 'delete', 'get', 'patch'].includes(methodToLower)
-  if (!validMethod) {
-    throw new Error(invalidMethodErrMsg(method))
-  }
+    const validMethod = ['post', 'delete', 'get', 'patch'].includes(
+      methodToLower
+    )
 
-  if (status === undefined || typeof status !== 'number') {
-    throw new Error(`'status' must be a number`)
-  }
+    if (!validMethod) {
+      throw new Error(invalidMethodErrMsg(method))
+    }
 
-  if (methodToLower === 'post') {
-    const r = await request(app)
-      .post(uri)
-      .set('Accept', 'application/json')
-      .send(body)
-      .expect(status)
-      .expect('Content-Type', contentType)
-    return r
-  }
+    if (status === undefined || typeof status !== 'number') {
+      throw new Error(`'status' must be a number`)
+    }
 
-  if (methodToLower === 'delete') {
-    const r = await request(app)
-      .delete(uri)
-      .set('Accept', 'application/json')
-      .send()
-      .expect(status)
-      .expect('Content-Type', /json/)
-    return r
-  }
+    if (methodToLower === 'post') {
+      const r = await request(app)
+        .post(uri)
+        .set('Accept', 'application/json')
+        .send(body)
+        .expect(status)
+        .expect('Content-Type', contentType)
+      return r
+    }
 
-  if (methodToLower === 'get') {
-    const r = await request(app)
-      .get(uri)
-      .set('Accept', 'application/json')
-      .send()
-      .expect(status)
-      .expect('Content-Type', /json/)
-    return r
-  }
+    if (methodToLower === 'delete') {
+      const r = await request(app)
+        .delete(uri)
+        .set('Accept', 'application/json')
+        .send()
+        .expect(status)
+        .expect('Content-Type', /json/)
+      return r
+    }
 
-  if (methodToLower === 'patch') {
-    const r = await request(app)
-      .patch(uri)
-      .set('Accept', 'application/json')
-      .send(body)
-      .expect(status)
-      .expect('Content-Type', /json/)
-    return r
+    if (methodToLower === 'get') {
+      const r = await request(app)
+        .get(uri)
+        .set('Accept', 'application/json')
+        .send()
+        .expect(status)
+        .expect('Content-Type', /json/)
+      return r
+    }
+
+    if (methodToLower === 'patch') {
+      const r = await request(app)
+        .patch(uri)
+        .set('Accept', 'application/json')
+        .send(body)
+        .expect(status)
+        .expect('Content-Type', /json/)
+      return r
+    }
+  } catch (e) {
+    redf('sendRequest ERROR', e.message)
+    console.log(e)
   }
 }
 

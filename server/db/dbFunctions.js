@@ -1,4 +1,4 @@
-import mongodb, { ObjectID } from 'mongodb'
+import mongodb, { ObjectID, ObjectId } from 'mongodb'
 import { hasProp } from 'lib'
 import config from 'config'
 import { mergeRight, isEmpty } from 'ramda'
@@ -14,11 +14,16 @@ const idStringToObjectID = obj => {
     case 'string':
       return ObjectID(obj)
     case 'object':
-      if (isEmpty(obj)) return obj
-      if (!hasProp('_id', obj)) return obj
+      if (isEmpty(obj)) {
+        return obj
+      }
+      if (!hasProp('_id', obj)) {
+        return obj
+      }
       const { _id: id } = obj
       const _id = typeof id === 'string' ? ObjectID(id) : id
-      return mergeRight(obj, { _id })
+      const final = mergeRight(obj, { _id })
+      return final
     default:
       // TODO: should obj be returned?
       return obj
@@ -52,7 +57,9 @@ export const close = async () => {
 export const findOneAndReplace = async (collection, filter, replacement) => {
   try {
     const { db } = await connectDB()
-    const r = await db.collection(collection).findOneAndReplace(filter, replacement)
+    const r = await db
+      .collection(collection)
+      .findOneAndReplace(filter, replacement)
     green('r', r)
     return r.ops
   } catch (e) {
@@ -130,6 +137,10 @@ export const find = async (
 ) => {
   try {
     const { db } = await connectDB()
+    // console.group('dbFunction.find')
+    // yellow('collection', collection)
+    // yellow('filter', filter)
+    // console.groupEnd()
     const ret = await db
       .collection(collection)
       .find(filter)
@@ -234,15 +245,33 @@ export const findOneAndUpdate = async (
   returnOriginal = false
 ) => {
   try {
-    const f = hasProp('_id', filter)
-      ? mergeRight(filter, { _id: idStringToObjectID(filter._id) })
-      : filter
+    // console.group('dbFunctions.findOneAndUpdate: params')
+    // yellow('collection', collection)
+    // yellow('filter', filter)
+    // yellow('update', update)
+    // yellow('returnOriginal', returnOriginal)
+    // yellow('criteria', update.$set.criteria)
+    // yellow('actions', update.$set.actions)
+    // console.groupEnd()
+
+    // const f = idStringToObjectID(filter)
+    //   ? mergeRight(filter, { _id: idStringToObjectID(filter._id) })
+    //   : filter
+    // const f = idStringToObjectID(filter)
+    // yellow('f', f)
     // if the update has the _id prop, remove it
     // const u = removeIdProp(update)
+
+    const _id = filter._id
+    const objId = new ObjectID(_id)
+    const f = { _id: objId }
+
     const { db } = await connectDB()
+
     const r = await db
       .collection(collection)
       .findOneAndUpdate(f, update, { returnOriginal: returnOriginal })
+    // yellow('r', r)
     return [r.value]
   } catch (e) {
     console.group('dbFunctions.updateMany ERROR')
@@ -272,7 +301,6 @@ export const updateMany = async (collection, filter = {}, update) => {
     console.groupEnd()
     throw new Error(e.message)
   }
-  
 }
 
 export const createIndex = async (collection, field, options = {}) => {
@@ -282,7 +310,10 @@ export const createIndex = async (collection, field, options = {}) => {
 
 export const executeAggregate = async (collection, query) => {
   const { db } = await connectDB()
-  const ret = await db.collection(collection).aggregate(query).toArray()
+  const ret = await db
+    .collection(collection)
+    .aggregate(query)
+    .toArray()
   return ret
 }
 
