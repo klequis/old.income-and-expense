@@ -4,9 +4,9 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/styles'
 import { operators, dataFields } from 'global-constants'
 import TextField from 'ui/elements/TextField'
-import { connect } from 'react-redux'
-import { compose } from 'recompose'
-import { getData } from 'store/data/selectors'
+// import { connect } from 'react-redux'
+// import { compose } from 'recompose'
+// import { getData } from 'store/data/selectors'
 
 import RemoveIcon from '@material-ui/icons/Remove'
 import CancelIcon from '@material-ui/icons/Cancel'
@@ -34,11 +34,7 @@ const useStyles = makeStyles({
     alignItems: 'flex-end',
     marginLeft: 35
   },
-  notEditMode: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  notEditModeField: {
+  viewModeField: {
     marginRight: 20
   }
 })
@@ -89,10 +85,10 @@ const Criterion = ({ criterion, updateCriterion, editMode }) => {
   if (editMode === false) {
     // green('editMode', false)
     return (
-      <div className={classes.notEditMode}>
-        <div className={classes.notEditModeField}>{field}</div>
-        <div className={classes.notEditModeField}>{operation}</div>
-        <div className={classes.notEditModeField}>{value}</div>
+      <div>
+        <span className={classes.viewModeField}>{field}</span>
+        <span className={classes.viewModeField}>{operation}</span>
+        <span className={classes.viewModeField}>{value}</span>
       </div>
     )
   } else {

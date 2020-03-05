@@ -5,8 +5,8 @@ import shortid from 'shortid'
 // eslint-disable-next-line
 import { green, red } from 'logger'
 
-const Actions = ({ actions }) => {
-  return actions.map(a => <Action key={shortid.generate()} action={a} />)
+const Actions = ({ actions, editMode }) => {
+  return actions.map(a => <Action key={shortid.generate()} action={a} editMode={editMode} />)
 }
 
 export default Actions

@@ -38,7 +38,12 @@ const useStyles = makeStyles({
   }
 })
 
-const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRequest }) => {
+const DataChangesContainer = ({
+  data,
+  rules,
+  dataChangesReadRequest,
+  rulesReadRequest
+}) => {
   let [pageIdx, setPageIdx] = useState(0)
   let [gotoIdx, setGotoIdx] = useState(0)
   let [loading, setLoading] = useState(true)
@@ -66,40 +71,51 @@ const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRe
     return r
   }
 
-  const handleGotoChange = e => {
-    const value = e.target.value
-    setGotoIdx(value)
-    if (value !== '') {
-     setPageIdx(value) 
+  const handlePageGotoChange = e => {
+    const { name, value } = e.target
+
+    const currPageIdx = Number(pageIdx)
+    // const currGotoIdx = gotoIdx
+
+    if (name === 'incrementPage') {
+      const newIdx = currPageIdx + 1
+      green('newIdx', newIdx)
+      setPageIdx(newIdx)
+      setGotoIdx(newIdx)
+    }
+    if (name === 'decrementPage') {
+      const newIdx = currPageIdx - 1
+      green('newIdx', newIdx)
+      setPageIdx(newIdx)
+      setGotoIdx(newIdx)
+    }
+    if (name === 'goto') {
+      setGotoIdx(value)
+      if (value !== '') {
+        setPageIdx(Number(value))
+      }
     }
   }
 
   if (loading) return <h1>Loading</h1>
 
-  const origValues = data[pageIdx].orig.map(o => (
-    <div key={shortid.generate()}>{o}</div>
-  ))
-
-  const groupOrigValues = (array) => {
+  const groupOrigValues = array => {
     const grouped = array.reduce((acc, str) => {
       // acc.push(str)
       const key = str
       if (!acc[key]) {
         acc[key] = []
-        
       }
       acc[key].push(str)
       return acc
     }, {})
-    green('obj', )
+    green('obj')
     return Object.keys(grouped).map(key => {
-      return `${key} (${grouped[key].length})`
+      return <div>{`${key} (${grouped[key].length})`}</div>
     })
   }
-
-  // green('grouped', groupOrigValues(data[pageIdx].orig))
-
-
+  green('pageIdx', pageIdx)
+  green('gotoIdx', gotoIdx)
   return (
     <div>
       <div className={classes.pageCount}>
@@ -108,43 +124,40 @@ const DataChangesContainer = ({ data, rules, dataChangesReadRequest, rulesReadRe
       <div className={classes.actions}>
         <button
           className={classes.actionButton}
-          onClick={() => setPageIdx(pageIdx - 1)}
+          name="decrementPage"
+          onClick={handlePageGotoChange}
         >
           Previous
         </button>
-        <button onClick={() => setPageIdx(pageIdx + 1)}>Next</button>
+        <button name="incrementPage" onClick={handlePageGotoChange}>
+          Next
+        </button>
         <div>
-          <input type='text' value={gotoIdx} onChange={handleGotoChange} />
+          <input
+            type="text"
+            name="goto"
+            value={gotoIdx}
+            onChange={handlePageGotoChange}
+          />
         </div>
       </div>
       <Paper className={classes.paper}>
         <div className={classes.modifiedValue}>
           <b>Modified value</b>
           <div>{data[pageIdx]._id}</div>
-          {
-            data[pageIdx].category1.map(c => <div key={shortid.generate()}>{c}</div>)
-          }
-          {
-            data[pageIdx].category2.map(c => <div key={shortid.generate()}>{c}</div>)
-          }
+          {data[pageIdx].category1.map(c => (
+            <div key={shortid.generate()}>{c}</div>
+          ))}
+          {data[pageIdx].category2.map(c => (
+            <div key={shortid.generate()}>{c}</div>
+          ))}
         </div>
         <b>Original value(s)</b>
-        <div>
-          {/* {data[pageIdx].orig.map(o => (
-            <div key={shortid.generate()}>{o}</div>
-          ))} */}
-          {groupOrigValues(data[pageIdx].orig)}
-        </div>
+        <div>{groupOrigValues(data[pageIdx].orig)}</div>
         <div>
           <div className={classes.rulesTitle}>Rules</div>
           {data[pageIdx].rules.map(ruleId => {
-            green('ruleId', ruleId)
-            return (
-              <Rule
-                key={shortid.generate()}
-                rule={getRule(ruleId)}
-              />
-            )
+            return <Rule key={shortid.generate()} rule={getRule(ruleId)} />
           })}
         </div>
       </Paper>

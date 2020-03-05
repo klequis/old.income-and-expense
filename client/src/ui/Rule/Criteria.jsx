@@ -9,9 +9,14 @@ import IconButton from '@material-ui/core/IconButton'
 // eslint-disable-next-line
 import { green, red } from 'logger'
 
-const Criteria = ({ criteria, updateRule }) => {
+const Criteria = ({ criteria, updateRule, editMode }) => {
   return criteria.map(c => (
-    <Criterion key={shortid.generate()} criterion={c} updateRule={updateRule} />
+    <Criterion
+      key={shortid.generate()}
+      criterion={c}
+      updateRule={updateRule}
+      editMode={editMode}
+    />
   ))
 }
 

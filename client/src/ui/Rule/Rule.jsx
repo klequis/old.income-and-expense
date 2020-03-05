@@ -114,7 +114,6 @@ const Rule = ({ rule, ruleUpdateRequest }) => {
   return (
     <div key={key1} className={classes.rule}>
       <div>
-        
         <div className={classes.ruleTitle}>
           <div className={classes.ruleId}>RuleId: {_id}</div>
           <IconButton onClick={handleEditRuleClick}>
@@ -126,14 +125,24 @@ const Rule = ({ rule, ruleUpdateRequest }) => {
             </IconButton>
           ) : null}
         </div>
-        <div className={classes.criteriaTitle}>Criteria <IconButton><AddIcon /></IconButton></div>
+        <div className={classes.criteriaTitle}>
+          Criteria{' '}
+          <IconButton>
+            <AddIcon />
+          </IconButton>
+        </div>
         <Criteria
           key={key2}
           criteria={criteria}
           editMode={editMode}
           updateCriterion={updateCriterion}
         />
-        <div className={classes.actionsTitle}>Actions</div>
+        <div className={classes.actionsTitle}>
+          Actions{' '}
+          <IconButton>
+            <AddIcon />
+          </IconButton>
+        </div>
         <Actions
           key={shortid.generate()}
           actions={actions}
