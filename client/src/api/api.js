@@ -2,9 +2,8 @@ import { fetchJson } from './api-helpers'
 import { isEmpty } from 'validator'
 
 // eslint-disable-next-line
-import { orange, green } from 'logger'
-import { redf } from 'logger'
-import { dataReadByIdRequest } from 'store/data/actions'
+import { orange, green, redf } from 'logger'
+
 
 /*
     [description] && [true || false]
@@ -35,12 +34,13 @@ export default {
       })
       return data
     },
-    async create(rule) {
-      const url = `api/rules`
+    async create() {
+      orange('rules.create')
+      const url = `api/rules/new-rule`
       const data = await fetchJson(url, {
         method: 'POST',
-        body: JSON.stringify(rule)
       })
+      orange('rules.create: data', data)
       return data
     },
     async delete(ruleId) {

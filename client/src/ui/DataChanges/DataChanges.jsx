@@ -1,136 +1,168 @@
 import React, { useEffect, useState } from 'react'
-import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/styles'
+import Button from '@material-ui/core/Button'
+
+
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { dataChangesReadRequest } from 'store/views/actions'
-import Rule from 'ui/Rule'
+import { ruleCreateRequest, rulesReadRequest, ruleNew } from 'store/rules/actions'
+
 import { getRules } from 'store/rules/selectors'
 import { getDataChanges } from 'store/views/selectors'
-import shortid from 'shortid'
+
+
+import Page from './Page'
 
 // eslint-disable-next-line
 import { green, blue, red } from 'logger'
 
 const useStyles = makeStyles({
-  item: {
-    padding: '8px 0 8px 12px',
-    margin: 4
+  
+  pageCount: {
+    marginBottom: 8
   },
-  actionOrCriteria: {
-    marginBottom: 2
+  actions: {
+    marginBottom: 8
   },
-  description: {
-    marginBottom: 4
+  actionButton: {
+    marginRight: 8
   }
 })
 
-const DataChanges = ({ data, rules, dataChangesReadRequest }) => {
-  let [pageIdx, setPageIdx] = useState(0)
-  // const [page, setPage] = useState(data[pageIdx])
+const DataChanges = ({
+  data,
+  allRules,
+  dataChangesReadRequest,
+  rulesReadRequest,
+  ruleCreateRequest
+}) => {
+  const [pageIdx, setPageIdx] = useState(0)
+  const [gotoIdx, setGotoIdx] = useState(0)
+  const [loading, setLoading] = useState(true)
+  
+  const classes = useStyles()
+
   useEffect(() => {
     ;(async () => {
       try {
         await dataChangesReadRequest('data-changes')
-        // blue('**** hello')
-        // setPage(data[pageIdx])
+        await rulesReadRequest()
+        setLoading(false)
       } catch (e) {
         console.log('TheError', e)
       }
     })()
-  }, [dataChangesReadRequest /*, setPage, pageIdx, data*/])
+  }, [dataChangesReadRequest, rulesReadRequest])
 
-  // useEffect(() => {
-  //   green('**** settingPage', pageIdx)
-  //   setPage(data[pageIdx])
-  // }, [data, pageIdx])
+  const handlePageGotoChange = (e, action) => {
+    const { value } = e.target
+    const currPageIdx = Number(pageIdx)
 
-  const getRule = ruleId => {
-    return rules.find(r => r._id === ruleId)
-  }
-
-  const classes = useStyles()
-
-    // green('data', data)
-  // green('pageIdx', pageIdx)
-
-  if (data.length === 0) return null
-  // green('data', data)
-  const page = data[pageIdx]
-  // green('page', page)
-
-  // green('data[pageIdx]', data[pageIdx])
-  const handleActionClick = event => {
-    const name = event.target.name
-    green('name', name)
-    green('pageIdx', pageIdx)
-    if (name === 'next') {
-      const idx = pageIdx++
-      green('newIdx', idx)
-      setPageIdx(idx)
-    } else {
-      const idx = pageIdx--
-      setPageIdx(idx)
+    if (action === 'incrementPage') {
+      const newIdx = currPageIdx + 1
+      // green('newIdx', newIdx)
+      setPageIdx(newIdx)
+      setGotoIdx(newIdx)
+    }
+    if (action === 'decrementPage') {
+      const newIdx = currPageIdx - 1
+      // green('newIdx', newIdx)
+      setPageIdx(newIdx)
+      setGotoIdx(newIdx)
+    }
+    if (action === 'goto') {
+      setGotoIdx(value)
+      if (value !== '') {
+        setPageIdx(Number(value))
+      }
     }
   }
+
+  
+
+  if (loading) return <h1>Loading</h1>
+
+  
+  // green('pageIdx', pageIdx)
+  // green('gotoIdx', gotoIdx)
+  green('render')
   return (
     <div>
-      <Paper className={classes.item}>
-        {/* <div className={classes.description}>{data[pageIdx]._id}</div> */}
-        <div className={classes.description}>{page._id}</div>
-        <div>
-          {/* {d.orig.map(o => (
-            <div key={shortid.generate()}>{o}</div>
-          ))} */}
-        </div>
-      </Paper>
+      <div className={classes.pageCount}>
+        page {pageIdx} of {data.length}
+      </div>
       <div className={classes.actions}>
-        <button disabled={pageIdx === 0} name="previous" onClick={() => setPageIdx(pageIdx + 1)}>
+        <Button
+          className={classes.actionButton}
+          name="decrementPage"
+          id="decrementPage"
+          onClick={(e) => handlePageGotoChange(e, 'decrementPage')}
+          size="small"
+          variant="outlined"
+        >
           Previous
-        </button>
-        <button
-          disabled={pageIdx === data.length}
-          name="next"
-          onClick={() => setPageIdx(pageIdx - 1)}
+        </Button>
+        <Button
+          name="incrementPage"
+          id="incrementPage"
+          onClick={(e) => handlePageGotoChange(e, 'incrementPage')}
+          size="small"
+          variant="outlined"
         >
           Next
-        </button>
+        </Button>
+        <div>
+          <input
+            type="text"
+            name="goto"
+            value={gotoIdx}
+            onChange={(e) => handlePageGotoChange(e, 'goto')}
+          />
+        </div>
       </div>
-      {/* {data.map(d => {
-        const { rules } = d
-        // green('d', d)
-        // green('rules', rules)
-        return (
-          <Paper key={shortid.generate()} className={classes.item}>
-            
-            <div className={classes.description}>{d._id}</div>
-            <div>
-              {d.orig.map(o => (
-                <div key={shortid.generate()}>{o}</div>
-              ))}
-            </div>
-            <div>
-              {rules.map(ruleId => {
-                return (
-                  <Rule key={shortid.generate()} updateRule={updateRule} rule={getRule(ruleId)} />
-                )
-              })}
-            </div>
-          </Paper>
-        )
-      })} */}
+      <Page page={data[pageIdx]} allRules={allRules} />
+      {/* <Paper className={classes.paper}>
+        <div className={classes.modifiedValue}>
+          <b>Modified value</b>
+          <div>{data[pageIdx]._id}</div>
+          {data[pageIdx].category1.map(c => (
+            <div key={shortid.generate()}>{c}</div>
+          ))}
+          {data[pageIdx].category2.map(c => (
+            <div key={shortid.generate()}>{c}</div>
+          ))}
+        </div>
+        <b>Original value(s)</b>
+        <div>{groupOrigValues(data[pageIdx].orig)}</div>
+        <div>
+          <div className={classes.rulesTitleWrapper}>
+            <div className={classes.rulesTitle}>Rules</div>
+            <IconButton onClick={handleNewRuleClick}><AddIcon /></IconButton>
+          </div>
+          
+          
+          {data[pageIdx].rules.map(ruleId => {
+            return ruleId === 'newRule'
+              ? <Rule key={shortid.generate()} rule={newRule} />
+              : <Rule key={shortid.generate()} rule={getRule(ruleId)} />
+          })}
+        </div>
+      </Paper> */}
     </div>
   )
 }
 
 const actions = {
-  dataChangesReadRequest
+  dataChangesReadRequest,
+  ruleCreateRequest,
+  rulesReadRequest
 }
 
 const mapStateToProps = state => {
   return {
     data: getDataChanges(state),
-    rules: getRules(state)
+    allRules: getRules(state)
   }
 }
 

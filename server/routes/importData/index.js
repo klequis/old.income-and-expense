@@ -1,5 +1,5 @@
 import express from 'express'
-import importData from './import-data'
+import importData from './importData'
 
 const router = express.Router()
 router.get('/', importData)

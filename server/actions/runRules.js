@@ -1,8 +1,7 @@
 import { find, updateMany, findOneAndUpdate } from 'db'
 import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
-import { filterBuilder } from 'actions/action-utils'
+import { filterBuilder } from 'actions/actionUtils'
 import { hasProp } from 'lib'
-import { append } from 'ramda'
 
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
@@ -35,12 +34,12 @@ const createCategorizeUpdate = (action, rule) => {
         category1: action.category1,
         category2: action.category2
       },
-      $addToSet: { rules: rule._id }
+      $addToSet: { ruleIds: rule._id }
     }
   } else {
     update = {
       $set: { category1: action.category1 },
-      $addToSet: { rules: rule._id }
+      $addToSet: { ruleIds: rule._id }
     }
     // update = { category1: action.category1, $addToSet: { rules: 'abc' } }
   }
@@ -53,7 +52,7 @@ const createReplaceAllUpdate = (action, rule) => {
     $set: {
       [action.field]: action.replaceWithValue
     },
-    $addToSet: { rules: rule._id }
+    $addToSet: { ruleIds: rule._id }
   }
   // green('createReplaceAllUpdate: update', update)
   return update
@@ -67,7 +66,7 @@ const createStripUpdate = (action, doc, rule) => {
       [action.field]: doc[action.field].replace(regex, '').trim(),
       [`orig${action.field}`]: doc[action.field]
     },
-    $addToSet: { rules: rule._id }
+    $addToSet: { ruleIds: rule._id }
   }
   // green('createStripUpdate: update', update)
   return update
@@ -76,8 +75,7 @@ const createStripUpdate = (action, doc, rule) => {
 const createOmitUpdate = rule => {
   const update = {
     $set: { omit: true },
-    // $addToSet: { rules: rule._id }
-    $addToSet: { rules: rule._id }
+    $addToSet: { ruleIds: rule._id }
   }
   // green('createUpdateOmit: update', update)
   return update

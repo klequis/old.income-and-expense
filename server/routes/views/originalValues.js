@@ -10,10 +10,10 @@ import { red, green, logRequest } from 'logger'
 
 const sortByOrig = sortBy(compose(toLower, prop('_id')))
 
-const changesByDataDoc = wrap(async (req, res, next) => {
+const originalValues = wrap(async (req, res, next) => {
   const group1 = {
     $group: {
-      _id: '$description',
+      _id: '$origDescription',
       cat1: { $addToSet: '$category1' },
       cat2: { $addToSet: '$category2' },
       orig: { $push: '$origDescription' },
@@ -41,4 +41,4 @@ const changesByDataDoc = wrap(async (req, res, next) => {
   res.send(b)
 })
 
-export default changesByDataDoc
+export default originalValues

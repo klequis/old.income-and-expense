@@ -6,6 +6,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
 import AddIcon from '@material-ui/icons/Add'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 
 import IconButton from '@material-ui/core/IconButton'
 
@@ -66,7 +67,10 @@ const Rule = ({ rule, ruleUpdateRequest }) => {
 
   const key1 = shortid.generate()
   const key2 = shortid.generate()
-  green('rule', rule)
+
+
+
+  green('Rule: rule', rule)
 
   // TODO: updateRule code goes into applyRule
   // const updateRule = async ({ newCriterion = {}, newAction = {} }) => {
@@ -120,9 +124,14 @@ const Rule = ({ rule, ruleUpdateRequest }) => {
             {editMode ? <CancelIcon /> : <EditIcon />}
           </IconButton>
           {editMode ? (
-            <IconButton onClick={applyRule}>
-              <SaveIcon />
-            </IconButton>
+            <div>
+              <IconButton onClick={applyRule}>
+                <SaveIcon />
+              </IconButton>
+              <IconButton>
+                <DeleteForeverIcon />
+              </IconButton>
+            </div>
           ) : null}
         </div>
         <div className={classes.criteriaTitle}>

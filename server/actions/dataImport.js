@@ -2,7 +2,7 @@ import { createIndex, dropCollection, find, insertMany } from 'db'
 import { ACCOUNTS_COLLECTION_NAME, DATA_COLLECTION_NAME } from 'db/constants'
 import csv from 'csvtojson'
 import { has, filter } from 'ramda'
-import runRules from './run-rules'
+import runRules from './runRules'
 
 // eslint-disable-next-line
 import { green, red, redf, yellow } from 'logger'

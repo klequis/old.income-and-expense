@@ -3,7 +3,7 @@ import { hasProp } from 'lib'
 import config from 'config'
 import { mergeRight, isEmpty } from 'ramda'
 // eslint-disable-next-line
-import { green, yellow } from 'logger'
+import { green, yellow, redf } from 'logger'
 
 const MongoClient = mongodb.MongoClient
 
@@ -112,11 +112,14 @@ export const dropCollection = async collection => {
  *
  */
 export const insertOne = async (collection, data) => {
+  yellow('collection', collection)
+  yellow('data', data)
   try {
     const { db } = await connectDB()
     const r = await db.collection(collection).insertOne(data)
     return r.ops
   } catch (e) {
+    redf('dbFunctions ERROR', e.message)
     throw new Error(e.message)
   }
 }

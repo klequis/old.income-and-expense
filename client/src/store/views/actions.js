@@ -1,4 +1,6 @@
 import {
+  ALL_DATA_BY_DESCRIPTION_READ_KEY,
+  ALL_DATA_BY_DESCRIPTION_READ_REQUEST_KEY,
   AMOUNT_BY_CATEGORY_READ_KEY,
   AMOUNT_BY_CATEGORY_READ_REQUEST_KEY,
   DATA_CHANGES_READ_KEY,
@@ -28,6 +30,13 @@ const dataChangesRead = data => {
   }
 }
 
+const allDataByDescriptionRead = data => {
+  return {
+    type: ALL_DATA_BY_DESCRIPTION_READ_KEY,
+    payload: data
+  }
+}
+
 export const amountByCategoryReadRequest = createRequestThunk({
   request: api.views.read,
   key: AMOUNT_BY_CATEGORY_READ_REQUEST_KEY,
@@ -46,6 +55,17 @@ export const dataChangesReadRequest = createRequestThunk({
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
   ]
+})
+
+export const allDataByDescriptionRequest = createRequestThunk({
+  request: api.views.read,
+  key: ALL_DATA_BY_DESCRIPTION_READ_REQUEST_KEY,
+  success: [allDataByDescriptionRead],
+  failure: [
+    e =>
+      setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+  ]
+
 })
 
 

@@ -1,7 +1,7 @@
 import wrap from 'routes/wrap'
 import { RULES_COLLECTION_NAME } from 'db/constants'
 import { findOneAndUpdate } from 'db'
-import runRules from 'actions/run-rules'
+import runRules from 'actions/runRules'
 import { toString } from 'lib'
 
 // eslint-disable-next-line

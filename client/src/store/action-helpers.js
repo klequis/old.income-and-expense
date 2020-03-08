@@ -45,6 +45,7 @@ export const createRequestThunk = ({
       return failure.map(async actionCreator => {
         // pink('failure.actionCreator', actionCreator)
         red('action.helpers.createRequestThunk Error', e.message)
+        console.log(e)
         dispatch(requestFailed(e, requestKey))
         await dispatch(actionCreator(e))
       })

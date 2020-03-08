@@ -1,4 +1,4 @@
-import { RULES_READ_KEY, RULE_CREATE_KEY, RULE_UPDATE_KEY } from './constants'
+import { RULES_READ_KEY, RULE_CREATE_KEY, RULE_UPDATE_KEY, RULE_NEW_KEY } from './constants'
 import { findIndex, propEq, insert, remove } from 'ramda'
 
 // eslint-disable-next-line
@@ -25,6 +25,15 @@ export function rulesReducer(state = [], { type, payload }) {
       const a = replaceRule(payload, state)
       blue('a', a)
       return a
+    default:
+      return state
+  }
+}
+
+export const ruleNewReducer = (state = [], { type, payload }) => {
+  switch (type) {
+    case RULE_NEW_KEY:
+      return payload
     default:
       return state
   }

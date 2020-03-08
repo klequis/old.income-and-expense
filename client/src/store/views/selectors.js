@@ -5,3 +5,7 @@ export function getAmountByCategory(state) {
 export function getDataChanges(state) {
   return state.dataChanges
 }
+
+export function getAllDataByDescription(state) {
+  return state.allDataByDescription
+}

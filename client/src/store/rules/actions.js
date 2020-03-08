@@ -6,7 +6,8 @@ import {
   RULE_READ_BY_ID_REQUEST_KEY,
   RULES_READ_REQUEST_KEY,
   RULE_UPDATE_REQUEST_KEY,
-  RULE_UPDATE_KEY
+  RULE_UPDATE_KEY,
+  RULE_NEW_KEY
 } from './constants'
 import { setToast } from 'store/toast/actions'
 import { createRequestThunk } from '../action-helpers'
@@ -15,6 +16,14 @@ import { TOAST_WARN } from 'global-constants'
 
 // eslint-disable-next-line
 import { yellow } from 'logger'
+
+
+export const ruleNew = newRule => {
+  return {
+    type: RULE_NEW_KEY,
+    payload: newRule
+  }
+}
 
 export const ruleCreate = newRule => {
   return {
@@ -40,21 +49,6 @@ export const ruleReadByIdRequest = createRequestThunk({
   ]
 })
 
-export const ruleCreateRequest = createRequestThunk({
-  request: api.rules.create,
-  key: RULE_CREATE_REQUEST_KEY,
-  // a successful create will always return [rule]
-  success: [rule => rulesReadRequest(rule[0].userId)],
-  failure: [
-    e =>
-      setToast({
-        error: e,
-        message: 'Some fields need attention',
-        level: TOAST_WARN
-      })
-  ]
-})
-
 const ruleUpdate = data => {
   yellow('actions.ruleUpdate: data', data)
   return {
@@ -70,6 +64,21 @@ export const rulesReadRequest = createRequestThunk({
   failure: [
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+  ]
+})
+
+export const ruleCreateRequest = createRequestThunk({
+  request: api.rules.create,
+  key: RULE_CREATE_REQUEST_KEY,
+  // a successful create will always return [rule]
+  success: [(data) => rulesReadRequest(data)],
+  failure: [
+    e =>
+      setToast({
+        error: e,
+        message: 'Some fields need attention',
+        level: TOAST_WARN
+      })
   ]
 })
 

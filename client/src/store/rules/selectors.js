@@ -5,3 +5,7 @@ export function getRules(state) {
 export const getRule = (state, _id) => {
   return state.rules.find(r => r._id === _id )
 }
+
+export const getNewRule = (state) => {
+  return state.newRule
+}

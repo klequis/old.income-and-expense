@@ -6,7 +6,7 @@ import {
   ACCOUNTS_COLLECTION_NAME
 } from 'db/constants'
 import { mergeRight, find } from 'ramda'
-import runRules from 'actions/run-rules'
+import runRules from 'actions/runRules'
 // eslint-disable-next-line
 import { green, greenf, redf, yellow } from 'logger'
 
