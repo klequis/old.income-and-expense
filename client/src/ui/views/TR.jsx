@@ -33,13 +33,12 @@ const TR = ({ doc }) => {
   // green('doc', doc)
 
   const handleRowClick = () => {
-    green('handleRowClick')
+    // green('handleRowClick')
     setShowRules(!showRules)
   }
-  
 
   const handleAddRuleClick = () => {
-    green('handleAddRuleClick')
+    // green('handleAddRuleClick')
     setRowRuleIds(append(viewModes.modeNew, rowRuleIds))
   }
 
@@ -48,14 +47,26 @@ const TR = ({ doc }) => {
       return null
     }
     if (rowRuleIds.length === 0) {
-      return <tr><td><button onClick={handleAddRuleClick}>Add Rule</button></td></tr> 
+      return (
+        <tr>
+          <td>
+            <button onClick={handleAddRuleClick}>Add Rule</button>
+          </td>
+        </tr>
+      )
     }
-    return rowRuleIds.map(id => <tr><td><Rule ruleId={id} /></td></tr>)
+    return rowRuleIds.map(id => (
+      <tr key={id}>
+        <td>
+          <Rule ruleId={id} />
+        </td>
+      </tr>
+    ))
   }
   if (rowRuleIds.length > 0) {
-    green(`${doc._id}.rowRuleIds`, rowRuleIds)
+    // green(`${doc._id}.rowRuleIds`, rowRuleIds)
   }
-  
+
   return (
     <>
       <tr className={classes.tr} onClick={handleRowClick}>

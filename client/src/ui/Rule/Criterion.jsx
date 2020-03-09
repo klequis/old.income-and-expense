@@ -38,10 +38,16 @@ const useStyles = makeStyles({
   }
 })
 
-const Criterion = ({ criterion, updateCriterion, viewMode }) => {
-  green('Criterion: criterion', criterion)
+const Criterion = ({ criterion, updateCriterion }) => {
+  // green('Criterion: criterion', criterion)
+  green('Criterion - new stuff')
+  // green('viewMode before', _viewMode)
   const { _id, field, operation, value } = criterion
-  const [_viewMode, _setViewMode] = useState(viewMode)
+  const [_viewMode, _setViewMode] = useState(viewModes.modeView)
+  green('viewMode after', _viewMode)
+
+
+  // TODO: you need useEffect to set use of viewMode on initial render.
 
   const [values, setValues] = useState({
     _id,

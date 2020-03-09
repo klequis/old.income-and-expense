@@ -7,13 +7,13 @@ import SaveIcon from '@material-ui/icons/Save'
 import CancelIcon from '@material-ui/icons/Cancel'
 import AddIcon from '@material-ui/icons/Add'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
-import DoneIcon from '@material-ui/icons/Done'
 import IconButton from '@material-ui/core/IconButton'
 
 import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { ruleUpdateRequest, ruleCreate } from 'store/rules/actions'
 import { getRuleById } from 'store/rules/selectors'
+import { ObjectID } from 'mongodb'
 // import replaceArrayItem from 'lib'
 import {
   append,
@@ -44,11 +44,6 @@ const useStyles = makeStyles({
   actionButton: {
     marginRight: 30
   },
-  criteriaTitle: {
-    fontWeight: 'bold',
-    paddingTop: 8,
-    paddingBottom: 4
-  },
   actionsTitle: {
     fontWeight: 'bold',
     paddingTop: 16,
@@ -60,100 +55,88 @@ const useStyles = makeStyles({
   }
 })
 
-// ruleId is sent from parent
-// rule comes from Redux state
-// if no rule with ruleId is found in state, rule is set to a new rule
-const Rule = ({
-  ruleId, // only used to get rule from Redux state
-  ruleUpdateRequest,
-  rule = { _id: 'newRule', criteria: [], actions: [] }
-}) => {
-  green('Rule.rule', rule)
+/**
+ *
+ * @param {string} ruleId -  a mongoDB ObjectID. Only used to get rule from Redux state
+ * @param {function} ruleUpdateRequest - a Redux action
+ * @param {object} rule - from Redux { _id, criteria[], actions[]}
+ */
+
+const Rule = ({ ruleId, ruleUpdateRequest, rule }) => {
   const { actions, criteria } = rule
-  // const [ruleId, setRuleId] = useState(_id)
-  const [ruleActions, setRuleActions] = useState(actions)
-  const [ruleCriteria, setRuleCriteria] = useState(criteria)
-  const [editMode, setEditMode] = useState(
+  const [_actions, _setActions] = useState(actions)
+  const [_criteria, _setCriteria] = useState(criteria)
+  const [_viewMode, _setViewMode] = useState(
     ruleId === viewModes.modeNew ? viewModes.modeNew : viewModes.modeView
   )
 
-  green('Rule.editMode', editMode)
-  const classes = useStyles()
+  const _classes = useStyles()
 
-  // TODO: updateRule code goes into applyRule - not used here
-  // const updateRule = async ({ newCriterion = {}, newAction = {} }) => {
-  //   if (!isEmpty(newAction)) {
-  //     green('updateRule: newAction', newAction)
-  //   } else {
-  //     const { criteria } = rule
-  //     const replacedCriteria = replaceCriterion(criteria, newCriterion)
-  //     const newRule = mergeRight(rule, { criteria: replacedCriteria })
-
-  //     console.group('updateRule')
-  //     green('criteria', criteria)
-  //     green('newCriterion', newCriterion)
-  //     green('replacedCriteria', replacedCriteria)
-  //     green('newRule', newRule)
-  //     console.groupEnd()
-  //     const r = await ruleUpdateRequest(_id, newRule)
-  //     green('r', r)
-  //   }
-  // }
-
-  const saveRule = async () => {
-    const newRule = mergeRight(rule, {
-      criteria: ruleCriteria,
-      actions: ruleActions
-    })
-    const r = await ruleUpdateRequest(ruleId, newRule)
-    green('Rule.saveRule: r', r)
-  }
-
-  const updateCriterion = newCriterion => {
-    green('newCriterion', newCriterion)
-    const criterionId = prop('_id', newCriterion)
-    const idx = findIndex(propEq('_id', criterionId))(ruleCriteria)
-    const newCriteria = insert(idx, newCriterion, remove(idx, 1, ruleCriteria))
-    setRuleCriteria(newCriteria)
-  }
-
-  const addNewCriterion = () => {
-    const newCriterion = {
-      _id: 'newCriterion',
+  const _newCriterion = () => {
+    
+    // TODO
+    const c = {
+      _id: ObjectID.generate(),
       field: '',
       operation: '',
       value: ''
     }
-    setRuleCriteria(append(newCriterion, ruleCriteria))
+    _setCriteria(append(c, _criteria))
   }
 
-  const updateAction = newAction => {
+  const _newAction = () => {
+    // TODO
+  }
+
+  const _updateCriteria = criterion => {
+    const criterionId = prop('_id', criterion)
+    const idx = findIndex(propEq('_id', criterionId))(_criteria)
+    if (_criteria.length === 0 || idx === -1) {
+      _setCriteria(append(criterion, _criteria))
+    } else {
+      const newCriteria = insert(idx, criterion, remove(idx, 1, _criteria))
+      _setCriteria(newCriteria)
+    }
+  }
+
+  const _updateActions = newAction => {
+    // TODO: logic here should be similar to updateCriterion
     const actionId = prop('_id', newAction)
-    const idx = findIndex(propEq('_id', actionId))(ruleActions)
-    const newActions = insert(idx, newAction, remove(idx, 1, ruleActions))
-    setRuleActions(newActions)
+    const idx = findIndex(propEq('_id', actionId))(_actions)
+    const newActions = insert(idx, newAction, remove(idx, 1, _actions))
+    _setActions(newActions)
   }
 
-  const handleEditRuleClick = () => {
-    if (editMode === viewModes.modeNew) {
-      return
+  const _handleSaveClick = async () => {
+    const newRule = mergeRight(rule, {
+      criteria: _criteria,
+      actions: _actions
+    })
+    const r = await ruleUpdateRequest(ruleId, newRule)
+  }
+
+  const _handleCancelClick = () => {
+    // TODO
+  }
+
+  const _handleEditclick = () => {
+    if (_viewMode === viewModes.modeNew) {
+      _setViewMode(viewModes.modeNew)
     }
-    if (editMode === viewModes.modeView) {
-      setEditMode(viewModes.modeEdit)
+    if (_viewMode === viewModes.modeView) {
+      _setViewMode(viewModes.modeEdit)
     }
-    if (editMode === viewModes.modeEdit) {
-      setEditMode(viewModes.modeView)
+    if (_viewMode === viewModes.modeEdit) {
+      _setViewMode(viewModes.modeView)
     }
   }
 
-  const handleAddCriterionClick = () => {
-    addNewCriterion()
+  const _handleDeleteClick = () => {
+    // TODO
   }
-
-  green('ruleCriteria', ruleCriteria)
 
   const SaveButton = () => (
-    <IconButton onClick={saveRule}>
+    <IconButton onClick={_handleSaveClick}>
       <SaveIcon />
     </IconButton>
   )
@@ -177,10 +160,7 @@ const Rule = ({
   )
 
   const RuleActionButtons = () => {
-    green('editMode', editMode)
-    // modes: view, edit, new
-    // buttons: save, cancel, delete, edit
-    if (editMode === viewModes.modeEdit) {
+    if (_viewMode === viewModes.modeEdit) {
       return (
         <>
           <SaveButton />
@@ -189,7 +169,7 @@ const Rule = ({
         </>
       )
     }
-    if (editMode === viewModes.modeNew) {
+    if (_viewMode === viewModes.modeNew) {
       return (
         <>
           <SaveButton />
@@ -201,25 +181,20 @@ const Rule = ({
   }
 
   return (
-    <div key={ruleId} className={classes.rule}>
+    <div key={ruleId} className={_classes.rule}>
       <div>
-        <div className={classes.ruleTitle}>
-          <div className={classes.ruleId}>RuleId: {ruleId}</div>
+        <div className={_classes.ruleTitle}>
+          <div className={_classes.ruleId}>RuleId: {ruleId}</div>
           <RuleActionButtons />
         </div>
-        <div className={classes.criteriaTitle}>
-          Criteria{' '}
-          <IconButton onClick={handleAddCriterionClick}>
-            <AddIcon />
-          </IconButton>
-        </div>
+
         <Criteria
           key={shortid.generate()}
-          criteria={ruleCriteria}
-          editMode={editMode === viewModes.modeEdit}
-          updateCriterion={updateCriterion}
+          criteria={_criteria}
+          viewMode={_viewMode === viewModes.modeEdit}
+          updateCriterion={_updateCriteria}
         />
-        <div className={classes.actionsTitle}>
+        <div className={_classes.actionsTitle}>
           Actions{' '}
           <IconButton>
             <AddIcon />
@@ -228,8 +203,8 @@ const Rule = ({
         <Actions
           key={shortid.generate()}
           actions={actions}
-          editMode={editMode === viewModes.modeEdit}
-          updateAction={updateAction}
+          editMode={_viewMode === viewModes.modeEdit}
+          updateAction={_updateActions}
         />
       </div>
     </div>
@@ -241,9 +216,9 @@ const actions = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  green('ownProps', ownProps)
   // 'rule' is a MongoDB ObjectID as string
   const { rule } = ownProps
+
   return {
     // if the rule is not found return undefined so that the default value for rule will be used above
     rule: getRuleById(state, rule) || undefined
@@ -251,3 +226,23 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 export default connect(mapStateToProps, actions)(Rule)
+
+// TODO: updateRule code goes into applyRule - not used here
+// const updateRule = async ({ newCriterion = {}, newAction = {} }) => {
+//   if (!isEmpty(newAction)) {
+//     green('updateRule: newAction', newAction)
+//   } else {
+//     const { criteria } = rule
+//     const replacedCriteria = replaceCriterion(criteria, newCriterion)
+//     const newRule = mergeRight(rule, { criteria: replacedCriteria })
+
+//     console.group('updateRule')
+//     green('criteria', criteria)
+//     green('newCriterion', newCriterion)
+//     green('replacedCriteria', replacedCriteria)
+//     green('newRule', newRule)
+//     console.groupEnd()
+//     const r = await ruleUpdateRequest(_id, newRule)
+//     green('r', r)
+//   }
+// }
