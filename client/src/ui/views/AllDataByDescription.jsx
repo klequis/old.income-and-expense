@@ -3,56 +3,55 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { getAllDataByDescription } from 'store/views/selectors'
 import { allDataByDescriptionRequest } from 'store/views/actions'
-import TD from './TD'
-import { format } from 'date-fns'
+import { rulesReadRequest } from 'store/rules/actions'
+import TR from './TR'
+import { makeStyles } from '@material-ui/styles'
 
-const AllDataByDescription = ({ allDataByDescriptionRequest, data }) => {
+// eslint-disable-next-line
+import { green } from 'logger'
+
+const useStyles = makeStyles({
+  tr: {
+    backgroundColor: '#3a3a3a'
+  }
+})
+
+const AllDataByDescription = ({
+  allDataByDescriptionRequest,
+  rulesReadRequest,
+  data
+}) => {
   useEffect(() => {
     ;(async () => {
       try {
+        await rulesReadRequest()
         await allDataByDescriptionRequest('all-data-by-description')
       } catch (e) {
         console.log('TheError', e)
       }
     })()
-  }, [allDataByDescriptionRequest])
+  }, [allDataByDescriptionRequest, rulesReadRequest])
+
+  const classes = useStyles()
 
   return (
     <table>
       <thead>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Credit</th>
-        <th>Debit</th>
-        <th>Category 1</th>
-        <th>Categoty 2</th>
-        <th>Type</th>
-        <th>Omit</th>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Credit</th>
+          <th>Debit</th>
+          <th>Category 1</th>
+          <th>Categoty 2</th>
+          <th>Type</th>
+          <th>Omit</th>
+        </tr>
       </thead>
       <tbody>
         {data.map(doc => {
-          const {
-            date,
-            description,
-            credit,
-            debit,
-            category1,
-            category2,
-            type,
-            omit
-          } = doc
-          return (
-            <tr>
-              <TD align='left'>{format(new Date(doc.date), 'MM/dd/yyyy')}</TD>
-              <TD align='left'>{description}</TD>
-              <TD>{credit}</TD>
-              <TD>{debit}</TD>
-              <TD>{category1}</TD>
-              <TD>{category2}</TD>
-              <TD>{type}</TD>
-              <TD>{omit}</TD>
-            </tr>
-          )
+          const { _id } = doc
+          return <TR key={_id} doc={doc} />
         })}
       </tbody>
     </table>
@@ -60,7 +59,8 @@ const AllDataByDescription = ({ allDataByDescriptionRequest, data }) => {
 }
 
 const actions = {
-  allDataByDescriptionRequest
+  allDataByDescriptionRequest,
+  rulesReadRequest
 }
 
 const mapStateToProps = state => {

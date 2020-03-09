@@ -11,11 +11,10 @@ import TextField from 'ui/elements/TextField'
 import RemoveIcon from '@material-ui/icons/Remove'
 import CancelIcon from '@material-ui/icons/Cancel'
 import DoneIcon from '@material-ui/icons/Done'
-
 import IconButton from '@material-ui/core/IconButton'
-
-// import { dataReadByCriteriaRequest } from 'store/data/actions'
 import { mergeRight } from 'ramda'
+import { viewModes } from 'global-constants'
+
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -39,9 +38,10 @@ const useStyles = makeStyles({
   }
 })
 
-const Criterion = ({ criterion, updateCriterion, editMode }) => {
+const Criterion = ({ criterion, updateCriterion, viewMode }) => {
+  green('Criterion: criterion', criterion)
   const { _id, field, operation, value } = criterion
-  // green('Criterion: criterion', criterion)
+  const [_viewMode, _setViewMode] = useState(viewMode)
 
   const [values, setValues] = useState({
     _id,
@@ -51,39 +51,42 @@ const Criterion = ({ criterion, updateCriterion, editMode }) => {
   })
   // green('Criterion: values', values)
 
+  const DoneButton = () => (
+    <IconButton onClick={handleDoneClick}>
+      <DoneIcon />
+    </IconButton>
+  )
+
+  const CancelButton = () => (
+    <IconButton>
+      <CancelIcon />
+    </IconButton>
+  )
+
+  const RemoveButton = () => (
+    <IconButton>
+      <RemoveIcon />
+    </IconButton>
+  )
+  
   const handleChange = event => {
     const { name, value } = event.target
     setValues(mergeRight(values, { [name]: value }))
   }
 
-  // const _updateRule = () => {
-  //   const { _id, field, operation, value } = values
-  //   console.group('Criterion._updateRule')
-  //   green('_id', _id)
-  //   green('field', field)
-  //   green('operation', operation)
-  //   green('value', value)
-  //   console.groupEnd()
-  //   updateRule({ newCriterion: { _id, field, operation, value }})
-
-  //   // TODO: 1. make server return updated todo
-  //   // TODO: 2. update rules in redux
-  //   // TODO: 3. UI should ubpate in response to redux update
-
-  //   // TODO: but how about updating the records?
-  //   // TODO: should the query above also get the matching records
-  //   // TODO: will the current page be empty or go away
-  //   // TODO: should edit rule be in a modal and changes only applied when user click button on modal?
-
-  //   setEditMode(false)
-  // }
-
-  // const handleEditCriterionClick = () => setEditMode(!editMode)
+  const handleDoneClick = () => {
+    green('handleDoneClick: values', values)
+    green('viewModes.modeView', viewModes.modeView)
+    // _setViewMode(viewModes.modeView)
+    _setViewMode('modeView')
+    updateCriterion(values)
+  }
 
   const classes = useStyles()
 
-  if (editMode === false) {
-    // green('editMode', false)
+  green('Criterion: _viewMode', _viewMode)
+
+  if (_viewMode === viewModes.modeView) {
     return (
       <div>
         <span className={classes.viewModeField}>{field}</span>
@@ -92,7 +95,6 @@ const Criterion = ({ criterion, updateCriterion, editMode }) => {
       </div>
     )
   } else {
-    // green('editMode', true)
     return (
       <div className={classes.wrapper}>
         <div /*className={classes.fields}*/>
@@ -128,15 +130,9 @@ const Criterion = ({ criterion, updateCriterion, editMode }) => {
           />
         </div>
         <div className={classes.actions}>
-          <IconButton>
-            <CancelIcon />
-          </IconButton>
-          <IconButton>
-            <DoneIcon />
-          </IconButton>
-          <IconButton>
-            <RemoveIcon />
-          </IconButton>
+          <DoneButton onClick={handleDoneClick} />
+          <CancelButton />
+          <RemoveButton />
         </div>
       </div>
     )

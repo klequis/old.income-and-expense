@@ -5,16 +5,19 @@ import shortid from 'shortid'
 // eslint-disable-next-line
 import { green, red } from 'logger'
 
-const Criteria = ({ criteria, updateRule, editMode }) => {
-  green('Criteria: criteria')
-  return criteria.map(c => (
-    <Criterion
-      key={shortid.generate()}
-      criterion={c}
-      updateRule={updateRule}
-      editMode={editMode}
-    />
-  ))
+const Criteria = ({ criteria, updateRule, updateCriterion, editMode }) => {
+  return criteria.map(c => {
+    const { _id } = c
+    return (
+      <Criterion
+        key={_id}
+        criterion={c}
+        updateRule={updateRule}
+        updateCriterion={updateCriterion}
+        editMode={_id === 'newCriterion' ? true : editMode}
+      />
+    )
+  })
 }
 
 export default Criteria

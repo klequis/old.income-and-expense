@@ -7,7 +7,11 @@ import { green } from 'logger'
 
 const useStyles = makeStyles({
   td: {
-    paddingRight: 5
+    // paddingRight: 10,
+    // paddingTop: 5,
+    // paddingBottom: 5,
+    padding: '5px',
+    maxWidth: 500
   },
   right: {
     textAlign: 'right'
@@ -19,13 +23,13 @@ const useStyles = makeStyles({
 
 const TD = ({ align, children }) => {
   // green('data', data)
-  green('align', align)
+  // green('align', align)
   const classes = useStyles()
-  const modClasses = classNames({
+  const modClasses = classNames([classes.td], {
     [classes.right]: (align === 'right'),
     [classes.left]: (align === 'left')
   })
-  green('modClasses', modClasses)
+  // green('modClasses', modClasses)
 
   return <td className={modClasses}>{children}</td>
 }

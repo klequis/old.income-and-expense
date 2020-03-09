@@ -23,3 +23,9 @@ export const actions = {
   replaceAll: 'replaceAll',
   categorize: 'categorize'
 }
+
+export const viewModes = {
+  modeView: 'modeView',
+  modeEdit: 'modeEdit',
+  modeNew: 'modeNew'
+}

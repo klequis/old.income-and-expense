@@ -58,7 +58,7 @@ const App = props => {
     ;(async () => {
       try {
         if (currentPath === '/') {
-          // await rulesReadRequest()
+          await rulesReadRequest()
           await dataReadRequest(description, showOmitted)
         }
       } catch (e) {
