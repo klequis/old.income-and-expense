@@ -6,6 +6,9 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import IconButton from '@material-ui/core/IconButton'
 import SaveIcon from '@material-ui/icons/Save'
 
+// eslint-disable-next-line
+import { green, red } from 'logger'
+
 export const buttonTypes = {
   add: 'addButton',
   cancel: 'cancelButton',
@@ -14,7 +17,8 @@ export const buttonTypes = {
   save: 'saveButton'
 }
 
-const Icon = buttonType => {
+const Icon = ({buttonType}) => {
+  
   switch (buttonType) {
     case buttonTypes.add:
       return <AddIcon />
@@ -33,10 +37,10 @@ const Icon = buttonType => {
   }
 }
 
-const ActionButton = (buttonType, onClickFn) => {
+const ActionButton = ({ buttonType, onClick }) => {
   return (
-    <IconButton onClick={onClickFn}>
-      <Icon type={buttonType} />
+    <IconButton onClick={onClick}>
+      <Icon buttonType={buttonType} />
     </IconButton>
   )
 }

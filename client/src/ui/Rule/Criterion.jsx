@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes, { string } from 'prop-types'
 import Select from 'ui/elements/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/styles'
@@ -12,9 +13,8 @@ import RemoveIcon from '@material-ui/icons/Remove'
 import CancelIcon from '@material-ui/icons/Cancel'
 import DoneIcon from '@material-ui/icons/Done'
 import IconButton from '@material-ui/core/IconButton'
-import { mergeRight } from 'ramda'
+import { mergeRight, startsWith } from 'ramda'
 import { viewModes } from 'global-constants'
-
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -38,14 +38,22 @@ const useStyles = makeStyles({
   }
 })
 
-const Criterion = ({ criterion, updateCriterion }) => {
-  // green('Criterion: criterion', criterion)
-  green('Criterion - new stuff')
+const Criterion = ({ criterion, updateCriteria }) => {
+  console.group('Criterion')
+  green('criterion', criterion)
+  green('updateCriteria', updateCriteria)
+  console.groupEnd()
+  
   // green('viewMode before', _viewMode)
   const { _id, field, operation, value } = criterion
-  const [_viewMode, _setViewMode] = useState(viewModes.modeView)
+  // const [_viewMode, _setViewMode] = useState(viewModes.modeView)
+  const newMode = startsWith('tmp_', _id)
+  green('newMode', newMode)
+  const [_viewMode, _setViewMode] = useState(newMode ? viewModes.modeNew : viewModes.modeView)
+  // _id =>
+  //   startsWith('tmp_', _id) ? viewModes.modeNew : viewModes.modeView
+  
   green('viewMode after', _viewMode)
-
 
   // TODO: you need useEffect to set use of viewMode on initial render.
 
@@ -74,7 +82,7 @@ const Criterion = ({ criterion, updateCriterion }) => {
       <RemoveIcon />
     </IconButton>
   )
-  
+
   const handleChange = event => {
     const { name, value } = event.target
     setValues(mergeRight(values, { [name]: value }))
@@ -85,7 +93,7 @@ const Criterion = ({ criterion, updateCriterion }) => {
     green('viewModes.modeView', viewModes.modeView)
     // _setViewMode(viewModes.modeView)
     _setViewMode('modeView')
-    updateCriterion(values)
+    updateCriteria(values)
   }
 
   const classes = useStyles()
@@ -93,6 +101,7 @@ const Criterion = ({ criterion, updateCriterion }) => {
   green('Criterion: _viewMode', _viewMode)
 
   if (_viewMode === viewModes.modeView) {
+    green('Criterion - view mode')
     return (
       <div>
         <span className={classes.viewModeField}>{field}</span>
@@ -101,6 +110,7 @@ const Criterion = ({ criterion, updateCriterion }) => {
       </div>
     )
   } else {
+    green('Criterion - edit mode')
     return (
       <div className={classes.wrapper}>
         <div /*className={classes.fields}*/>
@@ -157,3 +167,13 @@ const Criterion = ({ criterion, updateCriterion }) => {
 
 // export default compose(connect(mapStateToProps, actions))(Criterion)
 export default Criterion
+
+Criterion.propTypes = {
+  criterion: PropTypes.shape({
+    _id: string.isRequired,
+    field: string.isRequired,
+    operation: string.isRequired,
+    value: string.isRequired
+  }),
+  updateCriteria: PropTypes.func.isRequired
+}

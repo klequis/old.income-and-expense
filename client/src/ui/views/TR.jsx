@@ -7,11 +7,11 @@ import TD from './TD'
 import { format } from 'date-fns'
 import Rule from 'ui/Rule'
 import { append, has } from 'ramda'
-import { viewModes } from 'global-constants'
+import shortid from 'shortid'
 
 // eslint-disable-next-line
-import { green } from 'logger'
-import shortid from 'shortid'
+import { green, red } from 'logger'
+
 
 const useStyles = makeStyles({
   tr: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   }
 })
 
-const TR = ({ doc, newRule }) => {
+const TR = ({ doc, newRule, ruleTmpAdd, ruleTmpRemove, ruleTmpUpdate }) => {
   const {
     date,
     description,
@@ -32,13 +32,14 @@ const TR = ({ doc, newRule }) => {
     ruleIds
   } = doc
 
+  
   // console.group('TR')
   // green('doc', doc)
   // green('ruleIds', ruleIds)
   // console.groupEnd()
 
   const [showRules, setShowRules] = useState(false)
-  const [rowRuleIds, setRowRuleIds] = useState(ruleIds)
+  const [rowRuleIds, setRowRuleIds] = useState(ruleIds || [])
   const classes = useStyles()
 
   const handleRowClick = () => {
@@ -48,8 +49,10 @@ const TR = ({ doc, newRule }) => {
   const handleAddRuleClick = async () => {
     // green('handleAddRuleClick')
     // const newRuleId = await newRule()
+    const tmpId = `tmp_${shortid.generate()}`
     const newRule = {
-      _id: `tmp_${shortid.generate()}`,
+      _id: tmpId,
+      ruleIds: [tmpId],
       criteria: [],
       actions: []
     }
@@ -59,24 +62,25 @@ const TR = ({ doc, newRule }) => {
     ruleTmpAdd(newRule)
     const newRuleIds = append(_id, rowRuleIds)
 
-    console.group('handleAddRuleClick')
-    green('newRule', newRule)
-    green('_id', _id)
-    green('rowRuleIds', rowRuleIds)
-    green('newRuleIds', newRuleIds)
-    console.groupEnd()
+    // console.group('handleAddRuleClick')
+    // green('newRule', newRule)
+    // green('_id', _id)
+    // green('rowRuleIds', rowRuleIds)
+    // green('newRuleIds', newRuleIds)
+    // console.groupEnd()
 
     setRowRuleIds(newRuleIds)
 
-    green('*******************************************8')
-    
   }
 
   const Rules = () => {
+    // green('Rules: showRules', showRules)
+    // green('TR.Rules: rowRuleIds', rowRuleIds.length)
     if (showRules === false) {
       return null
     }
-    if (!has('ruleIds')(doc)) {
+    if (rowRuleIds.length === 0) {
+      // green('does not have ruleIds')
       return (
         <tr>
           <td>
@@ -85,6 +89,7 @@ const TR = ({ doc, newRule }) => {
         </tr>
       )
     }
+    red('rowRuleIds', rowRuleIds)
     return rowRuleIds.map(id => (
       <tr key={id}>
         <td>
@@ -93,7 +98,7 @@ const TR = ({ doc, newRule }) => {
       </tr>
     ))
   }
-  green('rowRuleIds', rowRuleIds)
+  // green('rowRuleIds', rowRuleIds)
   return (
     <>
       <tr className={classes.tr} onClick={handleRowClick}>
@@ -113,4 +118,12 @@ const TR = ({ doc, newRule }) => {
   )
 }
 
-export default TR
+const actions = {
+  ruleTmpAdd,
+  ruleTmpRemove,
+  ruleTmpUpdate
+}
+
+const mapStateToProps = state => ({})
+
+export default connect(mapStateToProps, actions)(TR)

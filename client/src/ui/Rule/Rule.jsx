@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import Actions from './Actions'
 import { makeStyles } from '@material-ui/styles'
 import ActionButton from 'ui/elements/ActionButton'
@@ -8,11 +9,11 @@ import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { ruleUpdateRequest } from 'store/rules/actions'
 import { getRuleById } from 'store/rules/selectors'
+
 // import replaceArrayItem from 'lib'
 import {
   append,
   mergeRight,
-  isEmpty,
   insert,
   findIndex,
   propEq,
@@ -59,12 +60,14 @@ const useStyles = makeStyles({
 
 const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
 
-  console.group('Rule')
-  green('ruleid', ruleId)
-  green('rule', rule)
-  console.groupEnd()
+  // console.group('Rule')
+  // green('ruleid', ruleId)
+  // green('rule', rule)
+  // console.groupEnd()
 
   // state
+
+  
 
   const { actions, criteria } = rule
   const [_actions, _setActions] = useState(actions)
@@ -86,6 +89,7 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
   }
 
   const _handleEditclick = () => {
+    green('Rule._handleEditclick')
     if (_viewMode === viewModes.modeNew) {
       _setViewMode(viewModes.modeNew)
     }
@@ -114,12 +118,12 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
   const _newCriterion = () => {
     // TODO
     const c = {
-      // TODO: get _id from db
-      _id: '1234',
+      _id: `tmp_${shortid.generate()}`,
       field: '',
       operation: '',
       value: ''
     }
+    // green('c', c)
     _setCriteria(append(c, _criteria))
   }
 
@@ -146,23 +150,23 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
     if (_viewMode === viewModes.modeEdit) {
       return (
         <>
-          <ActionButton buttonTypes={buttonTypes.save} />
-          <ActionButton buttonTypes={buttonTypes.cancel} />
-          <ActionButton buttonTypes={buttonTypes.delete} />
+          <ActionButton buttonType={buttonTypes.save} />
+          <ActionButton buttonType={buttonTypes.cancel} />
+          <ActionButton buttonType={buttonTypes.delete} />
         </>
       )
     }
     if (_viewMode === viewModes.modeNew) {
       return (
         <>
-          <ActionButton buttonTypes={buttonTypes.save} />
-          <ActionButton buttonTypes={buttonTypes.cancel} />
+          <ActionButton buttonType={buttonTypes.save} />
+          <ActionButton buttonType={buttonTypes.cancel} />
         </>
       )
     }
-    return <ActionButton buttonTypes={buttonTypes.edit} />
+    return <ActionButton buttonType={buttonTypes.edit} />
   }
-
+  green('Rule.render: _criteria', _criteria)
   return (
     <div key={ruleId} className={_classes.rule}>
       <div>
@@ -170,8 +174,12 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
           <div className={_classes.ruleId}>RuleId: {ruleId}</div>
           <RuleActionButtons />
         </div>
-        {criteria.map((criterion, _updateCriteria) => {
+        <div className={_classes.actionsTitle}>
+          Criteria <ActionButton buttonType={buttonTypes.add} onClick={_newCriterion} />
+        </div>
+        {_criteria.map(criterion => {
           const { _id } = criterion
+          // green('_criteria.map: _id', _id)
           return (
             <Criterion
               key={_id}
@@ -199,16 +207,25 @@ const actions = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  // 'rule' is a MongoDB ObjectID as string
-  const { rule } = ownProps
-
+  // TODO: is this always 'ruleId' or is it sometimes _id
+  const { ruleId } = ownProps
   return {
     // if the rule is not found return undefined so that the default value for rule will be used above
-    rule: getRuleById(state, rule) || undefined
+    rule: getRuleById(state, ruleId) || undefined
   }
 }
 
 export default connect(mapStateToProps, actions)(Rule)
+
+Rule.propTypes = {
+  ruleId: PropTypes.string.isRequired,
+  rule: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    criteria: PropTypes.arrayOf(PropTypes.object).isRequired,
+    actions: PropTypes.arrayOf(PropTypes.object).isRequired,
+    ruleIds: PropTypes.arrayOf(PropTypes.string).isRequired
+  })
+}
 
 // TODO: updateRule code goes into applyRule - not used here
 // const updateRule = async ({ newCriterion = {}, newAction = {} }) => {
@@ -229,3 +246,4 @@ export default connect(mapStateToProps, actions)(Rule)
 //     green('r', r)
 //   }
 // }
+
