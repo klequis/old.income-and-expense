@@ -112,11 +112,10 @@ export const dropCollection = async collection => {
  *
  */
 export const insertOne = async (collection, data) => {
-  yellow('collection', collection)
-  yellow('data', data)
   try {
     const { db } = await connectDB()
     const r = await db.collection(collection).insertOne(data)
+    // yellow('insertOne: r.ops', r.ops)
     return r.ops
   } catch (e) {
     redf('dbFunctions ERROR', e.message)

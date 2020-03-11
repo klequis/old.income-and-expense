@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { getAllDataByDescription } from 'store/views/selectors'
 import { allDataByDescriptionRequest } from 'store/views/actions'
-import { rulesReadRequest } from 'store/rules/actions'
+import { rulesReadRequest, ruleCreateRequest } from 'store/rules/actions'
 import TR from './TR'
 import { makeStyles } from '@material-ui/styles'
 
@@ -18,6 +18,7 @@ const useStyles = makeStyles({
 
 const AllDataByDescription = ({
   allDataByDescriptionRequest,
+  ruleCreateRequest,
   rulesReadRequest,
   data
 }) => {
@@ -33,6 +34,11 @@ const AllDataByDescription = ({
   }, [allDataByDescriptionRequest, rulesReadRequest])
 
   const classes = useStyles()
+
+  const newRule = async () => {
+    const newRuleId = await ruleCreateRequest()
+    green('AddDataByDescription.newRule: newRuleId', newRuleId)
+  }
 
   return (
     <table>
@@ -51,7 +57,7 @@ const AllDataByDescription = ({
       <tbody>
         {data.map(doc => {
           const { _id } = doc
-          return <TR key={_id} doc={doc} />
+          return <TR newRule={newRule} key={_id} doc={doc} />
         })}
       </tbody>
     </table>
@@ -60,6 +66,7 @@ const AllDataByDescription = ({
 
 const actions = {
   allDataByDescriptionRequest,
+  ruleCreateRequest,
   rulesReadRequest
 }
 

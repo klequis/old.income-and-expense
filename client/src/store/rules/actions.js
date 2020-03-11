@@ -7,7 +7,9 @@ import {
   RULES_READ_REQUEST_KEY,
   RULE_UPDATE_REQUEST_KEY,
   RULE_UPDATE_KEY,
-  RULE_NEW_KEY
+  RULETMP_ADD_KEY,
+  RULETMP_REMOVE_KEY,
+  RULETMP_UPDATE_KEY
 } from './constants'
 import { setToast } from 'store/toast/actions'
 import { createRequestThunk } from '../action-helpers'
@@ -18,17 +20,37 @@ import { TOAST_WARN } from 'global-constants'
 import { yellow } from 'logger'
 
 
-export const ruleNew = newRule => {
+// export const ruleNew = newRule => {
+//   return {
+//     type: RULE_NEW_KEY,
+//     payload: newRule
+//   }
+// }
+
+// export const ruleCreate = newRule => {
+//   return {
+//     type: RULE_CREATE_KEY,
+//     payload: newRule
+//   }
+// }
+
+export const ruleTmpAdd = data => {
   return {
-    type: RULE_NEW_KEY,
-    payload: newRule
+    type: RULETMP_ADD_KEY,
+    payload: data
   }
 }
 
-export const ruleCreate = newRule => {
+export const ruleTmpRemove = tmpRuleId => {
   return {
-    type: RULE_CREATE_KEY,
-    payload: newRule
+    type: RULETMP_REMOVE_KEY,
+  }
+}
+
+export const ruleTmpUpdate = data => {
+  return {
+    type: RULETMP_UPDATE_KEY,
+    payload: data
   }
 }
 

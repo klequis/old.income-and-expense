@@ -19,15 +19,6 @@ const useStyles = makeStyles({
 const Criteria = ({ criteria, updateRule, updateCriterion, editMode }) => {
   const classes = useStyles()
 
-  const addNewCriterion = () => {
-    const newCriterion = {
-      _id: shortid.generate(),
-      field: '',
-      operation: '',
-      value: ''
-    }
-    setRuleCriteria(append(newCriterion, ruleCriteria))
-  }
 
   const handleAddCriterionClick = () => {
     addNewCriterion()

@@ -1,19 +1,13 @@
 import React, { useState } from 'react'
-import Criteria from './Criteria'
 import Actions from './Actions'
 import { makeStyles } from '@material-ui/styles'
-import EditIcon from '@material-ui/icons/Edit'
-import SaveIcon from '@material-ui/icons/Save'
-import CancelIcon from '@material-ui/icons/Cancel'
-import AddIcon from '@material-ui/icons/Add'
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
-import IconButton from '@material-ui/core/IconButton'
-
+import ActionButton from 'ui/elements/ActionButton'
+import { buttonTypes } from 'ui/elements/ActionButton'
+import Criterion from './Criterion'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
-import { ruleUpdateRequest, ruleCreate } from 'store/rules/actions'
+import { ruleUpdateRequest } from 'store/rules/actions'
 import { getRuleById } from 'store/rules/selectors'
-import { ObjectID } from 'mongodb'
 // import replaceArrayItem from 'lib'
 import {
   append,
@@ -58,64 +52,36 @@ const useStyles = makeStyles({
 /**
  *
  * @param {string} ruleId -  a mongoDB ObjectID. Only used to get rule from Redux state
- * @param {function} ruleUpdateRequest - a Redux action
+ * @param {function} ruleUpdateRequest - Redux action
+ * @param {function} ruleCreateRequest - Redux action
  * @param {object} rule - from Redux { _id, criteria[], actions[]}
  */
 
-const Rule = ({ ruleId, ruleUpdateRequest, rule }) => {
+const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
+
+  console.group('Rule')
+  green('ruleid', ruleId)
+  green('rule', rule)
+  console.groupEnd()
+
+  // state
+
   const { actions, criteria } = rule
   const [_actions, _setActions] = useState(actions)
   const [_criteria, _setCriteria] = useState(criteria)
-  const [_viewMode, _setViewMode] = useState(
-    ruleId === viewModes.modeNew ? viewModes.modeNew : viewModes.modeView
-  )
+
+  // TODO: what should the initial viewMode be?
+  const [_viewMode, _setViewMode] = useState(viewModes.modeView)
 
   const _classes = useStyles()
 
-  const _newCriterion = () => {
-    
-    // TODO
-    const c = {
-      _id: ObjectID.generate(),
-      field: '',
-      operation: '',
-      value: ''
-    }
-    _setCriteria(append(c, _criteria))
-  }
-
-  const _newAction = () => {
-    // TODO
-  }
-
-  const _updateCriteria = criterion => {
-    const criterionId = prop('_id', criterion)
-    const idx = findIndex(propEq('_id', criterionId))(_criteria)
-    if (_criteria.length === 0 || idx === -1) {
-      _setCriteria(append(criterion, _criteria))
-    } else {
-      const newCriteria = insert(idx, criterion, remove(idx, 1, _criteria))
-      _setCriteria(newCriteria)
-    }
-  }
-
-  const _updateActions = newAction => {
-    // TODO: logic here should be similar to updateCriterion
-    const actionId = prop('_id', newAction)
-    const idx = findIndex(propEq('_id', actionId))(_actions)
-    const newActions = insert(idx, newAction, remove(idx, 1, _actions))
-    _setActions(newActions)
-  }
-
-  const _handleSaveClick = async () => {
-    const newRule = mergeRight(rule, {
-      criteria: _criteria,
-      actions: _actions
-    })
-    const r = await ruleUpdateRequest(ruleId, newRule)
-  }
+  // methods
 
   const _handleCancelClick = () => {
+    // TODO
+  }
+
+  const _handleDeleteClick = () => {
     // TODO
   }
 
@@ -131,53 +97,70 @@ const Rule = ({ ruleId, ruleUpdateRequest, rule }) => {
     }
   }
 
-  const _handleDeleteClick = () => {
+  const _handleSaveClick = async () => {
+    // TODO: logic needs to change to handle tmp_ rule differently
+    
+    const newRule = mergeRight(rule, {
+      criteria: _criteria,
+      actions: _actions
+    })
+    const r = await ruleUpdateRequest(ruleId, newRule)
+  }
+
+  const _newAction = () => {
     // TODO
   }
 
-  const SaveButton = () => (
-    <IconButton onClick={_handleSaveClick}>
-      <SaveIcon />
-    </IconButton>
-  )
+  const _newCriterion = () => {
+    // TODO
+    const c = {
+      // TODO: get _id from db
+      _id: '1234',
+      field: '',
+      operation: '',
+      value: ''
+    }
+    _setCriteria(append(c, _criteria))
+  }
 
-  const CancelButton = () => (
-    <IconButton>
-      <CancelIcon />
-    </IconButton>
-  )
+  const _updateActions = newAction => {
+    // TODO: logic here should be similar to updateCriterion
+    const actionId = prop('_id', newAction)
+    const idx = findIndex(propEq('_id', actionId))(_actions)
+    const newActions = insert(idx, newAction, remove(idx, 1, _actions))
+    _setActions(newActions)
+  }
 
-  const DeleteButton = () => (
-    <IconButton>
-      <DeleteForeverIcon />
-    </IconButton>
-  )
-
-  const EditButton = () => (
-    <IconButton>
-      <EditIcon />
-    </IconButton>
-  )
+  const _updateCriteria = criterion => {
+    const criterionId = prop('_id', criterion)
+    const idx = findIndex(propEq('_id', criterionId))(_criteria)
+    if (_criteria.length === 0 || idx === -1) {
+      _setCriteria(append(criterion, _criteria))
+    } else {
+      const newCriteria = insert(idx, criterion, remove(idx, 1, _criteria))
+      _setCriteria(newCriteria)
+    }
+  }
 
   const RuleActionButtons = () => {
     if (_viewMode === viewModes.modeEdit) {
       return (
         <>
-          <SaveButton />
-          <CancelButton />
-          <DeleteButton />
+          <ActionButton buttonTypes={buttonTypes.save} />
+          <ActionButton buttonTypes={buttonTypes.cancel} />
+          <ActionButton buttonTypes={buttonTypes.delete} />
         </>
       )
     }
     if (_viewMode === viewModes.modeNew) {
       return (
         <>
-          <SaveButton />
-          <CancelButton />
+          <ActionButton buttonTypes={buttonTypes.save} />
+          <ActionButton buttonTypes={buttonTypes.cancel} />
         </>
       )
     }
-    return <EditButton />
+    return <ActionButton buttonTypes={buttonTypes.edit} />
   }
 
   return (
@@ -187,18 +170,18 @@ const Rule = ({ ruleId, ruleUpdateRequest, rule }) => {
           <div className={_classes.ruleId}>RuleId: {ruleId}</div>
           <RuleActionButtons />
         </div>
-
-        <Criteria
-          key={shortid.generate()}
-          criteria={_criteria}
-          viewMode={_viewMode === viewModes.modeEdit}
-          updateCriterion={_updateCriteria}
-        />
+        {criteria.map((criterion, _updateCriteria) => {
+          const { _id } = criterion
+          return (
+            <Criterion
+              key={_id}
+              criterion={criterion}
+              updateCriteria={_updateCriteria}
+            />
+          )
+        })}
         <div className={_classes.actionsTitle}>
-          Actions{' '}
-          <IconButton>
-            <AddIcon />
-          </IconButton>
+          Actions <ActionButton buttonType={buttonTypes.add} />
         </div>
         <Actions
           key={shortid.generate()}
