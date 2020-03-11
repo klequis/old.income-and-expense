@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { getAllDataByDescription } from 'store/views/selectors'
@@ -76,3 +77,10 @@ const mapStateToProps = state => {
   }
 }
 export default compose(connect(mapStateToProps, actions))(AllDataByDescription)
+
+AllDataByDescription.propTypes = {
+  allDataByDescriptionRequest: PropTypes.func.isRequired,
+  ruleCreateRequest: PropTypes.func.isRequired,
+  rulesReadRequest:  PropTypes.func.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired
+}
