@@ -41,23 +41,15 @@ const useStyles = makeStyles({
   }
 })
 
-const Criterion = ({ criterion, updateCriteria }) => {
+const Criterion = ({ criterion, updateCriteria, criteriaTestClear }) => {
   console.group('Criterion')
   green('criterion', criterion)
   green('updateCriteria', updateCriteria)
   console.groupEnd()
   
-  // green('viewMode before', _viewMode)
   const { _id, field, operation, value } = criterion
   const newMode = startsWith('tmp_', _id)
-  green('newMode', newMode)
   const [_viewMode, _setViewMode] = useState(newMode ? viewModes.modeNew : viewModes.modeView)
-  // _id =>
-  //   startsWith('tmp_', _id) ? viewModes.modeNew : viewModes.modeView
-  
-  green('viewMode after', _viewMode)
-
-  // TODO: you need useEffect to set use of viewMode on initial render.
 
   const [values, setValues] = useState({
     _id,
@@ -72,15 +64,14 @@ const Criterion = ({ criterion, updateCriteria }) => {
   }
 
   const _handleCancelClick = () => {
-    // TODO: implement
-    green('_handleCancelClick')
+    _setViewMode(viewModes.modeView)
+    criteriaTestClear()
   }
   const _handleDoneClick = () => {
-    green('handleDoneClick: values', values)
-    green('viewModes.modeView', viewModes.modeView)
-    // _setViewMode(viewModes.modeView)
-    _setViewMode('modeView')
+    _setViewMode(viewModes.modeView)
+    // _setViewMode('modeView')
     updateCriteria(values)
+    criteriaTestClear()
   }
 
   const _handleEditClick = () => {
@@ -189,5 +180,6 @@ Criterion.propTypes = {
     operation: string.isRequired,
     value: string.isRequired
   }),
-  updateCriteria: PropTypes.func.isRequired
+  updateCriteria: PropTypes.func.isRequired,
+  criteriaTestClear: PropTypes.func.isRequired
 }

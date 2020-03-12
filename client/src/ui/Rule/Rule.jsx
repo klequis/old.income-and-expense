@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { ruleUpdateRequest } from 'store/rules/actions'
 import { getRuleById } from 'store/rules/selectors'
-import { criteriaTestReadRequest } from 'store/criteriaTest/actions'
+import { criteriaTestReadRequest, criteriaTestClear } from 'store/criteriaTest/actions'
 import { getCriteriaTestResults } from 'store/criteriaTest/selectors'
 
 import Actions from './Actions'
@@ -67,7 +67,7 @@ const useStyles = makeStyles({
  * @param {object} rule - from Redux { _id, criteria[], actions[]}
  */
 
-const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestResults, criteriaTestReadRequest }) => {
+const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestClear, criteriaTestResults, criteriaTestReadRequest }) => {
 
   // console.group('Rule')
   // green('ruleid', ruleId)
@@ -141,6 +141,10 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestResults, criteriaTe
     await criteriaTestReadRequest(_criteria)
   }
 
+  const _criteriaTestClear = () => {
+    criteriaTestClear()
+  }
+
   const _updateActions = newAction => {
     // TODO: logic here should be similar to updateCriterion
     const actionId = prop('_id', newAction)
@@ -201,6 +205,7 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestResults, criteriaTe
               key={_id}
               criterion={c}
               updateCriteria={_updateCriteria}
+              criteriaTestClear={_criteriaTestClear}
             />
           )
         })}
@@ -219,6 +224,7 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestResults, criteriaTe
 }
 
 const actions = {
+  criteriaTestClear,
   criteriaTestReadRequest,
   ruleUpdateRequest
 }
@@ -245,7 +251,8 @@ Rule.propTypes = {
   }),
   ruleUpdateRequest: PropTypes.func.isRequired,
   criteriaTestReadRequest: PropTypes.func.isRequired,
-  criteriaTestResults: PropTypes.array.isRequired
+  criteriaTestResults: PropTypes.array.isRequired,
+  criteriaTestClear:  PropTypes.func.isRequired,
 }
 
 // TODO: updateRule code goes into applyRule - not used here

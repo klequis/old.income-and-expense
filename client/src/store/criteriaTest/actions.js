@@ -1,6 +1,7 @@
 import {
   CRITERIA_TEST_READ_KEY,
-  CRITERIA_TEST_READ_REQUEST_KEY
+  CRITERIA_TEST_READ_REQUEST_KEY,
+  CRITERIA_TEST_CLEAR_KEY
 } from './constants'
 import { setToast } from 'store/toast/actions'
 import { createRequestThunk } from '../action-helpers'
@@ -10,10 +11,16 @@ import { TOAST_WARN } from 'global-constants'
 // eslint-disable-next-line
 import { yellow } from 'logger'
 
-export const criteriaTestRead = data => {
+const criteriaTestRead = data => {
   return {
     type: CRITERIA_TEST_READ_KEY,
     payload: data
+  }
+}
+
+export const criteriaTestClear = () => {
+  return {
+    type: CRITERIA_TEST_CLEAR_KEY
   }
 }
 
