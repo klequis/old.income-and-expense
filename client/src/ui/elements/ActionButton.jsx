@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import CancelIcon from '@material-ui/icons/Cancel'
@@ -19,8 +20,7 @@ export const buttonTypes = {
   save: 'saveButton'
 }
 
-const Icon = ({buttonType}) => {
-  
+const Icon = ({ buttonType }) => {
   switch (buttonType) {
     case buttonTypes.add:
       return <AddIcon />
@@ -42,8 +42,11 @@ const Icon = ({buttonType}) => {
 }
 
 const ActionButton = ({ buttonType, onClick }) => {
-  green('actionButton')
-  green('buttonType', buttonType)
+  // green('actionButton')
+  // green('buttonType', buttonType)
+  // if (typeof onClick !== 'function') {
+  //   throw new Error('onClick is not function')
+  // }
   return (
     <IconButton onClick={onClick}>
       <Icon buttonType={buttonType} />
@@ -52,3 +55,15 @@ const ActionButton = ({ buttonType, onClick }) => {
 }
 
 export default ActionButton
+
+ActionButton.propTypes = {
+  buttonType: PropTypes.oneOf([
+    buttonTypes.add,
+    buttonTypes.cancel,
+    buttonTypes.delete,
+    buttonTypes.done,
+    buttonTypes.edit,
+    buttonTypes.save
+  ]).isRequired,
+  onClick: PropTypes.func.isRequired
+}

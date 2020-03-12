@@ -71,6 +71,10 @@ const Criterion = ({ criterion, updateCriteria }) => {
     setValues(mergeRight(values, { [name]: value }))
   }
 
+  const _handleCancelClick = () => {
+    // TODO: implement
+    green('_handleCancelClick')
+  }
   const _handleDoneClick = () => {
     green('handleDoneClick: values', values)
     green('viewModes.modeView', viewModes.modeView)
@@ -89,13 +93,13 @@ const Criterion = ({ criterion, updateCriteria }) => {
   const CriterionActionButtons = () => {
     if (_viewMode === viewModes.modeView) {
       return (
-        <ActionButton buttonType={buttonTypes.edit} conClick={_handleEditClick} />
+        <ActionButton buttonType={buttonTypes.edit} onClick={_handleEditClick} />
       )
     }
     return (
       <>
         <ActionButton buttonType={buttonTypes.done} onClick={_handleDoneClick} />
-        <ActionButton buttonType={buttonTypes.cancel} />
+        <ActionButton buttonType={buttonTypes.cancel} onClick={_handleCancelClick} />
       </>
     )
     // if (viewMode === viewModes.modeEdit) {

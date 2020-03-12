@@ -164,21 +164,21 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestResults, criteriaTe
     if (_viewMode === viewModes.modeEdit) {
       return (
         <>
-          <ActionButton buttonType={buttonTypes.save} />
-          <ActionButton buttonType={buttonTypes.cancel} />
-          <ActionButton buttonType={buttonTypes.delete} />
+          <ActionButton buttonType={buttonTypes.save} onClick={_handleSaveClick}/>
+          <ActionButton buttonType={buttonTypes.cancel} onClick={_handleCancelClick} />
+          <ActionButton buttonType={buttonTypes.delete} onClick={_handleDeleteClick} />
         </>
       )
     }
     if (_viewMode === viewModes.modeNew) {
       return (
         <>
-          <ActionButton buttonType={buttonTypes.save} />
-          <ActionButton buttonType={buttonTypes.cancel} />
+          <ActionButton buttonType={buttonTypes.save} onClick={_handleSaveClick} />
+          <ActionButton buttonType={buttonTypes.cancel} onClick={_handleCancelClick} />
         </>
       )
     }
-    return <ActionButton buttonType={buttonTypes.edit} />
+    return <ActionButton buttonType={buttonTypes.edit} onClick={_handleEditclick} />
   }
   
   return (
@@ -205,7 +205,7 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestResults, criteriaTe
           )
         })}
         <div className={_classes.actionsTitle}>
-          Actions <ActionButton buttonType={buttonTypes.add} />
+          Actions <ActionButton buttonType={buttonTypes.add} onClick={_newAction} />
         </div>
         <Actions
           key={shortid.generate()}
