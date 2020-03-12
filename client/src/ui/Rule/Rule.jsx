@@ -9,6 +9,7 @@ import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { ruleUpdateRequest } from 'store/rules/actions'
 import { getRuleById } from 'store/rules/selectors'
+import Button from '@material-ui/core/Button'
 
 // import replaceArrayItem from 'lib'
 import {
@@ -17,6 +18,7 @@ import {
   insert,
   findIndex,
   propEq,
+  startsWith,
   remove,
   prop
 } from 'ramda'
@@ -74,7 +76,8 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
   const [_criteria, _setCriteria] = useState(criteria)
 
   // TODO: what should the initial viewMode be?
-  const [_viewMode, _setViewMode] = useState(viewModes.modeView)
+  const newMode = startsWith('tmp_', ruleId)
+  const [_viewMode, _setViewMode] = useState(newMode ? viewModes.modeNew : viewModes.modeView)
 
   const _classes = useStyles()
 
@@ -127,6 +130,10 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
     _setCriteria(append(c, _criteria))
   }
 
+  const _testRule = () => {
+    
+  }
+
   const _updateActions = newAction => {
     // TODO: logic here should be similar to updateCriterion
     const actionId = prop('_id', newAction)
@@ -173,6 +180,7 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
         <div className={_classes.ruleTitle}>
           <div className={_classes.ruleId}>RuleId: {ruleId}</div>
           <RuleActionButtons />
+          <Button onClick={_testRule}>Test Rule</Button>
         </div>
         <div className={_classes.actionsTitle}>
           Criteria <ActionButton buttonType={buttonTypes.add} onClick={_newCriterion} />
