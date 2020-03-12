@@ -1,15 +1,21 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+
+import { ruleUpdateRequest } from 'store/rules/actions'
+import { getRuleById } from 'store/rules/selectors'
+import { criteriaTestReadRequest } from 'store/criteriaTest/actions'
+import { getCriteriaTestResults } from 'store/criteriaTest/selectors'
+
 import Actions from './Actions'
 import { makeStyles } from '@material-ui/styles'
 import ActionButton from 'ui/elements/ActionButton'
 import { buttonTypes } from 'ui/elements/ActionButton'
 import Criterion from './Criterion'
 import shortid from 'shortid'
-import { connect } from 'react-redux'
-import { ruleUpdateRequest } from 'store/rules/actions'
-import { getRuleById } from 'store/rules/selectors'
 import Button from '@material-ui/core/Button'
+import TestCriteriaResults from './TestCriteriaResults'
+
 
 // import replaceArrayItem from 'lib'
 import {
@@ -27,6 +33,7 @@ import { viewModes } from 'global-constants'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
+
 
 const useStyles = makeStyles({
   rule: {
@@ -60,7 +67,7 @@ const useStyles = makeStyles({
  * @param {object} rule - from Redux { _id, criteria[], actions[]}
  */
 
-const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
+const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestResults, criteriaTestReadRequest }) => {
 
   // console.group('Rule')
   // green('ruleid', ruleId)
@@ -130,8 +137,8 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
     _setCriteria(append(c, _criteria))
   }
 
-  const _testRule = () => {
-    
+  const _testCriteria = async () => {
+    await criteriaTestReadRequest(_criteria)
   }
 
   const _updateActions = newAction => {
@@ -173,25 +180,26 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
     }
     return <ActionButton buttonType={buttonTypes.edit} />
   }
-  green('Rule.render: _criteria', _criteria)
+  
   return (
     <div key={ruleId} className={_classes.rule}>
       <div>
         <div className={_classes.ruleTitle}>
           <div className={_classes.ruleId}>RuleId: {ruleId}</div>
           <RuleActionButtons />
-          <Button onClick={_testRule}>Test Rule</Button>
+          
         </div>
+        <TestCriteriaResults arrayOfStrings={criteriaTestResults} />
         <div className={_classes.actionsTitle}>
           Criteria <ActionButton buttonType={buttonTypes.add} onClick={_newCriterion} />
+          <Button onClick={_testCriteria}>Test Criteria</Button>
         </div>
-        {_criteria.map(criterion => {
-          const { _id } = criterion
-          // green('_criteria.map: _id', _id)
+        {_criteria.map(c => {
+          const { _id } = c
           return (
             <Criterion
               key={_id}
-              criterion={criterion}
+              criterion={c}
               updateCriteria={_updateCriteria}
             />
           )
@@ -211,6 +219,7 @@ const Rule = ({ ruleId, rule, ruleUpdateRequest }) => {
 }
 
 const actions = {
+  criteriaTestReadRequest,
   ruleUpdateRequest
 }
 
@@ -219,7 +228,8 @@ const mapStateToProps = (state, ownProps) => {
   const { ruleId } = ownProps
   return {
     // if the rule is not found return undefined so that the default value for rule will be used above
-    rule: getRuleById(state, ruleId) || undefined
+    rule: getRuleById(state, ruleId) || undefined,
+    criteriaTestResults: getCriteriaTestResults(state)
   }
 }
 
@@ -232,7 +242,10 @@ Rule.propTypes = {
     criteria: PropTypes.arrayOf(PropTypes.object).isRequired,
     actions: PropTypes.arrayOf(PropTypes.object).isRequired,
     ruleIds: PropTypes.arrayOf(PropTypes.string).isRequired
-  })
+  }),
+  ruleUpdateRequest: PropTypes.func.isRequired,
+  criteriaTestReadRequest: PropTypes.func.isRequired,
+  criteriaTestResults: PropTypes.array.isRequired
 }
 
 // TODO: updateRule code goes into applyRule - not used here

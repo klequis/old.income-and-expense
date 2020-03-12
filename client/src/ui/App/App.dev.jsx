@@ -19,7 +19,6 @@ import RawData from 'ui/RawData'
 import DataChanges from 'ui/DataChanges'
 import { withRouter } from 'react-router'
 import { Route, Switch } from 'react-router-dom'
-import NewRule from 'ui/NewRule'
 import AllDataByDescription from 'ui/views/AllDataByDescription'
 
 // eslint-disable-next-line
@@ -98,7 +97,6 @@ const App = props => {
           importData={importData}
           // filterChanged={filterChanged}
         />
-        {/* <NewRule /> */}
         <Switch>
           <Route exact path="/" component={RawData} />
           <Route exact path="/data-changes" component={DataChanges} />

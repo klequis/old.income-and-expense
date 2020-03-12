@@ -9,16 +9,18 @@ import {
   dataChangesReducer,
   allDataByDescriptionReducer
 } from './views/reducers'
-import { rulesReducer, ruleNewReducer, ruleTmpReducer } from './rules/reducers'
+import { rulesReducer, /*ruleNewReducer,*/ ruleTmpReducer } from './rules/reducers'
+import { criteriaTestReducer } from './criteriaTest/reducers'
 
 const rootReducer = combineReducers({
   data: dataReducer,
   allDataByDescription: allDataByDescriptionReducer,
   amountByCategory: amountByCategoryReducer,
+  criteriaTestResults: criteriaTestReducer,
   dataChanges: dataChangesReducer,
   requests: requestsReducer,
   rules: rulesReducer,
-  ruleNew: ruleNewReducer,
+  // ruleNew: ruleNewReducer,
   ruleTmp: ruleTmpReducer,
   toast: toastReducer,
   validationErrors: validationErrorsReducer,

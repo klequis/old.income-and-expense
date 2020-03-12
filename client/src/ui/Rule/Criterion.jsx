@@ -8,16 +8,19 @@ import TextField from 'ui/elements/TextField'
 // import { connect } from 'react-redux'
 // import { compose } from 'recompose'
 // import { getData } from 'store/data/selectors'
-
-import RemoveIcon from '@material-ui/icons/Remove'
-import CancelIcon from '@material-ui/icons/Cancel'
-import DoneIcon from '@material-ui/icons/Done'
-import IconButton from '@material-ui/core/IconButton'
 import { mergeRight, startsWith } from 'ramda'
 import { viewModes } from 'global-constants'
+import ActionButton from 'ui/elements/ActionButton'
+
+
+// import RemoveIcon from '@material-ui/icons/Remove'
+// import CancelIcon from '@material-ui/icons/Cancel'
+// import DoneIcon from '@material-ui/icons/Done'
+// import IconButton from '@material-ui/core/IconButton'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
+import { buttonTypes } from 'ui/elements/ActionButton'
 
 const useStyles = makeStyles({
   wrapper: {
@@ -46,7 +49,6 @@ const Criterion = ({ criterion, updateCriteria }) => {
   
   // green('viewMode before', _viewMode)
   const { _id, field, operation, value } = criterion
-  // const [_viewMode, _setViewMode] = useState(viewModes.modeView)
   const newMode = startsWith('tmp_', _id)
   green('newMode', newMode)
   const [_viewMode, _setViewMode] = useState(newMode ? viewModes.modeNew : viewModes.modeView)
@@ -63,32 +65,13 @@ const Criterion = ({ criterion, updateCriteria }) => {
     operation,
     value
   })
-  // green('Criterion: values', values)
 
-  const DoneButton = () => (
-    <IconButton onClick={handleDoneClick}>
-      <DoneIcon />
-    </IconButton>
-  )
-
-  const CancelButton = () => (
-    <IconButton>
-      <CancelIcon />
-    </IconButton>
-  )
-
-  const RemoveButton = () => (
-    <IconButton>
-      <RemoveIcon />
-    </IconButton>
-  )
-
-  const handleChange = event => {
+  const _handleChange = event => {
     const { name, value } = event.target
     setValues(mergeRight(values, { [name]: value }))
   }
 
-  const handleDoneClick = () => {
+  const _handleDoneClick = () => {
     green('handleDoneClick: values', values)
     green('viewModes.modeView', viewModes.modeView)
     // _setViewMode(viewModes.modeView)
@@ -96,7 +79,32 @@ const Criterion = ({ criterion, updateCriteria }) => {
     updateCriteria(values)
   }
 
-  const classes = useStyles()
+  const _handleEditClick = () => {
+    green('_handleEditClick')
+    _setViewMode(viewModes.modeEdit)
+  }
+
+
+
+  const CriterionActionButtons = () => {
+    if (_viewMode === viewModes.modeView) {
+      return (
+        <ActionButton buttonType={buttonTypes.edit} conClick={_handleEditClick} />
+      )
+    }
+    return (
+      <>
+        <ActionButton buttonType={buttonTypes.done} onClick={_handleDoneClick} />
+        <ActionButton buttonType={buttonTypes.cancel} />
+      </>
+    )
+    // if (viewMode === viewModes.modeEdit) {
+      
+    // }
+    
+  }
+
+  const _classes = useStyles()
 
   green('Criterion: _viewMode', _viewMode)
 
@@ -104,31 +112,32 @@ const Criterion = ({ criterion, updateCriteria }) => {
     green('Criterion - view mode')
     return (
       <div>
-        <span className={classes.viewModeField}>{field}</span>
-        <span className={classes.viewModeField}>{operation}</span>
-        <span className={classes.viewModeField}>{value}</span>
+        <span className={_classes.viewModeField}>{field}</span>
+        <span className={_classes.viewModeField}>{operation}</span>
+        <span className={_classes.viewModeField}>{value}</span>
+        <CriterionActionButtons />
       </div>
     )
   } else {
     green('Criterion - edit mode')
     return (
-      <div className={classes.wrapper}>
+      <div className={_classes.wrapper}>
         <div /*className={classes.fields}*/>
           <Select
-            className={classes.field}
+            className={_classes.field}
             name="field"
             value={values.field}
-            onChange={handleChange}
+            onChange={_handleChange}
           >
             <MenuItem value={dataFields.description}>Description</MenuItem>
             <MenuItem value={dataFields.typeOrig}>Type</MenuItem>
           </Select>
 
           <Select
-            className={classes.field}
+            className={_classes.field}
             name="operation"
             value={values.operation}
-            onChange={handleChange}
+            onChange={_handleChange}
           >
             <MenuItem value={operators.beginsWith}>Begins With</MenuItem>
             <MenuItem value={operators.contains}>Contains</MenuItem>
@@ -137,19 +146,20 @@ const Criterion = ({ criterion, updateCriteria }) => {
             <MenuItem value={operators.in}>In</MenuItem>
           </Select>
           <TextField
-            className={classes.field}
+            className={_classes.field}
             name="value"
             label="value"
             value={values.value}
-            onChange={handleChange}
+            onChange={_handleChange}
             fullWidth
           />
         </div>
-        <div className={classes.actions}>
+        <CriterionActionButtons />
+        {/* <div className={classes.actions}>
           <DoneButton onClick={handleDoneClick} />
           <CancelButton />
           <RemoveButton />
-        </div>
+        </div> */}
       </div>
     )
   }

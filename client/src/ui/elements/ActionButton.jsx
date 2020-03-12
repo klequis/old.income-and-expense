@@ -3,6 +3,7 @@ import AddIcon from '@material-ui/icons/Add'
 import EditIcon from '@material-ui/icons/Edit'
 import CancelIcon from '@material-ui/icons/Cancel'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
+import DoneIcon from '@material-ui/icons/Done'
 import IconButton from '@material-ui/core/IconButton'
 import SaveIcon from '@material-ui/icons/Save'
 
@@ -13,6 +14,7 @@ export const buttonTypes = {
   add: 'addButton',
   cancel: 'cancelButton',
   delete: 'deleteButton',
+  done: 'doneButton',
   edit: 'editButton',
   save: 'saveButton'
 }
@@ -26,6 +28,8 @@ const Icon = ({buttonType}) => {
       return <CancelIcon />
     case buttonTypes.delete:
       return <DeleteForeverIcon />
+    case buttonTypes.done:
+      return <DoneIcon />
     case buttonTypes.edit:
       return <EditIcon />
     case buttonTypes.save:
@@ -38,6 +42,8 @@ const Icon = ({buttonType}) => {
 }
 
 const ActionButton = ({ buttonType, onClick }) => {
+  green('actionButton')
+  green('buttonType', buttonType)
   return (
     <IconButton onClick={onClick}>
       <Icon buttonType={buttonType} />

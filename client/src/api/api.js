@@ -19,6 +19,22 @@ import { orange, green, redf } from 'logger'
 
 // Errors are handled by fetchJson()
 export default {
+  criteria: {
+    async read(criteria) {
+      orange('readByCriteria: criteria', criteria)
+      try {
+        const url = `/api/criteria/criteria-test/`
+        const data = await fetchJson(url, {
+          method: 'POST',
+          body: JSON.stringify(criteria)
+        })
+        return data
+      } catch (e) {
+        redf('api.criteria.read ERROR', e.message)
+        console.log(e)
+      }
+    },
+  },
   rules: {
     async read() {
       const url = `/api/rules`
@@ -88,17 +104,13 @@ export default {
       })
       return data
     },
-    async readByCriteria(field, operation, value) {
-      orange('readByCriteria', `${field}, ${operation}, ${value}`)
+    async readByCriteria(criteria) {
+      orange('readByCriteria: criteria', criteria)
       try {
         const url = `/api/data/criteria/`
         const data = await fetchJson(url, {
           method: 'POST',
-          body: JSON.stringify({
-            field,
-            operation,
-            value
-          })
+          body: JSON.stringify(criteria)
         })
         return data
       } catch (e) {
