@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import TextField from 'ui/elements/TextField'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from 'ui/elements/Select'
-import { dataFields, actions } from 'global-constants'
+import { dataFields, actionTypes } from 'global-constants'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -21,10 +21,10 @@ const ActionControls = ({ action: Action }) => {
   const handleChange = event => {
 
   }
-  if (action === actions.omit) {
+  if (action === actionTypes.omit) {
     return null
   }
-  if (action === actions.strip) {
+  if (action === actionTypes.strip) {
     return (
       <>
         <Select name="action.field" value={_field} onChange={handleChange}>
@@ -36,7 +36,7 @@ const ActionControls = ({ action: Action }) => {
       </>
     )
   }
-  if (action === actions.replaceAll) {
+  if (action === actionTypes.replaceAll) {
     return (
       <>
         <Select name="action.field" value={_field} onChange={handleChange}>
@@ -47,7 +47,7 @@ const ActionControls = ({ action: Action }) => {
       </>
     )
   }
-  if (action === actions.categorize) {
+  if (action === actionTypes.categorize) {
     return (
       <>
         <TextField id={`category1`} label="category1" value={_category1}/>

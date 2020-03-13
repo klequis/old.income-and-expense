@@ -17,7 +17,7 @@ export const dataFields = {
   typeOrig: 'typeOrig'
 }
 
-export const actions = {
+export const actionTypes = {
   omit: 'omit',
   strip: 'strip',
   replaceAll: 'replaceAll',

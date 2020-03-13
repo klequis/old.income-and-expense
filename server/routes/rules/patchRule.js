@@ -31,7 +31,7 @@ const patchRule = wrap(async (req, res) => {
     )
     yellow('updatedRule', updatedRule)
     await runRules(updatedRule)
-    res.send(updatedRule)
+    res.send(updatedRule[0])
   } catch (e) {
     redf('updateRule ERROR', e.message)
     console.log(e)

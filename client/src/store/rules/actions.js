@@ -8,7 +8,7 @@ import {
   RULE_UPDATE_REQUEST_KEY,
   RULE_UPDATE_KEY,
   RULETMP_ADD_KEY,
-  RULETMP_REMOVE_KEY,
+  RULETMP_CLEAR_KEY,
   RULETMP_UPDATE_KEY
 } from './constants'
 import { setToast } from 'store/toast/actions'
@@ -17,7 +17,7 @@ import api from 'api'
 import { TOAST_WARN } from 'global-constants'
 
 // eslint-disable-next-line
-import { yellow } from 'logger'
+import { orange } from 'logger'
 
 
 // export const ruleNew = newRule => {
@@ -41,12 +41,6 @@ export const ruleTmpAdd = data => {
   }
 }
 
-export const ruleTmpRemove = tmpRuleId => {
-  return {
-    type: RULETMP_REMOVE_KEY,
-  }
-}
-
 export const ruleTmpUpdate = data => {
   return {
     type: RULETMP_UPDATE_KEY,
@@ -54,7 +48,14 @@ export const ruleTmpUpdate = data => {
   }
 }
 
+export const ruleTmpClear = () => {
+  return {
+    type: RULETMP_CLEAR_KEY
+  }
+}
+
 export const rulesRead = data => {
+  orange('rulesRead: data', data)
   return {
     type: RULES_READ_KEY,
     payload: data
@@ -72,7 +73,6 @@ export const ruleReadByIdRequest = createRequestThunk({
 })
 
 const ruleUpdate = data => {
-  yellow('actions.ruleUpdate: data', data)
   return {
     type: RULE_UPDATE_KEY,
     payload: data
