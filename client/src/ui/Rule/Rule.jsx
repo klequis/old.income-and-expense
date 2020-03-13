@@ -1,44 +1,45 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
-import { ruleUpdateRequest } from 'store/rules/actions'
-import { getRuleById } from 'store/rules/selectors'
-import { criteriaTestReadRequest, criteriaTestClear } from 'store/criteriaTest/actions'
-import { getCriteriaTestResults } from 'store/criteriaTest/selectors'
-
-import Actions from './Actions'
+import { getRuleById, getRuleTmp } from 'store/rules/selectors'
+import { ruleTmpAdd, ruleTmpClear, ruleTmpUpdate, ruleUpdateRequest } from 'store/rules/actions'
+import { RULE_UPDATE_REQUEST_KEY } from 'store/rules/constants'
+import { getRequest, areRequestsPending } from 'store/requests/selectors'
 import { makeStyles } from '@material-ui/styles'
+import CriterionView from './CriterionView'
+import CriterionEdit from './CriterionEdit'
+import ActionView from './ActionView'
+import ActionEdit from './ActionEdit'
 import ActionButton from 'ui/elements/ActionButton'
 import { buttonTypes } from 'ui/elements/ActionButton'
-import Criterion from './Criterion'
-import shortid from 'shortid'
 import Button from '@material-ui/core/Button'
-import TestCriteriaResults from './TestCriteriaResults'
-
-
-// import replaceArrayItem from 'lib'
+import { viewModes, actionTypes } from 'global-constants'
 import {
   append,
-  mergeRight,
-  insert,
   findIndex,
+  insert,
+  isEmpty,
+  mergeRight,
+  prop,
   propEq,
-  startsWith,
   remove,
-  prop
+  startsWith
 } from 'ramda'
+import isNilOrEmpty from 'lib/isNillOrEmpty'
 
-import { viewModes } from 'global-constants'
+import { getAllDataByDescription } from 'store/views/selectors'
+import { allDataByDescriptionRequest } from 'store/views/actions'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
 
 
 const useStyles = makeStyles({
-  rule: {
+  wrapper: {
     display: 'flex',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    width: '100%',
+    backgroundColor: 'red'
   },
   ruleId: {
     marginTop: 4,
@@ -62,180 +63,250 @@ const useStyles = makeStyles({
 /**
  *
  * @param {string} ruleId -  a mongoDB ObjectID. Only used to get rule from Redux state
- * @param {function} ruleUpdateRequest - Redux action
- * @param {function} ruleCreateRequest - Redux action
  * @param {object} rule - from Redux { _id, criteria[], actions[]}
  */
 
-const Rule = ({ ruleId, rule, ruleUpdateRequest, criteriaTestClear, criteriaTestResults, criteriaTestReadRequest }) => {
+const Rule = ({
+  areRequestsPending,
+  ruleId,
+  rule,
+  ruleTmp,
+  ruleTmpAdd,
+  ruleTmpClear,
+  ruleTmpUpdate,
+  ruleUpdateRequest,
+  ruleUpdateRequestStatus,
+  allDataByDescriptionRequest
+}) => {
 
-  // console.group('Rule')
-  // green('ruleid', ruleId)
-  // green('rule', rule)
-  // console.groupEnd()
-
-  // state
-
-  
-
-  const { actions, criteria } = rule
-  const [_actions, _setActions] = useState(actions)
-  const [_criteria, _setCriteria] = useState(criteria)
-
-  // TODO: what should the initial viewMode be?
-  const newMode = startsWith('tmp_', ruleId)
-  const [_viewMode, _setViewMode] = useState(newMode ? viewModes.modeNew : viewModes.modeView)
+  green('**rule', rule)
+  const { criteria, actions } = rule
+  const [_viewMode, _setViewMode] = useState(viewModes.modeView)
+  const [_dirty, _setDirty] = useState(false)
 
   const _classes = useStyles()
 
-  // methods
+  green('Rule: ruleUpdateRequestStatus', ruleUpdateRequestStatus)
+  green('Rule: areRequestsPending', areRequestsPending)
+  if (areRequestsPending) {
+    return null
+  }
+
+  // useEffect(() => {
+  //   if (_viewMode === viewModes.modeEdit) {
+  //     ruleTmpAdd(rule)
+  //   }
+  // })
+
+  const _handleEditClick = criterionId => {
+    // _setEditId(criterionId)
+    ruleTmpAdd(rule)
+    _setViewMode(viewModes.modeEdit)
+  }
 
   const _handleCancelClick = () => {
-    // TODO
-  }
-
-  const _handleDeleteClick = () => {
-    // TODO
-  }
-
-  const _handleEditclick = () => {
-    green('Rule._handleEditclick')
-    if (_viewMode === viewModes.modeNew) {
-      _setViewMode(viewModes.modeNew)
-    }
-    if (_viewMode === viewModes.modeView) {
-      _setViewMode(viewModes.modeEdit)
-    }
-    if (_viewMode === viewModes.modeEdit) {
-      _setViewMode(viewModes.modeView)
-    }
+    ruleTmpClear()
+    _setViewMode(viewModes.modeView)
   }
 
   const _handleSaveClick = async () => {
-    // TODO: logic needs to change to handle tmp_ rule differently
-    
-    const newRule = mergeRight(rule, {
-      criteria: _criteria,
-      actions: _actions
-    })
-    const r = await ruleUpdateRequest(ruleId, newRule)
-  }
-
-  const _newAction = () => {
-    // TODO
-  }
-
-  const _newCriterion = () => {
-    // TODO
-    const c = {
-      _id: `tmp_${shortid.generate()}`,
-      field: '',
-      operation: '',
-      value: ''
-    }
-    // green('c', c)
-    _setCriteria(append(c, _criteria))
-  }
-
-  const _testCriteria = async () => {
-    await criteriaTestReadRequest(_criteria)
-  }
-
-  const _criteriaTestClear = () => {
-    criteriaTestClear()
-  }
-
-  const _updateActions = newAction => {
-    // TODO: logic here should be similar to updateCriterion
-    const actionId = prop('_id', newAction)
-    const idx = findIndex(propEq('_id', actionId))(_actions)
-    const newActions = insert(idx, newAction, remove(idx, 1, _actions))
-    _setActions(newActions)
-  }
-
-  const _updateCriteria = criterion => {
-    const criterionId = prop('_id', criterion)
-    const idx = findIndex(propEq('_id', criterionId))(_criteria)
-    if (_criteria.length === 0 || idx === -1) {
-      _setCriteria(append(criterion, _criteria))
+    green('_handleSaveClick')
+    green('_handleSaveClick: ruleId', ruleId)
+    if (startsWith('tmp_', ruleId)) {
+      green('yes')
     } else {
-      const newCriteria = insert(idx, criterion, remove(idx, 1, _criteria))
-      _setCriteria(newCriteria)
+      await ruleUpdateRequest(ruleId, ruleTmp)
+      await allDataByDescriptionRequest('all-data-by-description')
     }
   }
 
-  const RuleActionButtons = () => {
-    if (_viewMode === viewModes.modeEdit) {
-      return (
-        <>
-          <ActionButton buttonType={buttonTypes.save} onClick={_handleSaveClick}/>
-          <ActionButton buttonType={buttonTypes.cancel} onClick={_handleCancelClick} />
-          <ActionButton buttonType={buttonTypes.delete} onClick={_handleDeleteClick} />
-        </>
-      )
-    }
-    if (_viewMode === viewModes.modeNew) {
-      return (
-        <>
-          <ActionButton buttonType={buttonTypes.save} onClick={_handleSaveClick} />
-          <ActionButton buttonType={buttonTypes.cancel} onClick={_handleCancelClick} />
-        </>
-      )
-    }
-    return <ActionButton buttonType={buttonTypes.edit} onClick={_handleEditclick} />
+  const _handleDeleteClick = () => {}
+
+  const _handleDirtyChange = isDirty => {
+    _setDirty(isDirty)
   }
-  
+
+  const _handleCriterionChange = criterion => {
+    const { criteria } = ruleTmp
+
+    const criterionId = prop('_id', criterion)
+    const idx = findIndex(propEq('_id', criterionId))(criteria)
+
+    const newCriteria =
+      criteria.length === 0 || idx === -1
+        ? [criterion]
+        : insert(idx, criterion, remove(idx, 1, criteria))
+
+    const newRule = mergeRight(rule, { criteria: newCriteria })
+    ruleTmpUpdate(newRule)
+  }
+
+  const validateAction = ({
+    _id,
+    action,
+    field,
+    findValue,
+    numAdditionalChars,
+    replaceWithValue,
+    category1,
+  }) => {
+    const errors = []
+    const possibleActionTypes = [actionTypes.omit, actionTypes.strip, actionTypes.replaceAll, actionTypes.categorize]
+    if (isNilOrEmpty(_id)) {
+      errors.push('Missing or invalid _id')
+    }
+    if (isNilOrEmpty(action)) {
+      errors.push('Missing action')
+    }
+    if (!possibleActionTypes.includes(action)) {
+      errors.push('Unknown action type')
+    }
+
+    // field: strip, replaceAll
+
+    if (action === actionTypes.strip || action === actionTypes.replaceAll) {
+      if (isNilOrEmpty(field)) {
+        errors.push(`Invalid or missing value for 'field'.`)
+      }
+    }
+
+    // findValue: strip
+    if (action === actionTypes.strip) {
+      if (isNilOrEmpty(findValue)) {
+        errors.push(`Invalid or missing value for 'findValue'.`)
+      }
+    }
+
+    // numAdditionalChars: strip
+    if (action === actionTypes.numAdditionalChars) {
+      if (isNilOrEmpty(numAdditionalChars)) {
+        errors.push(`Invalid or missing value for 'numAdditionalChars'.`)
+      }
+    }
+    // replaceWithValue: replaceall
+    if (action === actionTypes.replaceAll) {
+      if (isNilOrEmpty(replaceWithValue)) {
+        errors.push(`Invalid or missing value for 'replaceWithValue'.`)
+      }
+    }
+
+    if (action === actionTypes.categorize) {
+      if (isNilOrEmpty(category1)) {
+        errors.push(`Invalid or missing value for 'category1'.`)
+      }
+    }
+    red('validateAction ERROR', errors)
+  }
+
+  const _handleActionChange = action => {
+    // validateAction(action)
+    const { actions } = ruleTmp
+    const actionId = prop('_id', action)
+    const idx = findIndex(propEq('_id', actionId))(actions)
+    const newActions =
+      actions.length === 0 || idx === -1
+        ? [action]
+        : insert(idx, action, remove(idx, 1, actions))
+    const newRule = mergeRight(rule, { actions: newActions })
+    ruleTmpUpdate(newRule)
+  }
+
   return (
-    <div key={ruleId} className={_classes.rule}>
+    <div key={ruleId} className={_classes.wrapper}>
       <div>
         <div className={_classes.ruleTitle}>
           <div className={_classes.ruleId}>RuleId: {ruleId}</div>
-          <RuleActionButtons />
-          
+          {_viewMode === viewModes.modeView ? (
+            <ActionButton
+              buttonType={buttonTypes.edit}
+              onClick={_handleEditClick}
+            />
+          ) : (
+            <>
+              <ActionButton
+                buttonType={buttonTypes.save}
+                onClick={_handleSaveClick}
+                disabled={!_dirty}
+              />
+              <ActionButton
+                buttonType={buttonTypes.cancel}
+                onClick={_handleCancelClick}
+              />
+              <ActionButton
+                buttonType={buttonTypes.delete}
+                onClick={_handleDeleteClick}
+              />
+              <Button variant="outlined">Test Criteria</Button>
+            </>
+          )}
         </div>
-        <TestCriteriaResults arrayOfStrings={criteriaTestResults} />
-        <div className={_classes.actionsTitle}>
-          Criteria <ActionButton buttonType={buttonTypes.add} onClick={_newCriterion} />
-          <Button onClick={_testCriteria}>Test Criteria</Button>
-        </div>
-        {_criteria.map(c => {
+        {criteria.map(c => {
           const { _id } = c
+          if (_viewMode === viewModes.modeEdit) {
+            return (
+              <CriterionEdit
+                key={_id}
+                criterion={c}
+                handleDirtyChange={_handleDirtyChange}
+                handleCriterionChange={_handleCriterionChange}
+              />
+            )
+          }
           return (
-            <Criterion
+            <CriterionView
               key={_id}
               criterion={c}
-              updateCriteria={_updateCriteria}
-              criteriaTestClear={_criteriaTestClear}
+              handleEditClick={_handleEditClick}
             />
           )
         })}
-        <div className={_classes.actionsTitle}>
-          Actions <ActionButton buttonType={buttonTypes.add} onClick={_newAction} />
-        </div>
-        <Actions
-          key={shortid.generate()}
-          actions={actions}
-          editMode={_viewMode === viewModes.modeEdit}
-          updateAction={_updateActions}
-        />
+        {actions.map(a => {
+          const { _id } = a
+          if (_viewMode === viewModes.modeEdit) {
+            return (
+              <ActionEdit
+                key={_id}
+                action={a}
+                handleDirtyChange={_handleDirtyChange}
+                handleActionChange={_handleActionChange}
+              />
+            )
+          }
+          return <ActionView key={_id} action={a} />
+        })}
       </div>
     </div>
   )
 }
 
 const actions = {
-  criteriaTestClear,
-  criteriaTestReadRequest,
-  ruleUpdateRequest
+  ruleTmpAdd,
+  ruleTmpClear,
+  ruleTmpUpdate,
+  ruleUpdateRequest,
+  allDataByDescriptionRequest
 }
 
 const mapStateToProps = (state, ownProps) => {
-  // TODO: is this always 'ruleId' or is it sometimes _id
   const { ruleId } = ownProps
+  // green('mstp: state', state)
+  // green('mstp: ruleId', ruleId)
+  const rule = getRuleById(state, ruleId)
+  const ruleTmp = getRuleTmp(state)
+  // console.group('Rule.mstp')
+  // green('ruleId', ruleId)
+  // green('state', state)
+  // // green('state.ruleTMp', state.ruleTmp)
+  // green('rule', rule)
+  // green('ruleTmp', ruleTmp)
+  // console.groupEnd()
   return {
     // if the rule is not found return undefined so that the default value for rule will be used above
-    rule: getRuleById(state, ruleId) || undefined,
-    criteriaTestResults: getCriteriaTestResults(state)
+    //  getRuleById know to look in ruleTmp if ruleId starts with tmp_ and rules otherwise
+    rule: rule,
+    ruleTmp: ruleTmp,
+    ruleUpdateRequestStatus: getRequest(state, RULE_UPDATE_REQUEST_KEY),
+    areRequestsPending: areRequestsPending(state)
   }
 }
 
@@ -246,32 +317,12 @@ Rule.propTypes = {
   rule: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     criteria: PropTypes.arrayOf(PropTypes.object).isRequired,
-    actions: PropTypes.arrayOf(PropTypes.object).isRequired,
-    ruleIds: PropTypes.arrayOf(PropTypes.string).isRequired
+    actions: PropTypes.arrayOf(PropTypes.object).isRequired
   }),
+  ruleTmpAdd: PropTypes.func.isRequired,
+  ruleTmpClear: PropTypes.func.isRequired,
+  ruleTmpUpdate: PropTypes.func.isRequired,
   ruleUpdateRequest: PropTypes.func.isRequired,
-  criteriaTestReadRequest: PropTypes.func.isRequired,
-  criteriaTestResults: PropTypes.array.isRequired,
-  criteriaTestClear:  PropTypes.func.isRequired,
+  ruleUpdateRequestStatus: PropTypes.string
+  
 }
-
-// TODO: updateRule code goes into applyRule - not used here
-// const updateRule = async ({ newCriterion = {}, newAction = {} }) => {
-//   if (!isEmpty(newAction)) {
-//     green('updateRule: newAction', newAction)
-//   } else {
-//     const { criteria } = rule
-//     const replacedCriteria = replaceCriterion(criteria, newCriterion)
-//     const newRule = mergeRight(rule, { criteria: replacedCriteria })
-
-//     console.group('updateRule')
-//     green('criteria', criteria)
-//     green('newCriterion', newCriterion)
-//     green('replacedCriteria', replacedCriteria)
-//     green('newRule', newRule)
-//     console.groupEnd()
-//     const r = await ruleUpdateRequest(_id, newRule)
-//     green('r', r)
-//   }
-// }
-

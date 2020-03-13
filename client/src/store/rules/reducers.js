@@ -4,7 +4,7 @@ import {
   RULE_UPDATE_KEY,
   RULE_NEW_KEY,
   RULETMP_ADD_KEY,
-  RULETMP_REMOVE_KEY,
+  RULETMP_CLEAR_KEY,
   RULETMP_UPDATE_KEY
 } from './constants'
 import { findIndex, propEq, insert, remove } from 'ramda'
@@ -60,17 +60,15 @@ export const ruleNewReducer = (state = [], { type, payload }) => {
 export const ruleTmpReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case RULETMP_ADD_KEY:
-      console.group()
-      blue('ruleTmpReducer: state', state)
-      blue('ruleTmpReducer: type', type)
-      blue('ruleTmpReducer: payload', payload)
-      console.groupEnd()
-      return payload
-    case RULETMP_REMOVE_KEY:
-      return removeRule(payload, state)
     case RULETMP_UPDATE_KEY:
-      // update is a replace
-      return replaceRule(payload, state)
+      // console.group()
+      // blue('ruleTmpReducer: state', state)
+      // blue('ruleTmpReducer: type', type)
+      // blue('ruleTmpReducer: payload', payload)
+      // console.groupEnd()
+      return payload
+    case RULETMP_CLEAR_KEY:
+      return {}
     default:
       return state
   }

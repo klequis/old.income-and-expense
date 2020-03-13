@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import { compose } from 'recompose'
-import { ruleTmpAdd, ruleTmpRemove, ruleTmpUpdate } from 'store/rules/actions'
+// import { connect } from 'react-redux'
+// import { compose } from 'recompose'
 import { makeStyles } from '@material-ui/styles'
 import TD from './TD'
 import { format } from 'date-fns'
 import Rule from 'ui/Rule'
-import { append, has } from 'ramda'
+import { append } from 'ramda'
 import shortid from 'shortid'
 
 // eslint-disable-next-line
@@ -15,11 +14,12 @@ import { green, red } from 'logger'
 
 const useStyles = makeStyles({
   tr: {
-    backgroundColor: '#3a3a3a'
+    backgroundColor: '#3a3a3a',
+    width: '100%'
   }
 })
 
-const TR = ({ doc, newRule, ruleTmpAdd, ruleTmpRemove, ruleTmpUpdate }) => {
+const TR = ({ doc }) => {
   const {
     date,
     description,
@@ -50,24 +50,9 @@ const TR = ({ doc, newRule, ruleTmpAdd, ruleTmpRemove, ruleTmpUpdate }) => {
     // green('handleAddRuleClick')
     // const newRuleId = await newRule()
     const tmpId = `tmp_${shortid.generate()}`
-    const newRule = {
-      _id: tmpId,
-      ruleIds: [tmpId],
-      criteria: [],
-      actions: []
-    }
 
-    const { _id } = newRule
 
-    ruleTmpAdd(newRule)
-    const newRuleIds = append(_id, rowRuleIds)
-
-    // console.group('handleAddRuleClick')
-    // green('newRule', newRule)
-    // green('_id', _id)
-    // green('rowRuleIds', rowRuleIds)
-    // green('newRuleIds', newRuleIds)
-    // console.groupEnd()
+    const newRuleIds = append(tmpId, rowRuleIds)
 
     setRowRuleIds(newRuleIds)
 
@@ -83,22 +68,20 @@ const TR = ({ doc, newRule, ruleTmpAdd, ruleTmpRemove, ruleTmpUpdate }) => {
       // green('does not have ruleIds')
       return (
         <tr>
-          <td>
+          <td colSpan='8'>
             <button onClick={handleAddRuleClick}>Add Rule</button>
           </td>
         </tr>
       )
     }
-    red('rowRuleIds', rowRuleIds)
     return rowRuleIds.map(id => (
       <tr key={id}>
-        <td>
+        <td colSpan='8'>
           <Rule ruleId={id} />
         </td>
       </tr>
     ))
   }
-  // green('rowRuleIds', rowRuleIds)
   return (
     <>
       <tr className={classes.tr} onClick={handleRowClick}>
@@ -118,12 +101,13 @@ const TR = ({ doc, newRule, ruleTmpAdd, ruleTmpRemove, ruleTmpUpdate }) => {
   )
 }
 
-const actions = {
-  ruleTmpAdd,
-  ruleTmpRemove,
-  ruleTmpUpdate
-}
+// const actions = {
+//   ruleTmpAdd,
+//   ruleTmpRemove,
+//   ruleTmpUpdate
+// }
 
-const mapStateToProps = state => ({})
+// const mapStateToProps = state => ({})
 
-export default connect(mapStateToProps, actions)(TR)
+// export default connect(mapStateToProps, actions)(TR)
+export default TR
