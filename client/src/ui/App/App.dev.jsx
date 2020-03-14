@@ -17,8 +17,8 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/styles'
 // views
 import RawData from 'ui/views/RawData'
-// import AllDataByDescription from 'ui/views/AllDataByDescription'
-import Test from 'ui/views/Test'
+import AllDataByDescription from 'ui/views/AllDataByDescription'
+
 
 // other
 import Nav from 'ui/Nav'
@@ -38,7 +38,7 @@ const useStyles = makeStyles({
 })
 
 const App = props => {
-
+  
   const classes = useStyles()
 
   const {
@@ -49,14 +49,15 @@ const App = props => {
 
   const _updateRulesAndData = async (view) => {
     try {
+      
       await rulesReadRequest()
       await viewReadRequest(view)
+      
     } catch (e) {
       red('App.dev ERROR', e.message)
       console.log(e)
     }
   }
-
 
   // useEffect(() => {
   //   ;(async () => {
@@ -75,7 +76,12 @@ const App = props => {
     <div className={classes.devWrapper}>
       <Container maxWidth={false}>
         <Nav importData={_importData} />
-        <Test updateRulesAndData={_updateRulesAndData} />
+        <Switch>
+          <Route path='/all-data-by-description'>
+            <AllDataByDescription updateRulesAndData={_updateRulesAndData} />
+          </Route>
+        </Switch>
+        
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>

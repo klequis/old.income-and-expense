@@ -104,8 +104,6 @@ const TR = ({ doc, showOrigDescription, updateRulesAndData }) => {
           {isNilOrEmpty(ruleIds) ? null : ruleIds.map(id => <div key={id}>{id}</div>)}
         </TD>
       </tr>
-      {/* {(showRules && ruleIds.length > 0) ? ruleIds.map(id => <tr><td><Rule rule={ruleIds[0]} /></td></tr> ) : null} */}
-      {/* {has('ruleIds')(doc) ? <Rules /> : null} */}
       <Rules />
     </>
   )

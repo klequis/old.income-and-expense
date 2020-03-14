@@ -1,17 +1,14 @@
 import React, { useEffect } from 'react'
 
 const Test = ({ updateRulesAndData }) => {
+
   useEffect(() => {
     ;(async () => {
       await updateRulesAndData('all-data-by-description')
     })()
+    // eslint-disable-next-line
   }, [])
 
-  // useEffect(() => {
-  //   ;(async () => {
-  //     await updateRulesAndData('all-data-by-description')
-  //   })()
-  // }, [updateRulesAndData])
 
   return (
     <>
