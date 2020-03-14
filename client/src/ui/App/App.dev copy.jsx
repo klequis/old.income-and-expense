@@ -4,11 +4,13 @@ import DevTools from 'ui/DevTools'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 // Store
-import { importDataRequest, dataReadRequest } from 'store/data/actions'
+import { importDataRequest } from 'store/data/actions'
 import { rulesReadRequest } from 'store/rules/actions'
+import { viewReadRequest } from 'store/views/actions'
+
 import { getRules } from 'store/rules/selectors'
 import { getData } from 'store/data/selectors'
-import { viewReadRequest } from 'store/views/actions'
+
 // React Router
 import { withRouter } from 'react-router'
 import { Route, Switch } from 'react-router-dom'
@@ -16,14 +18,13 @@ import { Route, Switch } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/styles'
 // views
-import RawData from 'ui/views/RawData'
+// import RawData from 'ui/views/RawData'
 // import AllDataByDescription from 'ui/views/AllDataByDescription'
-import Test from 'ui/views/Test'
-
 // other
 import Nav from 'ui/Nav'
 // eslint-disable-next-line
 import { green, red } from 'logger'
+import Test from 'ui/views/Test'
 
 const useStyles = makeStyles({
   appTitle: {
@@ -38,25 +39,28 @@ const useStyles = makeStyles({
 })
 
 const App = props => {
-
   const classes = useStyles()
 
-  const {
-    importDataRequest,
-    rulesReadRequest,
-    viewReadRequest
-  } = props
+  const { importDataRequest, rulesReadRequest, viewReadRequest } = props
 
-  const _updateRulesAndData = async (view) => {
+  const _test = async (view) => {
     try {
-      await rulesReadRequest()
+      await rulesReadRequest
       await viewReadRequest(view)
-    } catch (e) {
-      red('App.dev ERROR', e.message)
-      console.log(e)
-    }
+    } catch (e) {console.log(e)}
   }
 
+  // const _updateRulesAndData = async view => {
+  //   try {
+  //     await rulesReadRequest()
+  //     await viewReadRequest(view)
+  //   } catch (e) {
+  //     red('App.dev ERROR', e.message)
+  //     console.log(e)
+  //   }
+  // }
+
+  // green('App._updateRulesAndData', _updateRulesAndData)
 
   // useEffect(() => {
   //   ;(async () => {
@@ -74,8 +78,25 @@ const App = props => {
   return (
     <div className={classes.devWrapper}>
       <Container maxWidth={false}>
-        <Nav importData={_importData} />
-        <Test updateRulesAndData={_updateRulesAndData} />
+        <Nav
+          importData={_importData}
+          
+        />
+        <Test test={_test} />
+        {/* <Switch>
+          <Route
+            exact
+            path="/"
+            component={RawData}
+            updateRulesAndData={_updateRulesAndData}
+          />
+          <Route
+            exact
+            path="/all-data-by-description"
+            component={AllDataByDescription}
+            updateRulesAndData={_updateRulesAndData}
+          />
+        </Switch> */}
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>
@@ -96,39 +117,3 @@ const mapStateToProps = state => {
 }
 
 export default compose(withRouter, connect(mapStateToProps, actions))(App)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////////////////////////////////////////////
-
-
-
-
-
-
-
-
-

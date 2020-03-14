@@ -5,22 +5,16 @@ import { toastReducer } from './toast/reducers'
 import { validationErrorsReducer } from './validation/reducers'
 import { userReducer } from './user/reducers'
 import {
-  amountByCategoryReducer,
-  dataChangesReducer,
-  allDataByDescriptionReducer
+  viewDataReducer
 } from './views/reducers'
 import { rulesReducer, /*ruleNewReducer,*/ ruleTmpReducer } from './rules/reducers'
 import { criteriaTestReducer } from './criteriaTest/reducers'
 
 const rootReducer = combineReducers({
-  data: dataReducer,
-  allDataByDescription: allDataByDescriptionReducer,
-  amountByCategory: amountByCategoryReducer,
+  viewData: viewDataReducer,
   criteriaTestResults: criteriaTestReducer,
-  dataChanges: dataChangesReducer,
   requests: requestsReducer,
   rules: rulesReducer,
-  // ruleNew: ruleNewReducer,
   ruleTmp: ruleTmpReducer,
   toast: toastReducer,
   validationErrors: validationErrorsReducer,

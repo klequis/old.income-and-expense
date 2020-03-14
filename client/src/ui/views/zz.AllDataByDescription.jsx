@@ -21,28 +21,23 @@ const useStyles = makeStyles({
 })
 
 const AllDataByDescription = ({
+  updateRulesAndData,
   viewReadRequest,
   ruleCreateRequest,
   rulesReadRequest,
-  data
+  data,
+  
 }) => {
+
   const [_switchState, _setSwitchState] = useState({
     showOrigDescription: false
   })
 
-  const _updateRulesAndData = async () => {
-    try {
-      await rulesReadRequest()
-      await viewReadRequest('all-data-by-description')
-    } catch (e) {
-      red('AllDataByDescription ERROR', e.message)
-      console.log(e)
-    }
-  }
+  green('updateRulesAndData', updateRulesAndData)
 
   useEffect(() => {
     ;(async () => {
-      await _updateRulesAndData()
+      await updateRulesAndData('all-data-by-description')
     })()
   }, [])
 
@@ -91,7 +86,7 @@ const AllDataByDescription = ({
                 newRule={newRule}
                 key={_id}
                 doc={doc}
-                updateRulesAndData={_updateRulesAndData}
+                updateRulesAndData={updateRulesAndData}
                 showOrigDescription={_switchState.showOrigDescription}
               />
             )
@@ -103,9 +98,9 @@ const AllDataByDescription = ({
 }
 
 const actions = {
-  viewReadRequest,
+  // viewReadRequest,
   ruleCreateRequest,
-  rulesReadRequest
+  // rulesReadRequest
 }
 
 const mapStateToProps = state => {
@@ -116,8 +111,9 @@ const mapStateToProps = state => {
 export default compose(connect(mapStateToProps, actions))(AllDataByDescription)
 
 AllDataByDescription.propTypes = {
-  viewReadRequest: PropTypes.func.isRequired,
+  // viewReadRequest: PropTypes.func.isRequired,
   ruleCreateRequest: PropTypes.func.isRequired,
-  rulesReadRequest: PropTypes.func.isRequired,
-  data: PropTypes.arrayOf(PropTypes.object).isRequired
+  // rulesReadRequest: PropTypes.func.isRequired,
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  updateRulesAndData: PropTypes.func.isRequired,
 }
