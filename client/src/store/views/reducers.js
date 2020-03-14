@@ -1,7 +1,7 @@
 import {
   AMOUNT_BY_CATEGORY_READ_KEY,
   DATA_CHANGES_READ_KEY,
-  ALL_DATA_BY_DESCRIPTION_READ_KEY
+  VIEW_READ_KEY
 } from './constants'
 
 // eslint-disable-next-line
@@ -27,7 +27,7 @@ export function dataChangesReducer(state = [], action) {
 
 export function allDataByDescriptionReducer(state = [], action) {
   switch (action.type) {
-    case ALL_DATA_BY_DESCRIPTION_READ_KEY:
+    case VIEW_READ_KEY:
       return action.payload
     default:
       return state

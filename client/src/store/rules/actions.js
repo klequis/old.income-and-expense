@@ -55,7 +55,6 @@ export const ruleTmpClear = () => {
 }
 
 export const rulesRead = data => {
-  orange('rulesRead: data', data)
   return {
     type: RULES_READ_KEY,
     payload: data

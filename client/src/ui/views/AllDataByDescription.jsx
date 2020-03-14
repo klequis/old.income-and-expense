@@ -3,13 +3,16 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { getAllDataByDescription } from 'store/views/selectors'
-import { allDataByDescriptionRequest } from 'store/views/actions'
+import { viewReadRequest } from 'store/views/actions'
 import { rulesReadRequest, ruleCreateRequest } from 'store/rules/actions'
 import TR from './TR'
 import { makeStyles } from '@material-ui/styles'
+import Switch from '@material-ui/core/Switch'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
 
 // eslint-disable-next-line
-import { green } from 'logger'
+import { green, red } from 'logger'
 
 const useStyles = makeStyles({
   tr: {
@@ -18,55 +21,89 @@ const useStyles = makeStyles({
 })
 
 const AllDataByDescription = ({
-  allDataByDescriptionRequest,
+  viewReadRequest,
   ruleCreateRequest,
   rulesReadRequest,
   data
 }) => {
+  const [_switchState, _setSwitchState] = useState({
+    showOrigDescription: false
+  })
+
+  const _updateRulesAndData = async () => {
+    try {
+      await rulesReadRequest()
+      await viewReadRequest('all-data-by-description')
+    } catch (e) {
+      red('AllDataByDescription ERROR', e.message)
+      console.log(e)
+    }
+  }
+
   useEffect(() => {
     ;(async () => {
-      try {
-        await rulesReadRequest()
-        await allDataByDescriptionRequest('all-data-by-description')
-      } catch (e) {
-        console.log('TheError', e)
-      }
+      await _updateRulesAndData()
     })()
-  }, [allDataByDescriptionRequest, rulesReadRequest])
+  }, [])
 
-  const classes = useStyles()
+  const _classes = useStyles()
 
   const newRule = async () => {
     const newRuleId = await ruleCreateRequest()
     green('AddDataByDescription.newRule: newRuleId', newRuleId)
   }
 
+  const _handleSwitchChange = name => event => {
+    _setSwitchState({ ..._switchState, [name]: event.target.checked })
+  }
+
+
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Credit</th>
-          <th>Debit</th>
-          <th>Category 1</th>
-          <th>Categoty 2</th>
-          <th>Type</th>
-          <th>Omit</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map(doc => {
-          const { _id } = doc
-          return <TR newRule={newRule} key={_id} doc={doc} />
-        })}
-      </tbody>
-    </table>
+    <div>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={_switchState.showOrigDescription}
+            onChange={_handleSwitchChange('showOrigDescription')}
+            value="showOrigDesc"
+          />
+        }
+        label="Show Original Description"
+      />
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Credit</th>
+            <th>Debit</th>
+            <th>Category 1</th>
+            <th>Categoty 2</th>
+            <th>Type</th>
+            <th>Omit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map(doc => {
+            const { _id } = doc
+            return (
+              <TR
+                newRule={newRule}
+                key={_id}
+                doc={doc}
+                updateRulesAndData={_updateRulesAndData}
+                showOrigDescription={_switchState.showOrigDescription}
+              />
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
 const actions = {
-  allDataByDescriptionRequest,
+  viewReadRequest,
   ruleCreateRequest,
   rulesReadRequest
 }
@@ -79,8 +116,8 @@ const mapStateToProps = state => {
 export default compose(connect(mapStateToProps, actions))(AllDataByDescription)
 
 AllDataByDescription.propTypes = {
-  allDataByDescriptionRequest: PropTypes.func.isRequired,
+  viewReadRequest: PropTypes.func.isRequired,
   ruleCreateRequest: PropTypes.func.isRequired,
-  rulesReadRequest:  PropTypes.func.isRequired,
+  rulesReadRequest: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.object).isRequired
 }

@@ -36,7 +36,7 @@ const Action = ({ action: Action, handleDirtyChange, handleActionChange }) => {
     category1,
     category2
   } = Action
-  const [_action, _setAction] = useState(action)
+
   const [_values, _setValues] = useState({
     _id: _id,
     action: action,
@@ -47,11 +47,15 @@ const Action = ({ action: Action, handleDirtyChange, handleActionChange }) => {
     category1: category1,
     category2: category2
   })
+
   const _classes = useStyles()
 
   const _handleChange = event => {
     const { name, value } = event.target
+    // green('_handleChange: name', name)
+    // green('_handleChange: value', value)
     const newValues = mergeRight(_values, { [name]: value })
+    // green('_handleChange: newValues', newValues)
     _setValues(newValues)
     handleDirtyChange(true)
     handleActionChange(newValues)

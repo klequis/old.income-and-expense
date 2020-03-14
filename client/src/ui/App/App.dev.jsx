@@ -68,6 +68,8 @@ const App = props => {
 
   const importData = async () => {
     await importDataRequest()
+    await rulesReadRequest()
+    await dataReadRequest(description, showOmitted)
   }
 
   // const filterChanged = (name, value) => {
@@ -83,6 +85,11 @@ const App = props => {
   //   // const f = { omit: options.showOmitted }
   //   // green('filterChanged: f', f)
   //   // setDescription(f)
+  // }
+
+
+  // const _handleShorOrigDescChange = () => {
+
   // }
 
   // const handleOptionChange = name => event => {

@@ -1,13 +1,14 @@
 import wrap from 'routes/wrap'
-import { RULES_COLLECTION_NAME } from 'db/constants'
-import { findOneAndUpdate } from 'db'
+import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
+import { findOneAndUpdate, find, updateMany } from 'db'
 import runRules from 'actions/runRules'
 import { toString } from 'lib'
+import { ObjectId } from 'mongodb'
 
 // eslint-disable-next-line
 import { red, redf, green, yellow, logRequest } from 'logger'
 
-const patchRule = wrap(async (req, res) => {
+const rulePatch = wrap(async (req, res) => {
   try {
     const { body, params } = req
 
@@ -21,6 +22,21 @@ const patchRule = wrap(async (req, res) => {
       )
     }
 
+    const f = await find(DATA_COLLECTION_NAME, {
+      ruleIds: ObjectId.createFromHexString(_id)
+    })
+    green('f', f)
+    const um = await updateMany(DATA_COLLECTION_NAME, {
+      ruleIds: ObjectId.createFromHexString(_id)
+    },
+    {
+      $pull: { ruleIds: ObjectId.createFromHexString(_id) }
+    })
+
+    green('um', um)
+
+    // so update all the f's to remove the current ID
+
     const updatedRule = await findOneAndUpdate(
       RULES_COLLECTION_NAME,
       { _id: paramsId },
@@ -31,6 +47,8 @@ const patchRule = wrap(async (req, res) => {
     )
     yellow('updatedRule', updatedRule)
     await runRules(updatedRule)
+    // findOneAndUpdate returns an array even though it always returns one item.
+    // Send only the item to the client
     res.send(updatedRule[0])
   } catch (e) {
     redf('updateRule ERROR', e.message)
@@ -38,4 +56,4 @@ const patchRule = wrap(async (req, res) => {
   }
 })
 
-export default patchRule
+export default rulePatch

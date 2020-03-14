@@ -1,6 +1,6 @@
 import {
-  ALL_DATA_BY_DESCRIPTION_READ_KEY,
-  ALL_DATA_BY_DESCRIPTION_READ_REQUEST_KEY,
+  VIEW_READ_KEY,
+  VIEW_READ_REQUEST_KEY,
   AMOUNT_BY_CATEGORY_READ_KEY,
   AMOUNT_BY_CATEGORY_READ_REQUEST_KEY,
   DATA_CHANGES_READ_KEY,
@@ -13,7 +13,6 @@ import { TOAST_WARN } from 'global-constants'
 import { yellow } from 'logger'
 
 export const amountByCategoryRead = data => {
-  yellow('amountByCategoryRead: data', data)
 
   return {
     type: AMOUNT_BY_CATEGORY_READ_KEY,
@@ -30,9 +29,9 @@ const dataChangesRead = data => {
   }
 }
 
-const allDataByDescriptionRead = data => {
+const viewRead = data => {
   return {
-    type: ALL_DATA_BY_DESCRIPTION_READ_KEY,
+    type: VIEW_READ_KEY,
     payload: data
   }
 }
@@ -57,10 +56,10 @@ export const dataChangesReadRequest = createRequestThunk({
   ]
 })
 
-export const allDataByDescriptionRequest = createRequestThunk({
+export const viewReadRequest = createRequestThunk({
   request: api.views.read,
-  key: ALL_DATA_BY_DESCRIPTION_READ_REQUEST_KEY,
-  success: [allDataByDescriptionRead],
+  key: VIEW_READ_REQUEST_KEY,
+  success: [viewRead],
   failure: [
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })

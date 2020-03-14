@@ -4,7 +4,6 @@ import { isEmpty } from 'validator'
 // eslint-disable-next-line
 import { orange, green, redf } from 'logger'
 
-
 /*
     [description] && [true || false]
 
@@ -33,7 +32,7 @@ export default {
         redf('api.criteria.read ERROR', e.message)
         console.log(e)
       }
-    },
+    }
   },
   rules: {
     async read() {
@@ -54,13 +53,14 @@ export default {
       orange('rules.create')
       const url = `api/rules/new-rule`
       const data = await fetchJson(url, {
-        method: 'POST',
+        method: 'POST'
       })
       orange('rules.create: data', data)
       return data
     },
     async delete(ruleId) {
-      const url = `api/rules/${ruleId}`
+      orange('api.rules.delete: ruleId', ruleId)
+      const url = `api/rules/ruleid/${ruleId}`
       const data = await fetchJson(url, {
         method: 'DELETE'
       })
@@ -92,13 +92,14 @@ export default {
     }
   },
   data: {
-    async read(description, showOmitted) {
+    async read(description, showOmitted, view) {
       // /description/:description/showOmitted/:showOmitted
       const descriptionPart = isEmpty(description)
         ? ''
         : `/description/${description}`
       const showOmittedPart = `/showOmitted/${showOmitted}`
-      const url = `/api/data${descriptionPart}${showOmittedPart}`
+      const viewPart = isEmpty(view) ? '' : `/view/${view}`
+      const url = `/api/data${descriptionPart}${showOmittedPart}${viewPart}`
       const data = await fetchJson(url, {
         method: 'GET'
       })

@@ -7,7 +7,8 @@ import {
   DATA_READ_BY_ID_REQUEST_KEY,
   DATA_READ_REQUEST_KEY,
   DATA_UPDATE_REQUEST_KEY,
-  IMPORT_DATA_REQUEST_KEY
+  IMPORT_DATA_REQUEST_KEY,
+  DATA_VIEW_READ_REQUEST
 } from './constants'
 
 import { setToast } from 'store/toast/actions'
@@ -98,6 +99,17 @@ export const dataReadRequest = createRequestThunk({
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
   ]
+})
+
+export const dataViewReadRequest = createRequestThunk({
+  request: api.views.read,
+  key: DATA_VIEW_READ_REQUEST,
+  success: [dataRead],
+  failure: [
+    e =>
+      setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+  ]
+
 })
 
 export const dataReadByCriteriaRequest = createRequestThunk({

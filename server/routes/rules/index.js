@@ -1,16 +1,18 @@
 import express from 'express'
-import getRules from './getRules'
-import getRule from './getRule'
-import patchRule from './patchRule'
-import newRule from './newRule'
+import rulesGet from './rulesGet'
+import ruleGet from './ruleGet'
+import rulePatch from './rulePatch'
+import rulePost from './rulePost'
+import ruleDelete from './ruleDelete'
 // import addId from './add-id'
 
 const router = express.Router()
 
-router.get('/', getRules)
-router.get('/ruleid/:ruleid', getRule)
-router.patch('/ruleid/:ruleid', patchRule)
-router.post('/new-rule', newRule)
+router.get('/', rulesGet)
+router.get('/ruleid/:ruleid', ruleGet)
+router.patch('/ruleid/:ruleid', rulePatch)
+router.post('/new-rule', rulePost)
+router.delete('/ruleid/:ruleid', ruleDelete)
 // router.get('/add-id', addId)
 
 export default router

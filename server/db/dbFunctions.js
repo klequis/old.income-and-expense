@@ -1,4 +1,4 @@
-import mongodb, { ObjectID, ObjectId } from 'mongodb'
+import mongodb, { ObjectID } from 'mongodb'
 import { hasProp } from 'lib'
 import config from 'config'
 import { mergeRight, isEmpty } from 'ramda'
@@ -202,10 +202,10 @@ export const findById = async (collection, id, projection = {}) => {
  */
 export const findOneAndDelete = async (collection, filter) => {
   try {
-    const f = idStringToObjectID(filter)
+    // const f = idStringToObjectID(filter)
     const { db } = await connectDB()
 
-    const r = await db.collection(collection).findOneAndDelete(f)
+    const r = await db.collection(collection).findOneAndDelete(filter)
     const { n, value } = r.lastErrorObject
     if (n === 0 && typeof value === 'undefined') {
       // throw an error
@@ -276,7 +276,7 @@ export const findOneAndUpdate = async (
     // yellow('r', r)
     return [r.value]
   } catch (e) {
-    console.group('dbFunctions.updateMany ERROR')
+    console.group('dbFunctions.findOneAndUpdate ERROR')
     console.log('collection', collection)
     console.log('filter', filter)
     console.log('update', update)

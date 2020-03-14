@@ -5,7 +5,7 @@ import { insertOne } from 'db/dbFunctions'
 // eslint-disable-next-line
 import { yellow, redf } from 'logger'
 
-const newRule = wrap(async (req, res) => {
+const rulePost = wrap(async (req, res) => {
   try {
     const rule = {
       criteria: [],
@@ -24,4 +24,4 @@ const newRule = wrap(async (req, res) => {
   }
 })
 
-export default newRule
+export default rulePost
