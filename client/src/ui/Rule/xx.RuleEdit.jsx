@@ -9,7 +9,7 @@ import {
   criteriaTestClear
 } from 'store/criteriaTest/actions'
 import { getCriteriaTestResults } from 'store/criteriaTest/selectors'
-import { ruleTmpAdd, ruleTmpClear, ruleTmpUpdate } from 'store/rules/actions'
+import { ruleTmpAdd, ruleTmpRemove, ruleTmpUpdate } from 'store/rules/actions'
 
 import Actions from './Actions'
 import { makeStyles } from '@material-ui/styles'
@@ -77,7 +77,7 @@ const Rule = ({
   criteriaTestResults,
   criteriaTestReadRequest,
   ruleTmpAdd,
-  ruleTmpClear,
+  ruleTmpRemove,
   ruleTmpUpdate
 }) => {
   // console.group('Rule')
@@ -242,7 +242,7 @@ const actions = {
   criteriaTestReadRequest,
   ruleUpdateRequest,
   ruleTmpAdd,
-  ruleTmpClear,
+  ruleTmpRemove: ruleTmpRemove,
   ruleTmpUpdate
 }
 
@@ -274,7 +274,7 @@ Rule.propTypes = {
   criteriaTestResults: PropTypes.array.isRequired,
   criteriaTestClear: PropTypes.func.isRequired,
   ruleTmpAdd: PropTypes.func.isRequired,
-  ruleTmpClear: PropTypes.func.isRequired,
+  ruleTmpRemove: PropTypes.func.isRequired,
   ruleTmpUpdate: PropTypes.func.isRequired
 }
 

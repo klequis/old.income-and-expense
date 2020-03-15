@@ -1,12 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes, { string } from 'prop-types'
 import { makeStyles } from '@material-ui/styles'
 
-import TextField from 'ui/elements/TextField'
-import { startsWith } from 'ramda'
-import { viewModes } from 'global-constants'
-import ActionButton from 'ui/elements/ActionButton'
-import { buttonTypes } from 'ui/elements/ActionButton'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -30,8 +25,8 @@ const useStyles = makeStyles({
   }
 })
 
-const CriterionView = ({ criterion, handleEditClick }) => {
-  const { _id, field, operation, value } = criterion
+const CriterionView = ({ criterion }) => {
+  const { field, operation, value } = criterion
 
   const _classes = useStyles()
   return (
@@ -52,5 +47,4 @@ CriterionView.propTypes = {
     operation: string.isRequired,
     value: string.isRequired
   }),
-  handleEditClick: PropTypes.func.isRequired
 }

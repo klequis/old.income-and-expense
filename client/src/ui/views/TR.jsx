@@ -6,13 +6,16 @@ import { makeStyles } from '@material-ui/styles'
 import TD from './TD'
 import { format } from 'date-fns'
 import Rule from 'ui/Rule'
-import { append } from 'ramda'
+import { append, without } from 'ramda'
 import shortid from 'shortid'
-import { ruleTmpAdd } from 'store/rules/actions'
+import { ruleTmpAdd, ruleTmpRemove, ruleDeleteRequest, ruleUpdateRequest } from 'store/rules/actions'
+import removeRule from 'lib/removeRule'
+import isNilOrEmpty from 'lib/isNillOrEmpty'
+import isTmpRule from 'lib/isTmpRule'
+
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
-import isNilOrEmpty from 'lib/isNillOrEmpty'
 
 const useStyles = makeStyles({
   tr: {
@@ -28,6 +31,8 @@ const useStyles = makeStyles({
 const TR = ({
   doc,
   ruleTmpAdd,
+  ruleDeleteRequest,
+  ruleUpdateRequest,
   showOrigDescription,
   updateRulesAndData,
   view
@@ -40,7 +45,6 @@ const TR = ({
     debit,
     description,
     omit,
-
     origDescription,
     ruleIds,
     type
@@ -56,11 +60,21 @@ const TR = ({
 
   const _classes = useStyles({ showOrigDescription: showOrigDescription })
 
+  const _handleRuleCancelClick = (ruleId) => {
+    ruleTmpRemove(ruleId)
+    if (isTmpRule(ruleId)) {
+      const newRuleIds = without([ruleId], _rowRuleIds)
+      _setRowRuleIds(newRuleIds)
+      _setShowRules(false)
+      // removeRule(ruleId)
+    }
+  }
+
   const _handleRowClick = () => {
     _setShowRules(!_showRules)
   }
 
-  const _handleAddRuleClick = async () => {
+  const _handleRuleAddClick = async () => {
     // green('handleAddRuleClick')
     // const newRuleId = await newRule()
     const tmpId = `tmp_${shortid.generate()}`
@@ -86,6 +100,23 @@ const TR = ({
     _setRowRuleIds(newRuleIds)
   }
 
+  const _handleRuleDeleteClick = async (ruleId) => {
+    await ruleDeleteRequest(ruleId)
+    await updateRulesAndData(view)
+    ruleTmpRemove(ruleId)
+  }
+
+  const _saveRule = async (ruleId, ruleTmp) => {
+    ruleTmpRemove(ruleId)
+    if (isTmpRule(ruleId)) {
+      red('TODO: tmp rule not implemented')
+    } else {
+      await ruleUpdateRequest(ruleId, ruleTmp)
+      await updateRulesAndData(view)
+      // await allDataByDescriptionRequest('all-data-by-description')
+    }
+  }
+
   const Rules = () => {
     // green('Rules: showRules', showRules)
     // green('TR.Rules: rowRuleIds', rowRuleIds.length)
@@ -97,7 +128,7 @@ const TR = ({
       return (
         <tr>
           <td colSpan="8">
-            <button onClick={_handleAddRuleClick}>Add Rule</button>
+            <button onClick={_handleRuleAddClick}>Add Rule</button>
           </td>
         </tr>
       )
@@ -107,6 +138,9 @@ const TR = ({
         <td colSpan="8">
           <Rule
             ruleId={id}
+            handleRuleCancelClick={_handleRuleCancelClick}
+            handleRuleDeleteClick={_handleRuleDeleteClick}
+            saveRule={_saveRule}
             updateRulesAndData={updateRulesAndData}
             view={view}
           />
@@ -141,13 +175,15 @@ const TR = ({
 }
 
 const actions = {
-  ruleTmpAdd
+  ruleTmpAdd,
+  ruleDeleteRequest,
+  ruleUpdateRequest,
+  ruleTmpRemove
 }
 
 const mapStateToProps = state => ({})
 
 export default connect(mapStateToProps, actions)(TR)
-// export default TR
 
 TR.propTypes = {
   doc: PropTypes.object.isRequired,
@@ -155,5 +191,7 @@ TR.propTypes = {
   updateRulesAndData: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   newRule: PropTypes.func.isRequired,
-  ruleTmpAdd: PropTypes.func.isRequired
+  ruleTmpAdd: PropTypes.func.isRequired,
+  ruleDeleteRequest: PropTypes.func.isRequired,
+  ruleUpdateRequest: PropTypes.func.isRequired
 }

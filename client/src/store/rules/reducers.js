@@ -4,27 +4,16 @@ import {
   RULE_UPDATE_KEY,
   RULE_NEW_KEY,
   RULETMP_ADD_KEY,
-  RULETMP_CLEAR_KEY,
+  RULETMP_REMOVE_KEY,
   RULETMP_UPDATE_KEY
 } from './constants'
-import { findIndex, propEq, insert, remove } from 'ramda'
+
+import replaceRule from 'lib/replaceRule'
+import removeRule from 'lib/removeRule'
+import { append } from 'ramda'
 
 // eslint-disable-next-line
 import { blue } from 'logger'
-import { ruleTmpAdd } from './actions'
-
-const replaceRule = (newRule, rules) => {
-  const { _id } = newRule
-  const idx = findIndex(propEq('_id', _id))(rules)
-  const newRules = insert(idx, newRule, remove(idx, 1, rules))
-  return newRules
-}
-
-const removeRule = (ruleId, rules) => {
-  const idx = findIndex(propEq('_id', ruleId))(rules)
-  const newRules = remove(idx, 1, rules)
-  return newRules
-}
 
 export function rulesReducer(state = [], { type, payload }) {
   switch (type) {
@@ -57,9 +46,10 @@ export const ruleNewReducer = (state = [], { type, payload }) => {
  *                                    and a string id for REMOVE
  */
 
-export const ruleTmpReducer = (state = {}, { type, payload }) => {
+export const ruleTmpReducer = (state = [], { type, payload }) => {
   switch (type) {
     case RULETMP_ADD_KEY:
+      return append(payload, state)
     case RULETMP_UPDATE_KEY:
       // console.group()
       // blue('ruleTmpReducer: state', state)
@@ -67,9 +57,9 @@ export const ruleTmpReducer = (state = {}, { type, payload }) => {
       // blue('ruleTmpReducer: payload', payload)
       // console.groupEnd()
       
-      return payload
-    case RULETMP_CLEAR_KEY:
-      return {}
+      return replaceRule(payload, state)
+    case RULETMP_REMOVE_KEY:
+      return removeRule(payload.ruleId, state)
     default:
       return state
   }

@@ -8,7 +8,7 @@ import {
   RULE_UPDATE_REQUEST_KEY,
   RULE_UPDATE_KEY,
   RULETMP_ADD_KEY,
-  RULETMP_CLEAR_KEY,
+  RULETMP_REMOVE_KEY,
   RULETMP_UPDATE_KEY
 } from './constants'
 import { setToast } from 'store/toast/actions'
@@ -49,9 +49,10 @@ export const ruleTmpUpdate = data => {
   }
 }
 
-export const ruleTmpClear = () => {
+export const ruleTmpRemove = (ruleId) => {
   return {
-    type: RULETMP_CLEAR_KEY
+    type: RULETMP_REMOVE_KEY,
+    payload: { ruleId }
   }
 }
 

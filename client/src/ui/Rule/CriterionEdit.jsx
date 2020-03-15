@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/styles'
 import { operators, dataFields } from 'global-constants'
 import TextField from 'ui/elements/TextField'
-import { mergeRight, startsWith } from 'ramda'
+import { mergeRight } from 'ramda'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
