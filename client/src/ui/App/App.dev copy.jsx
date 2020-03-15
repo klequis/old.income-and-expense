@@ -4,12 +4,12 @@ import DevTools from 'ui/DevTools'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 // Store
-import { importDataRequest } from 'store/data/actions'
+import { importDataRequest } from 'store/import/actions'
 import { rulesReadRequest } from 'store/rules/actions'
 import { viewReadRequest } from 'store/views/actions'
 
 import { getRules } from 'store/rules/selectors'
-import { getData } from 'store/data/selectors'
+import { getData } from 'store/import/selectors'
 
 // React Router
 import { withRouter } from 'react-router'

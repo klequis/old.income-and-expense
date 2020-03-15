@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { ruleCreateRequest } from 'store/rules/actions'
-import { getVeiwData } from 'store/views/selectors'
+import { getViewData } from 'store/views/selectors'
 
 import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -35,9 +35,8 @@ const AllDataByDescription = ({
   }, [])
 
   if (_loading) {
-    return <h1>Loading ...</h1>
+    return <h1>Loading</h1>
   }
-
   const _handleSwitchChange = name => event => {
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
   }
@@ -80,8 +79,9 @@ const AllDataByDescription = ({
                 newRule={_newRule}
                 key={_id}
                 doc={doc}
-                // updateRulesAndData={updateRulesAndData}
+                updateRulesAndData={updateRulesAndData}
                 showOrigDescription={_switchState.showOrigDescription}
+                view={VIEW_NAME}
               />
             )
           })}
@@ -97,12 +97,12 @@ const actions = {
 
 const mstp = state => {
   return {
-    data: getVeiwData(state)
+    data: getViewData(state)
   }
 }
 
 export default connect(mstp, actions)(AllDataByDescription)
 
-TR.propTypes = {
+AllDataByDescription.propTypes = {
   updateRulesAndData: PropTypes.func.isRequired
 }

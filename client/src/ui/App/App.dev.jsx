@@ -4,11 +4,11 @@ import DevTools from 'ui/DevTools'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 // Store
-import { importDataRequest, dataReadRequest } from 'store/data/actions'
+import { importDataRequest } from 'store/import/actions'
 import { rulesReadRequest } from 'store/rules/actions'
 import { getRules } from 'store/rules/selectors'
-import { getData } from 'store/data/selectors'
 import { viewReadRequest } from 'store/views/actions'
+import { getViewData } from 'store/views/selectors'
 // React Router
 import { withRouter } from 'react-router'
 import { Route, Switch } from 'react-router-dom'
@@ -16,7 +16,7 @@ import { Route, Switch } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/styles'
 // views
-import RawData from 'ui/views/RawData'
+// import RawData from 'ui/views/RawData'
 import AllDataByDescription from 'ui/views/AllDataByDescription'
 
 
@@ -48,6 +48,7 @@ const App = props => {
   } = props
 
   const _updateRulesAndData = async (view) => {
+    green('_updateRulesAndData: view', view)
     try {
       
       await rulesReadRequest()
@@ -67,9 +68,7 @@ const App = props => {
 
   const _importData = async () => {
     await importDataRequest()
-    // await rulesReadRequest()
-    // await dataReadRequest(description, showOmitted)
-    // await _updateRulesAndData
+    await _updateRulesAndData
   }
 
   return (
@@ -96,45 +95,10 @@ const actions = {
 
 const mapStateToProps = state => {
   return {
-    data: getData(state),
+    data: getViewData(state),
     rules: getRules(state)
   }
 }
 
 export default compose(withRouter, connect(mapStateToProps, actions))(App)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-////////////////////////////////////////////
-
-
-
-
-
-
-
-
 

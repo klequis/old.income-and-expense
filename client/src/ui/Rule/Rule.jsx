@@ -19,21 +19,17 @@ import ActionEdit from './ActionEdit'
 import ActionButton from 'ui/elements/ActionButton'
 import { buttonTypes } from 'ui/elements/ActionButton'
 import Button from '@material-ui/core/Button'
-import { viewModes, actionTypes } from 'global-constants'
+import { viewModes } from 'global-constants'
 import {
-  append,
   findIndex,
   insert,
-  isEmpty,
   mergeRight,
   prop,
   propEq,
   remove,
   startsWith
 } from 'ramda'
-import isNilOrEmpty from 'lib/isNillOrEmpty'
 
-import { getAllDataByDescription } from 'store/views/selectors'
 import { viewReadRequest } from 'store/views/actions'
 
 // eslint-disable-next-line
@@ -72,7 +68,6 @@ const useStyles = makeStyles({
  */
 
 const Rule = ({
-  allDataByDescriptionRequest,
   areRequestsPending,
   rule,
   ruleDeleteRequest,
@@ -82,14 +77,15 @@ const Rule = ({
   ruleTmpClear,
   ruleTmpUpdate,
   ruleUpdateRequest,
-  ruleUpdateRequestStatus,
-  updateRulesAndData
+  updateRulesAndData,
+  view
 }) => {
   const { criteria, actions } = rule
   const [_viewMode, _setViewMode] = useState(viewModes.modeView)
   const [_dirty, _setDirty] = useState(false)
 
   const _classes = useStyles()
+
 
   if (areRequestsPending) {
     return null
@@ -111,7 +107,9 @@ const Rule = ({
     yellow('before delete')
     await ruleDeleteRequest(ruleId)
     yellow('before update')
-    await updateRulesAndData()
+
+    await updateRulesAndData(view)
+
     yellow('before clear')
     ruleTmpClear()
     yellow('done')
@@ -130,7 +128,7 @@ const Rule = ({
       red('TODO: tmp rule not implemented')
     } else {
       await ruleUpdateRequest(ruleId, ruleTmp)
-      await updateRulesAndData()
+      await updateRulesAndData(view)
       // await allDataByDescriptionRequest('all-data-by-description')
     }
   }
@@ -264,7 +262,6 @@ const mapStateToProps = (state, ownProps) => {
     //  getRuleById know to look in ruleTmp if ruleId starts with tmp_ and rules otherwise
     rule: rule,
     ruleTmp: ruleTmp,
-    ruleUpdateRequestStatus: getRequest(state, RULE_UPDATE_REQUEST_KEY),
     areRequestsPending: areRequestsPending(state)
   }
 }
@@ -283,7 +280,7 @@ Rule.propTypes = {
   ruleTmpClear: PropTypes.func.isRequired,
   ruleTmpUpdate: PropTypes.func.isRequired,
   ruleUpdateRequest: PropTypes.func.isRequired,
-  ruleUpdateRequestStatus: PropTypes.string
+  view: PropTypes.string.isRequired
 }
 
 /*

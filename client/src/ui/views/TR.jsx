@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 // import { connect } from 'react-redux'
 // import { compose } from 'recompose'
 import { makeStyles } from '@material-ui/styles'
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
   })
 })
 
-const TR = ({ doc, showOrigDescription, updateRulesAndData }) => {
+const TR = ({ doc, showOrigDescription, updateRulesAndData, view }) => {
   const {
     date,
     description,
@@ -80,7 +81,7 @@ const TR = ({ doc, showOrigDescription, updateRulesAndData }) => {
     return _rowRuleIds.map(id => (
       <tr key={id}>
         <td colSpan="8">
-          <Rule ruleId={id} updateRulesAndData={updateRulesAndData} />
+          <Rule ruleId={id} updateRulesAndData={updateRulesAndData} view={view} />
         </td>
       </tr>
     ))
@@ -119,3 +120,10 @@ const TR = ({ doc, showOrigDescription, updateRulesAndData }) => {
 
 // export default connect(mapStateToProps, actions)(TR)
 export default TR
+
+TR.propTypes = {
+  doc: PropTypes.object.isRequired, 
+  showOrigDescription: PropTypes.bool.isRequired,
+  updateRulesAndData: PropTypes.func.isRequired,
+  view: PropTypes.string.isRequired
+}
