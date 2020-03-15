@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-// import { connect } from 'react-redux'
+import { connect } from 'react-redux'
 // import { compose } from 'recompose'
 import { makeStyles } from '@material-ui/styles'
 import TD from './TD'
@@ -8,6 +8,7 @@ import { format } from 'date-fns'
 import Rule from 'ui/Rule'
 import { append } from 'ramda'
 import shortid from 'shortid'
+import { ruleTmpAdd } from 'store/rules/actions'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -24,18 +25,25 @@ const useStyles = makeStyles({
   })
 })
 
-const TR = ({ doc, showOrigDescription, updateRulesAndData, view }) => {
+const TR = ({
+  doc,
+  ruleTmpAdd,
+  showOrigDescription,
+  updateRulesAndData,
+  view
+}) => {
   const {
-    date,
-    description,
-    origDescription,
-    credit,
-    debit,
     category1,
     category2,
-    type,
+    credit,
+    date,
+    debit,
+    description,
     omit,
-    ruleIds
+
+    origDescription,
+    ruleIds,
+    type
   } = doc
 
   // console.group('TR')
@@ -58,6 +66,22 @@ const TR = ({ doc, showOrigDescription, updateRulesAndData, view }) => {
     const tmpId = `tmp_${shortid.generate()}`
 
     const newRuleIds = append(tmpId, _rowRuleIds)
+    ruleTmpAdd({
+      _id: tmpId,
+      criteria: [
+        {
+          _id: `tmp_${shortid.generate()}`,
+          field: '',
+          operation: '',
+          value: ''
+        }
+      ],
+      actions: [
+        {
+          _id: `tmp_${shortid.generate()}`
+        }
+      ]
+    })
 
     _setRowRuleIds(newRuleIds)
   }
@@ -81,7 +105,11 @@ const TR = ({ doc, showOrigDescription, updateRulesAndData, view }) => {
     return _rowRuleIds.map(id => (
       <tr key={id}>
         <td colSpan="8">
-          <Rule ruleId={id} updateRulesAndData={updateRulesAndData} view={view} />
+          <Rule
+            ruleId={id}
+            updateRulesAndData={updateRulesAndData}
+            view={view}
+          />
         </td>
       </tr>
     ))
@@ -102,7 +130,9 @@ const TR = ({ doc, showOrigDescription, updateRulesAndData, view }) => {
         <TD align="right">{type}</TD>
         <TD align="right">{omit}</TD>
         <TD align="center">
-          {isNilOrEmpty(ruleIds) ? null : ruleIds.map(id => <div key={id}>{id}</div>)}
+          {isNilOrEmpty(ruleIds)
+            ? null
+            : ruleIds.map(id => <div key={id}>{id}</div>)}
         </TD>
       </tr>
       <Rules />
@@ -110,20 +140,20 @@ const TR = ({ doc, showOrigDescription, updateRulesAndData, view }) => {
   )
 }
 
-// const actions = {
-//   ruleTmpAdd,
-//   ruleTmpRemove,
-//   ruleTmpUpdate
-// }
+const actions = {
+  ruleTmpAdd
+}
 
-// const mapStateToProps = state => ({})
+const mapStateToProps = state => ({})
 
-// export default connect(mapStateToProps, actions)(TR)
-export default TR
+export default connect(mapStateToProps, actions)(TR)
+// export default TR
 
 TR.propTypes = {
-  doc: PropTypes.object.isRequired, 
+  doc: PropTypes.object.isRequired,
   showOrigDescription: PropTypes.bool.isRequired,
   updateRulesAndData: PropTypes.func.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  newRule: PropTypes.func.isRequired,
+  ruleTmpAdd: PropTypes.func.isRequired
 }

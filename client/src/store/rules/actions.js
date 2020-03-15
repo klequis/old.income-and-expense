@@ -35,6 +35,7 @@ import { orange } from 'logger'
 // }
 
 export const ruleTmpAdd = data => {
+  // orange('ruleTmpAdd: data', data)
   return {
     type: RULETMP_ADD_KEY,
     payload: data

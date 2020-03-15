@@ -66,6 +66,7 @@ export const ruleTmpReducer = (state = {}, { type, payload }) => {
       // blue('ruleTmpReducer: type', type)
       // blue('ruleTmpReducer: payload', payload)
       // console.groupEnd()
+      
       return payload
     case RULETMP_CLEAR_KEY:
       return {}

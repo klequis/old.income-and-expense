@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   }
 })
 
-const Action = ({ action: Action }) => {
+const ActionView = ({ action: Action }) => {
   const {
     action,
     field,
@@ -65,4 +65,4 @@ const Action = ({ action: Action }) => {
   }
 }
 
-export default Action
+export default ActionView

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 // Redux
 import DevTools from 'ui/DevTools'
 import { connect } from 'react-redux'
@@ -102,3 +103,9 @@ const mapStateToProps = state => {
 
 export default compose(withRouter, connect(mapStateToProps, actions))(App)
 
+
+App.propTypes = {
+  importDataRequest: PropTypes.func.isRequired,
+  rulesReadRequest: PropTypes.func.isRequired,
+  viewReadRequest: PropTypes.func.isRequired
+}

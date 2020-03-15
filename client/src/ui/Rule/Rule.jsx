@@ -9,14 +9,19 @@ import {
   ruleUpdateRequest,
   ruleDeleteRequest
 } from 'store/rules/actions'
-import { RULE_UPDATE_REQUEST_KEY } from 'store/rules/constants'
-import { getRequest, areRequestsPending } from 'store/requests/selectors'
+import {
+  criteriaTestReadRequest,
+  criteriaTestClear
+} from 'store/criteriaTest/actions'
+import { getCriteriaTestResults } from 'store/criteriaTest/selectors'
+import { areRequestsPending } from 'store/requests/selectors'
 import { makeStyles } from '@material-ui/styles'
 import CriterionView from './CriterionView'
 import CriterionEdit from './CriterionEdit'
 import ActionView from './ActionView'
 import ActionEdit from './ActionEdit'
 import ActionButton from 'ui/elements/ActionButton'
+import TestCriteriaResults from './TestCriteriaResults'
 import { buttonTypes } from 'ui/elements/ActionButton'
 import Button from '@material-ui/core/Button'
 import { viewModes } from 'global-constants'
@@ -69,6 +74,9 @@ const useStyles = makeStyles({
 
 const Rule = ({
   areRequestsPending,
+  criteriaTestClear,
+  criteriaTestResults,
+  criteriaTestReadRequest,
   rule,
   ruleDeleteRequest,
   ruleId,
@@ -80,22 +88,26 @@ const Rule = ({
   updateRulesAndData,
   view
 }) => {
+  // green('Rule: ruleId', ruleId)
+  green('Rule: ruleTmp', ruleTmp)
+  const newMode = startsWith('tmp_', ruleId) ? true : false
   const { criteria, actions } = rule
-  const [_viewMode, _setViewMode] = useState(viewModes.modeView)
+  const [_viewMode, _setViewMode] = useState(
+    newMode ? viewModes.modeNew : viewModes.modeView
+  )
   const [_dirty, _setDirty] = useState(false)
 
   const _classes = useStyles()
 
+  // return null
+
+  useEffect(() => {
+    ruleTmpAdd(ruleTmp)
+  })
 
   if (areRequestsPending) {
     return null
   }
-
-  // useEffect(() => {
-  //   if (_viewMode === viewModes.modeEdit) {
-  //     ruleTmpAdd(rule)
-  //   }
-  // })
 
   const _handleCancelClick = () => {
     ruleTmpClear()
@@ -121,8 +133,6 @@ const Rule = ({
     _setViewMode(viewModes.modeEdit)
   }
 
-  
-
   const _handleSaveClick = async () => {
     if (startsWith('tmp_', ruleId)) {
       red('TODO: tmp rule not implemented')
@@ -133,10 +143,16 @@ const Rule = ({
     }
   }
 
-  
-
   const _handleDirtyChange = isDirty => {
     _setDirty(isDirty)
+  }
+
+  const _testCriteria = async () => {
+    await criteriaTestReadRequest(criteria)
+  }
+
+  const _criteriaTestClear = () => {
+    criteriaTestClear()
   }
 
   const _handleCriterionChange = criterion => {
@@ -192,43 +208,44 @@ const Rule = ({
                 buttonType={buttonTypes.delete}
                 onClick={_handleDeleteClick}
               />
-              <Button variant="outlined">Test Criteria</Button>
+              <Button variant="outlined" onClick={_testCriteria}>Test Criteria</Button>
             </>
           )}
         </div>
+        <TestCriteriaResults arrayOfStrings={criteriaTestResults} />
         {criteria.map(c => {
           const { _id } = c
-          if (_viewMode === viewModes.modeEdit) {
+          if (_viewMode === viewModes.modeView) {
             return (
-              <CriterionEdit
+              <CriterionView
                 key={_id}
                 criterion={c}
-                handleDirtyChange={_handleDirtyChange}
-                handleCriterionChange={_handleCriterionChange}
+                handleEditClick={_handleEditClick}
               />
             )
           }
           return (
-            <CriterionView
+            <CriterionEdit
               key={_id}
               criterion={c}
-              handleEditClick={_handleEditClick}
+              handleDirtyChange={_handleDirtyChange}
+              handleCriterionChange={_handleCriterionChange}
             />
           )
         })}
         {actions.map(a => {
           const { _id } = a
-          if (_viewMode === viewModes.modeEdit) {
-            return (
-              <ActionEdit
-                key={_id}
-                action={a}
-                handleDirtyChange={_handleDirtyChange}
-                handleActionChange={_handleActionChange}
-              />
-            )
+          if (_viewMode === viewModes.modeView) {
+            return <ActionView key={_id} action={a} />
           }
-          return <ActionView key={_id} action={a} />
+          return (
+            <ActionEdit
+              key={_id}
+              action={a}
+              handleDirtyChange={_handleDirtyChange}
+              handleActionChange={_handleActionChange}
+            />
+          )
         })}
       </div>
     </div>
@@ -236,6 +253,8 @@ const Rule = ({
 }
 
 const actions = {
+  criteriaTestClear,
+  criteriaTestReadRequest,
   ruleDeleteRequest,
   ruleTmpAdd,
   ruleTmpClear,
@@ -247,6 +266,7 @@ const actions = {
 const mapStateToProps = (state, ownProps) => {
   const { ruleId } = ownProps
   // green('mstp: state', state)
+  // green('mstp: ownProps', ownProps)
   // green('mstp: ruleId', ruleId)
   const rule = getRuleById(state, ruleId)
   const ruleTmp = getRuleTmp(state)
@@ -254,15 +274,16 @@ const mapStateToProps = (state, ownProps) => {
   // green('ruleId', ruleId)
   // green('state', state)
   // // green('state.ruleTMp', state.ruleTmp)
-  // green('rule', rule)
-  // green('ruleTmp', ruleTmp)
+  // green('mstp: rule', rule)
+  // green('mstp: ruleTmp', ruleTmp)
   // console.groupEnd()
   return {
     // if the rule is not found return undefined so that the default value for rule will be used above
     //  getRuleById know to look in ruleTmp if ruleId starts with tmp_ and rules otherwise
     rule: rule,
     ruleTmp: ruleTmp,
-    areRequestsPending: areRequestsPending(state)
+    areRequestsPending: areRequestsPending(state),
+    criteriaTestResults: getCriteriaTestResults(state)
   }
 }
 
@@ -270,11 +291,13 @@ export default connect(mapStateToProps, actions)(Rule)
 
 Rule.propTypes = {
   ruleId: PropTypes.string.isRequired,
-  rule: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    criteria: PropTypes.arrayOf(PropTypes.object).isRequired,
-    actions: PropTypes.arrayOf(PropTypes.object).isRequired
-  }),
+  // rule: PropTypes.shape({
+  //   _id: PropTypes.string.isRequired,
+  //   criteria: PropTypes.arrayOf(PropTypes.object).isRequired,
+  //   actions: PropTypes.arrayOf(PropTypes.object).isRequired
+  // }),
+  rule: PropTypes.object,
+  ruleTmp: PropTypes.object,
   ruleDeleteRequest: PropTypes.func.isRequired,
   ruleTmpAdd: PropTypes.func.isRequired,
   ruleTmpClear: PropTypes.func.isRequired,

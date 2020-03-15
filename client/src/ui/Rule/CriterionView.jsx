@@ -30,7 +30,7 @@ const useStyles = makeStyles({
   }
 })
 
-const Criterion = ({ criterion, handleEditClick }) => {
+const CriterionView = ({ criterion, handleEditClick }) => {
   const { _id, field, operation, value } = criterion
 
   const _classes = useStyles()
@@ -43,9 +43,9 @@ const Criterion = ({ criterion, handleEditClick }) => {
   )
 }
 
-export default Criterion
+export default CriterionView
 
-Criterion.propTypes = {
+CriterionView.propTypes = {
   criterion: PropTypes.shape({
     _id: string.isRequired,
     field: string.isRequired,

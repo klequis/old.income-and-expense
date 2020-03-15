@@ -55,7 +55,7 @@ const ActionControls = ({ action: Action }) => {
       </>
     )
   }
-  redf('Rule.ActionControls ERROR:', `unknown action ${action.action}`)
+  redf('Rule.ActionControls ERROR:', `unknown action ${action}`)
   return null
 }
 

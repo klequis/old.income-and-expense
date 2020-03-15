@@ -24,17 +24,17 @@ const useStyles = makeStyles({
   }
 })
 
-const Action = ({ action: Action, handleDirtyChange, handleActionChange }) => {
+const ActionEdit = ({ action: Action, handleDirtyChange, handleActionChange }) => {
   // const {}
   const {
     _id,
-    action,
-    field,
-    findValue,
-    numAdditionalChars,
-    replaceWithValue,
-    category1,
-    category2
+    action = '',
+    field = '',
+    findValue = '',
+    numAdditionalChars = '',
+    replaceWithValue = '',
+    category1 = '',
+    category2 = ''
   } = Action
 
   const [_values, _setValues] = useState({
@@ -64,7 +64,7 @@ const Action = ({ action: Action, handleDirtyChange, handleActionChange }) => {
   return (
     <div key={_id} className={_classes.wrapper}>
       <div className={_classes.editModeWrapper}>
-        <Select name="action" value={_values.action} onChange={_handleChange} >
+        <Select name="action" value={_values.action} onChange={_handleChange}>
           <MenuItem value="omit">Omit</MenuItem>
           <MenuItem value="strip">Strip</MenuItem>
           <MenuItem value="replaceAll">Replace all</MenuItem>
@@ -76,10 +76,10 @@ const Action = ({ action: Action, handleDirtyChange, handleActionChange }) => {
   )
 }
 
-export default Action
+export default ActionEdit
 
-Action.propTypes = {
-  action: PropTypes.shape({
+ActionEdit.propTypes = {
+  Action: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     action: PropTypes.string.isRequired,
     field: PropTypes.string,
@@ -88,5 +88,7 @@ Action.propTypes = {
     replaceWithValue: PropTypes.string,
     category1: PropTypes.string,
     category2: PropTypes.string
-  })
+  }),
+  handleDirtyChange: PropTypes.func.isRequired,
+  handleActionChange: PropTypes.func.isRequired
 }

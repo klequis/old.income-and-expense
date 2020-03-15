@@ -18,7 +18,7 @@ import Criterion from './Criterion'
 import shortid from 'shortid'
 import Button from '@material-ui/core/Button'
 import TestCriteriaResults from './TestCriteriaResults'
-import RuleActionButtons from './RuleActionButtons'
+// import RuleActionButtons from './RuleActionButtons'
 import ActionButton from 'ui/elements/ActionButton'
 import { buttonTypes } from 'ui/elements/ActionButton'
 // import replaceArrayItem from 'lib'
@@ -33,8 +33,6 @@ import {
   remove,
   startsWith
 } from 'ramda'
-
-import { viewModes } from 'global-constants'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -204,7 +202,7 @@ const Rule = ({
             viewMode={_viewMode}
           />
         </div> */}
-        {/* <TestCriteriaResults arrayOfStrings={criteriaTestResults} /> */}
+        <TestCriteriaResults arrayOfStrings={criteriaTestResults} />
         {/* <div className={_classes.actionsTitle}>
           Criteria{' '}
           <ActionButton buttonType={buttonTypes.add} onClick={_newCriterion} />

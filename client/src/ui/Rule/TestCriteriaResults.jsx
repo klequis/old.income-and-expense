@@ -1,10 +1,13 @@
 import React from 'react'
-
+import isNilOrEmpty from 'lib/isNillOrEmpty'
 import { green } from 'logger'
 
 
 const TestCriteriaResults = ({ arrayOfStrings }) => {
   green('TestCriteriaResults: arrayOfStrings', arrayOfStrings)
+  if (isNilOrEmpty(arrayOfStrings)) {
+    return null
+  }
   const groupOrigValues = array => {
     
     const grouped = array.reduce((acc, str) => {

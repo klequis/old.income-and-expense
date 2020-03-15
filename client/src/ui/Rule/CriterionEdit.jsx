@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   }
 })
 
-const Criterion = ({ criterion, handleCriterionChange, handleDirtyChange }) => {
+const CriterionEdit = ({ criterion, handleCriterionChange, handleDirtyChange }) => {
 
   const { _id, field, operation, value } = criterion
 
@@ -88,9 +88,9 @@ const Criterion = ({ criterion, handleCriterionChange, handleDirtyChange }) => {
   )
 }
 
-export default Criterion
+export default CriterionEdit
 
-Criterion.propTypes = {
+CriterionEdit.propTypes = {
   criterion: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     field: PropTypes.string.isRequired,

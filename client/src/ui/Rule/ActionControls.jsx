@@ -9,16 +9,16 @@ import { green, redf } from 'logger'
 
 const ActionControls = ({ values, handleChange }) => {
   const {
-    action,
-    field,
-    findValue,
-    numAdditionalChars,
-    replaceWithValue,
-    category1,
-    category2
+    action = '',
+    field = '',
+    findValue = '',
+    numAdditionalChars = '',
+    replaceWithValue = '',
+    category1 = '',
+    category2 = ''
   } = values
 
-  if (action === actionTypes.omit) {
+  if (action === actionTypes.omit || action === '') {
     return null
   }
   if (action === actionTypes.strip) {
