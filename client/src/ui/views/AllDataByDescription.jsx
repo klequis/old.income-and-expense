@@ -40,6 +40,11 @@ const AllDataByDescription = ({
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
   }
 
+  const _newRule = async () => {
+    const newRuleId = await ruleCreateRequest()
+    green('TR._newRule: newRuleId', newRuleId)
+  }
+
   return (
     <>
       <FormControlLabel

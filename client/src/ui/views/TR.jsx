@@ -8,11 +8,16 @@ import { format } from 'date-fns'
 import Rule from 'ui/Rule'
 import { append, without } from 'ramda'
 import shortid from 'shortid'
-import { ruleTmpAdd, ruleTmpRemove, ruleDeleteRequest, ruleUpdateRequest } from 'store/rules/actions'
+import {
+  ruleCreateRequest,
+  ruleDeleteRequest,
+  ruleTmpAdd,
+  ruleTmpRemove,
+  ruleUpdateRequest
+} from 'store/rules/actions'
 import removeRule from 'lib/removeRule'
 import isNilOrEmpty from 'lib/isNillOrEmpty'
 import isTmpRule from 'lib/isTmpRule'
-
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -30,8 +35,9 @@ const useStyles = makeStyles({
 
 const TR = ({
   doc,
-  ruleTmpAdd,
+  ruleCreateRequest,
   ruleDeleteRequest,
+  ruleTmpAdd,
   ruleUpdateRequest,
   showOrigDescription,
   updateRulesAndData,
@@ -60,7 +66,7 @@ const TR = ({
 
   const _classes = useStyles({ showOrigDescription: showOrigDescription })
 
-  const _handleRuleCancelClick = (ruleId) => {
+  const _handleRuleCancelClick = ruleId => {
     ruleTmpRemove(ruleId)
     if (isTmpRule(ruleId)) {
       const newRuleIds = without([ruleId], _rowRuleIds)
@@ -100,7 +106,7 @@ const TR = ({
     _setRowRuleIds(newRuleIds)
   }
 
-  const _handleRuleDeleteClick = async (ruleId) => {
+  const _handleRuleDeleteClick = async ruleId => {
     await ruleDeleteRequest(ruleId)
     await updateRulesAndData(view)
     ruleTmpRemove(ruleId)
@@ -110,6 +116,7 @@ const TR = ({
     ruleTmpRemove(ruleId)
     if (isTmpRule(ruleId)) {
       red('TODO: tmp rule not implemented')
+      await ruleCreateRequest()
     } else {
       await ruleUpdateRequest(ruleId, ruleTmp)
       await updateRulesAndData(view)

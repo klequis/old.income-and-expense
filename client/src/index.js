@@ -11,6 +11,7 @@ import theme from './theme'
 import DateFnsUtils from '@date-io/date-fns'
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { BrowserRouter as Router } from 'react-router-dom'
+import FinanceProvider from 'financeContext'
 
 const store = configureStore()
 
@@ -27,6 +28,7 @@ const onRedirectCallback = appState => {
 }
 
 const renderApp = () => {
+  console.log('financeProvider', FinanceProvider)
   render(
     <Auth0Provider
       domain={config.auth0.domain}
@@ -39,9 +41,11 @@ const renderApp = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <Router>
-              <App />
-            </Router>
+            <FinanceProvider>
+              <Router>
+                <App />
+              </Router>
+            </FinanceProvider>
           </MuiPickersUtilsProvider>
         </ThemeProvider>
       </Provider>

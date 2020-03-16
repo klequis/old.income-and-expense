@@ -19,6 +19,7 @@ import { makeStyles } from '@material-ui/styles'
 // views
 // import RawData from 'ui/views/RawData'
 import AllDataByDescription from 'ui/views/AllDataByDescription'
+import useFinanceContext from 'financeContext'
 
 
 // other
@@ -38,15 +39,16 @@ const useStyles = makeStyles({
   }
 })
 
-const App = props => {
-  
+const App = ({
+  importDataRequest,
+  rulesReadRequest,
+  viewReadRequest,
+}) => {
+  green('App.dev: useFinanceContext', useFinanceContext)
+  const { getRulesAndData } = useFinanceContext
+  green('getRulesAndData', typeof getRulesAndData)
   const classes = useStyles()
 
-  const {
-    importDataRequest,
-    rulesReadRequest,
-    viewReadRequest
-  } = props
 
   const _updateRulesAndData = async (view) => {
     green('_updateRulesAndData: view', view)

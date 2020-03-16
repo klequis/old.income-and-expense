@@ -144,6 +144,7 @@ const Rule = ({
   const _handleRuleSaveClick = async () => {
     criteriaTestClear()
     green('_handleRuleSaveClick: rule', rule)
+    
     await saveRule(ruleId, rule)
     ruleTmpRemove(ruleId)
   }

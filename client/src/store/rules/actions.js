@@ -56,7 +56,7 @@ export const ruleTmpRemove = (ruleId) => {
   }
 }
 
-export const rulesRead = data => {
+const rulesRead = data => {
   return {
     type: RULES_READ_KEY,
     payload: data
