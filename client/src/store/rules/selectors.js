@@ -9,7 +9,7 @@ export function getRules(state) {
 }
 
 export const getRuleById = (state, _id) => {
-  // yellow('getRuleById: state', state)
+  yellow('getRuleById: state', state)
   yellow('getRuleById: _id', _id)
   if (isTmpRule(_id)) {
     const a = getRule(_id, state.ruleTmp)

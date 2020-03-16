@@ -6,8 +6,7 @@ import {
   ruleTmpAdd,
   ruleTmpRemove,
   ruleTmpUpdate,
-  ruleUpdateRequest,
-  
+  ruleUpdateRequest
 } from 'store/rules/actions'
 import {
   criteriaTestReadRequest,
@@ -25,14 +24,7 @@ import TestCriteriaResults from './TestCriteriaResults'
 import { buttonTypes } from 'ui/elements/ActionButton'
 import Button from '@material-ui/core/Button'
 import { viewModes } from 'global-constants'
-import {
-  findIndex,
-  insert,
-  mergeRight,
-  prop,
-  propEq,
-  remove,
-} from 'ramda'
+import { findIndex, insert, mergeRight, prop, propEq, remove } from 'ramda'
 
 import { viewReadRequest } from 'store/views/actions'
 import isTmpRule from 'lib/isTmpRule'
@@ -84,8 +76,9 @@ const Rule = ({
   ruleId,
   ruleTmpAdd,
   ruleTmpRemove,
-  ruleTmpUpdate,
+  ruleTmpUpdate
 }) => {
+  green('Rule: rule', rule)
   const { criteria, actions } = rule
   const [_viewMode, _setViewMode] = useState(
     isTmpRule(ruleId) ? viewModes.modeNew : viewModes.modeView
@@ -97,7 +90,6 @@ const Rule = ({
   if (areRequestsPending) {
     return null
   }
-
 
   const _handleRuleCancelClick = () => {
     criteriaTestClear()
@@ -121,7 +113,6 @@ const Rule = ({
   }
 
   const _handleCriterionChange = criterion => {
-
     criteriaTestClear()
 
     const { criteria } = rule
@@ -151,8 +142,8 @@ const Rule = ({
   }
 
   const _handleRuleSaveClick = async () => {
-    
     criteriaTestClear()
+    green('_handleRuleSaveClick: rule', rule)
     await saveRule(ruleId, rule)
     ruleTmpRemove(ruleId)
   }
@@ -182,7 +173,9 @@ const Rule = ({
                 buttonType={buttonTypes.delete}
                 onClick={handleRuleDeleteClick}
               />
-              <Button variant="outlined" onClick={_testCriteria}>Test Criteria</Button>
+              <Button variant="outlined" onClick={_testCriteria}>
+                Test Criteria
+              </Button>
             </>
           )}
         </div>
@@ -257,5 +250,5 @@ Rule.propTypes = {
   ruleTmpAdd: PropTypes.func.isRequired,
   ruleTmpRemove: PropTypes.func.isRequired,
   ruleTmpUpdate: PropTypes.func.isRequired,
-  ruleUpdateRequest: PropTypes.func.isRequired,
+  ruleUpdateRequest: PropTypes.func.isRequired
 }

@@ -17,7 +17,6 @@ const VIEW_NAME = 'all-data-by-description'
 
 const AllDataByDescription = ({
   data,
-  ruleCreateRequest,
   updateRulesAndData
 }) => {
   const [_loading, _setLoading] = useState(false)
@@ -39,11 +38,6 @@ const AllDataByDescription = ({
   }
   const _handleSwitchChange = name => event => {
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
-  }
-
-  const _newRule = async () => {
-    const newRuleId = await ruleCreateRequest()
-    green('AddDataByDescription.newRule: newRuleId', newRuleId)
   }
 
   return (
