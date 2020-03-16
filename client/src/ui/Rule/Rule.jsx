@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { getRuleById } from 'store/rules/selectors'
 import {
-  ruleTmpAdd,
-  ruleTmpRemove,
-  ruleTmpUpdate,
-  ruleUpdateRequest
+  ruleTmpAddAction,
+  ruleTmpRemoveAction,
+  ruleTmpUpdateAction,
+  ruleUpdateRequestAction
 } from 'store/rules/actions'
 import {
   criteriaTestReadRequest,
@@ -26,7 +26,7 @@ import Button from '@material-ui/core/Button'
 import { viewModes } from 'global-constants'
 import { findIndex, insert, mergeRight, prop, propEq, remove } from 'ramda'
 
-import { viewReadRequest } from 'store/views/actions'
+import { viewReadRequestAction } from 'store/views/actions'
 import isTmpRule from 'lib/isTmpRule'
 
 // eslint-disable-next-line
@@ -223,11 +223,11 @@ const Rule = ({
 const actions = {
   criteriaTestClear,
   criteriaTestReadRequest,
-  ruleTmpAdd,
-  ruleTmpRemove,
-  ruleTmpUpdate,
-  ruleUpdateRequest,
-  allDataByDescriptionRequest: viewReadRequest
+  ruleTmpAdd: ruleTmpAddAction,
+  ruleTmpRemove: ruleTmpRemoveAction,
+  ruleTmpUpdate: ruleTmpUpdateAction,
+  ruleUpdateRequest: ruleUpdateRequestAction,
+  allDataByDescriptionRequest: viewReadRequestAction
 }
 
 const mstp = (state, ownProps) => {

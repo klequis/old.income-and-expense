@@ -9,11 +9,11 @@ import Rule from 'ui/Rule'
 import { append, without } from 'ramda'
 import shortid from 'shortid'
 import {
-  ruleCreateRequest,
-  ruleDeleteRequest,
-  ruleTmpAdd,
-  ruleTmpRemove,
-  ruleUpdateRequest
+  ruleCreateRequestAction,
+  ruleDeleteRequestAction,
+  ruleTmpAddAction,
+  ruleTmpRemoveAction,
+  ruleUpdateRequestAction
 } from 'store/rules/actions'
 import removeRule from 'lib/removeRule'
 import isNilOrEmpty from 'lib/isNillOrEmpty'
@@ -67,7 +67,7 @@ const TR = ({
   const _classes = useStyles({ showOrigDescription: showOrigDescription })
 
   const _handleRuleCancelClick = ruleId => {
-    ruleTmpRemove(ruleId)
+    ruleTmpRemoveAction(ruleId)
     if (isTmpRule(ruleId)) {
       const newRuleIds = without([ruleId], _rowRuleIds)
       _setRowRuleIds(newRuleIds)
@@ -109,11 +109,11 @@ const TR = ({
   const _handleRuleDeleteClick = async ruleId => {
     await ruleDeleteRequest(ruleId)
     await updateRulesAndData(view)
-    ruleTmpRemove(ruleId)
+    ruleTmpRemoveAction(ruleId)
   }
 
   const _saveRule = async (ruleId, ruleTmp) => {
-    ruleTmpRemove(ruleId)
+    ruleTmpRemoveAction(ruleId)
     if (isTmpRule(ruleId)) {
       red('TODO: tmp rule not implemented')
       await ruleCreateRequest()
@@ -182,10 +182,10 @@ const TR = ({
 }
 
 const actions = {
-  ruleTmpAdd,
-  ruleDeleteRequest,
-  ruleUpdateRequest,
-  ruleTmpRemove
+  ruleTmpAdd: ruleTmpAddAction,
+  ruleDeleteRequest: ruleDeleteRequestAction,
+  ruleUpdateRequest: ruleUpdateRequestAction,
+  ruleTmpRemove: ruleTmpRemoveAction
 }
 
 const mapStateToProps = state => ({})

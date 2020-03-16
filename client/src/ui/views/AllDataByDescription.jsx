@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import { ruleCreateRequest } from 'store/rules/actions'
+import { ruleCreateRequestAction } from 'store/rules/actions'
 import { getViewData } from 'store/views/selectors'
 
 import Switch from '@material-ui/core/Switch'
@@ -41,7 +41,7 @@ const AllDataByDescription = ({
   }
 
   const _newRule = async () => {
-    const newRuleId = await ruleCreateRequest()
+    const newRuleId = await ruleCreateRequestAction()
     green('TR._newRule: newRuleId', newRuleId)
   }
 
@@ -91,7 +91,7 @@ const AllDataByDescription = ({
 }
 
 const actions = {
-  ruleCreateRequest
+  ruleCreateRequest: ruleCreateRequestAction
 }
 
 const mstp = state => {

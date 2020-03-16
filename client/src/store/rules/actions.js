@@ -34,7 +34,7 @@ import { orange } from 'logger'
 //   }
 // }
 
-export const ruleTmpAdd = data => {
+export const ruleTmpAddAction = data => {
   // orange('ruleTmpAdd: data', data)
   return {
     type: RULETMP_ADD_KEY,
@@ -42,59 +42,59 @@ export const ruleTmpAdd = data => {
   }
 }
 
-export const ruleTmpUpdate = data => {
+export const ruleTmpUpdateAction = data => {
   return {
     type: RULETMP_UPDATE_KEY,
     payload: data
   }
 }
 
-export const ruleTmpRemove = (ruleId) => {
+export const ruleTmpRemoveAction = (ruleId) => {
   return {
     type: RULETMP_REMOVE_KEY,
     payload: { ruleId }
   }
 }
 
-const rulesRead = data => {
+const rulesReadAction = data => {
   return {
     type: RULES_READ_KEY,
     payload: data
   }
 }
 
-export const ruleReadByIdRequest = createRequestThunk({
+export const ruleReadByIdRequestAction = createRequestThunk({
   request: api.rules.readById,
   key: RULE_READ_BY_ID_REQUEST_KEY,
-  success: [rulesRead],
+  success: [rulesReadAction],
   failure: [
     e =>
       setToast({ error: e, message: 'Could not get rules', level: TOAST_WARN })
   ]
 })
 
-const ruleUpdate = data => {
+const ruleUpdateAction = data => {
   return {
     type: RULE_UPDATE_KEY,
     payload: data
   }
 }
 
-export const rulesReadRequest = createRequestThunk({
+export const rulesReadRequestAction = createRequestThunk({
   request: api.rules.read,
   key: RULES_READ_REQUEST_KEY,
-  success: [rulesRead],
+  success: [rulesReadAction],
   failure: [
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
   ]
 })
 
-export const ruleCreateRequest = createRequestThunk({
+export const ruleCreateRequestAction = createRequestThunk({
   request: api.rules.create,
   key: RULE_CREATE_REQUEST_KEY,
   // a successful create will always return [rule]
-  success: [(data) => rulesReadRequest(data)],
+  success: [(data) => rulesReadRequestAction(data)],
   failure: [
     e =>
       setToast({
@@ -106,20 +106,20 @@ export const ruleCreateRequest = createRequestThunk({
 })
 
 // Delete
-export const ruleDeleteRequest = createRequestThunk({
+export const ruleDeleteRequestAction = createRequestThunk({
   request: api.rules.delete,
   key: RULE_DELETE_REQUEST_KEY,
-  success: [rule => rulesReadRequest(rule[0]._id)],
+  success: [rule => rulesReadRequestAction(rule[0]._id)],
   failure: [
     e =>
       setToast({ error: e, message: 'Could not deleteRule', level: TOAST_WARN })
   ]
 })
 
-export const ruleUpdateRequest = createRequestThunk({
+export const ruleUpdateRequestAction = createRequestThunk({
   request: api.rules.update,
   key: RULE_UPDATE_REQUEST_KEY,
-  success: [ruleUpdate],
+  success: [ruleUpdateAction],
   failure: [
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })

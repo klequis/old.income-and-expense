@@ -1,1 +1,1 @@
-export const getViewData = state => state.viewData || []
+export const getViewDataSelector = state => state.viewData || []

@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
 import { dataChangesReadRequest } from 'store/views/actions'
-import { ruleCreateRequest, rulesReadRequest, ruleNew } from 'store/rules/actions'
+import { ruleCreateRequestAction, rulesReadRequestAction, ruleNew } from 'store/rules/actions'
 
 import { getRules } from 'store/rules/selectors'
 import { getDataChanges } from 'store/views/selectors'

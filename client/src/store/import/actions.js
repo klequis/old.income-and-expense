@@ -3,7 +3,7 @@ import {
 } from './constants'
 import { createRequestThunk } from '../action-helpers'
 import api from 'api'
-import { viewReadRequest } from 'store/views/actions'
+import { viewReadRequestAction } from 'store/views/actions'
 
 // eslint-disable-next-line
 import { purple, green, red } from 'logger'
