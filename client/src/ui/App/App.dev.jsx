@@ -1,10 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import DevTools from 'ui/DevTools'
-import { withRouter } from 'react-router'
 import { Route, Switch } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/styles'
-import { useFinanceContext } from 'financeContext'
 import Nav from 'ui/Nav'
 import AllDataByDescription from 'ui/views/AllDataByDescription'
 
@@ -24,24 +22,16 @@ const useStyles = makeStyles({
 })
 
 const App = () => {
-  const { ruleTmpAdd, viewReadRequest, viewData } = useFinanceContext()
-
-  useEffect(() => {
-    ;(async () => {
-      await viewReadRequest('all-data-by-description')
-    })()
-  }, [viewReadRequest])
 
   const classes = useStyles()
-
 
   return (
     <div className={classes.devWrapper}>
       <Container maxWidth={false}>
-        <Nav importData={_importData} />
+        <Nav />
         <Switch>
           <Route path='/all-data-by-description'>
-            <AllDataByDescription updateRulesAndData={_updateRulesAndData} />
+            <AllDataByDescription />
           </Route>
         </Switch>
         

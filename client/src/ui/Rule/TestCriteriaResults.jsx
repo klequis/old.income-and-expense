@@ -1,32 +1,49 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import isNilOrEmpty from 'lib/isNillOrEmpty'
+
+// eslint-disable-next-line
 import { green } from 'logger'
 
 
-const TestCriteriaResults = ({ arrayOfStrings }) => {
-  green('TestCriteriaResults: arrayOfStrings', arrayOfStrings)
-  if (isNilOrEmpty(arrayOfStrings)) {
+const grouped = array  => array.reduce((acc, str) => {
+  const key = str
+  if (!acc[key]) {
+    acc[key] = []
+  }
+  acc[key].push(str)
+  return acc
+}, {})
+
+const TestCriteriaResults = () => {
+
+  const data = useSelector(state => state.criteriaTestResults)
+
+  // if (isNilOrEmpty(data)) {
+  //   return null
+  // }
+  if (data.length === 0) {
     return null
   }
-  const groupOrigValues = array => {
+  const groupedData = grouped(data)
+  green('groupedData', groupedData)
+
+  // return <div key={groupedData[key]}>{`${key} (${grouped[key].length})`}</div>
+
+
+  // const groupOrigValues = array => {
     
-    const grouped = array.reduce((acc, str) => {
-      // acc.push(str)
-      const key = str
-      if (!acc[key]) {
-        acc[key] = []
-      }
-      acc[key].push(str)
-      return acc
-    }, {})
     
 
-    return Object.keys(grouped).map(key => {
-      return <div key={grouped[key]}>{`${key} (${grouped[key].length})`}</div>
+  //   const groupResult = grouped(data)
+  //   green('groupedResult', groupResult)
+
+    return Object.keys(groupedData).map(key => {
+      return <div key={groupedData[key]}>{`${key} (${groupedData[key].length})`}</div>
     })
-  }
-
-  return <div>{groupOrigValues(arrayOfStrings)}</div>
+    
+  // }
+  // return <div>{groupOrigValues(criteriaTestResults)}</div>
 }
 
 export default TestCriteriaResults

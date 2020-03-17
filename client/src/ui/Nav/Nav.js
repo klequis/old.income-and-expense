@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import Button from '@material-ui/core/Button'
+import { useFinanceContext } from 'financeContext'
 
 // eslint-disable-next-line
 import { green } from 'logger'
@@ -20,11 +21,12 @@ const useStyles = makeStyles({
 })
 
 const Nav = ({ importData }) => {
+  const { importDataRequest } = useFinanceContext()
   const classes = useStyles()
 
   return (
     <div className={classes.nav}>
-      <Button variant="outlined" onClick={importData}>
+      <Button variant="outlined" onClick={() => importDataRequest()}>
         Import Data
       </Button>
     </div>

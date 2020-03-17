@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import {
   ruleTmpAddAction,
   ruleTmpUpdateAction,
@@ -10,20 +10,23 @@ import {
 } from 'store/rules/actions'
 
 import { viewReadRequestAction } from 'store/views/actions'
-import { getViewDataSelector } from 'store/views/selectors'
+import { useDispatch } from 'react-redux'
+import {
+  criteriaTestClearAction,
+  criteriaTestReadRequestAction
+} from 'store/criteriaTest/actions'
+import { importDataRequestAction } from 'store/import/actions'
+import {
+  requestPendingAction,
+  requestFailedAction,
+  requestSuccessAction
+} from 'store/requests/actions'
 
-import { useDispatch, useSelector } from 'react-redux'
-
-import { RULETMP_ADD_KEY } from 'store/rules/constants'
-
+// eslint-disable-next-line
 import { red, blue } from 'logger'
-
-const MODULE_NAME = 'financeContext'
 
 export const FinanceContext = React.createContext()
 export const useFinanceContext = () => useContext(FinanceContext)
-
-const sayHi = 'hi'
 
 export const FinanceProvider = ({ children }) => {
   const dispatch = useDispatch()
@@ -35,34 +38,84 @@ export const FinanceProvider = ({ children }) => {
     [dispatch]
   )
 
-  //  criteriaTestClear
+  const rulesReadRequest = useCallback(
+    async () => {
+      blue('rulesReadRequest()')
+      dispatch(await rulesReadRequestAction())
+    },
+    [dispatch]
+  )
 
+  const criteriaTestClear = () => {
+    dispatch(criteriaTestClearAction())
+  }
 
-  //  criteriaTestReadRequest
-  //  getCriteriaTestResults
-  //  importDataRequest
-  //  ruleTmpAdd
+  const requestPending = key => {
+    dispatch(requestPendingAction(key))
+  }
+
+  const requestSuccess = key => {
+    dispatch(requestSuccessAction(key))
+  }
+
+  const requestFailed = (reason, key) => {
+    dispatch(requestFailedAction(reason, key))
+  }
+
+  const criteriaTestReadRequest = useCallback(
+    async criteria => {
+      dispatch(await criteriaTestReadRequestAction(criteria))
+    },
+    [dispatch]
+  )
+
+  const importDataRequest = useCallback(async () => {
+    dispatch(await importDataRequestAction())
+  }, [dispatch])
+
   const ruleTmpAdd = data => {
     dispatch(ruleTmpAddAction(data))
   }
-  //  ruleTmpUpdate
-  //  ruleTmpRemove
-  //  rulesReadRequest
-  //  ruleCreateRequest
-  //  ruleDeleteRequest
-  //  ruleUpdateRequest
-  //  getRules
-  //  getRuleById
-  //  getViewData
-  
-  
-  
-  
+
+  const ruleTmpUpdate = data => {
+    dispatch(ruleTmpUpdateAction(data))
+  }
+
+  const ruleTmpRemove = ruleId => {
+    dispatch(ruleTmpRemoveAction(ruleId))
+  }
+
+  const ruleCreateRequest = useCallback(async () => {
+    dispatch(await ruleCreateRequestAction())
+  }, [dispatch])
+
+  const ruleDeleteRequest = useCallback(async () => {
+    dispatch(await ruleDeleteRequestAction())
+  }, [dispatch])
+
+  const ruleUpdateRequest = useCallback(
+    async (ruleId, newRule) => {
+      dispatch(await ruleUpdateRequestAction(ruleId, newRule))
+    },
+    [dispatch]
+  )
+
   return (
     <FinanceContext.Provider
       value={{
-        viewData: useSelector(state => state.viewData),
+        criteriaTestClear,
+        criteriaTestReadRequest,
+        importDataRequest,
+        requestFailed,
+        requestPending,
+        requestSuccess,
+        ruleCreateRequest,
+        rulesReadRequest,
         ruleTmpAdd,
+        ruleDeleteRequest,
+        ruleTmpRemove,
+        ruleTmpUpdate,
+        ruleUpdateRequest,
         viewReadRequest
       }}
     >
@@ -70,12 +123,3 @@ export const FinanceProvider = ({ children }) => {
     </FinanceContext.Provider>
   )
 }
-
-// WORKS!
-// const updateView2 = async view => {
-//   dispatch(await viewReadRequest(view))
-// }
-// const updateView = useCallback(async view => {
-//   await updateView2(view)
-// }, [updateView2])
-// WORKS!

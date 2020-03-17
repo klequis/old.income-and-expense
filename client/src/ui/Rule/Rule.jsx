@@ -1,19 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { getRuleById } from 'store/rules/selectors'
-import {
-  ruleTmpAddAction,
-  ruleTmpRemoveAction,
-  ruleTmpUpdateAction,
-  ruleUpdateRequestAction
-} from 'store/rules/actions'
-import {
-  criteriaTestReadRequest,
-  criteriaTestClear
-} from 'store/criteriaTest/actions'
-import { getCriteriaTestResults } from 'store/criteriaTest/selectors'
-import { areRequestsPending } from 'store/requests/selectors'
+import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
 import CriterionView from './CriterionView'
 import CriterionEdit from './CriterionEdit'
@@ -26,8 +13,8 @@ import Button from '@material-ui/core/Button'
 import { viewModes } from 'global-constants'
 import { findIndex, insert, mergeRight, prop, propEq, remove } from 'ramda'
 
-import { viewReadRequestAction } from 'store/views/actions'
 import isTmpRule from 'lib/isTmpRule'
+import { useFinanceContext } from 'financeContext'
 
 // eslint-disable-next-line
 import { green, yellow, red } from 'logger'
@@ -64,28 +51,46 @@ const useStyles = makeStyles({
  * @param {object} rule - from Redux { _id, criteria[], actions[]}
  */
 
+const getRule = (ruleId, state) => {
+  const rules = isTmpRule(ruleId) ? state.ruleTmp : state.rules
+  const idx = findIndex(propEq('_id', ruleId))(rules)
+  return rules[idx]
+}
+
 const Rule = ({
-  areRequestsPending,
-  criteriaTestClear,
-  criteriaTestResults,
-  criteriaTestReadRequest,
-  rule,
   handleRuleCancelClick,
   handleRuleDeleteClick,
   saveRule,
-  ruleId,
-  ruleTmpAdd,
-  ruleTmpRemove,
-  ruleTmpUpdate
+  ruleId
 }) => {
-  green('Rule: rule', rule)
-  const { criteria, actions } = rule
+
+  const {
+    ruleTmpRemove,
+    criteriaTestReadRequest,
+    ruleTmpAdd,
+    criteriaTestClear,
+    ruleTmpUpdate,
+    areRequestsPending,
+    // getRuleById
+  } = useFinanceContext()
+
+  const [_rule, _setRule] = useState(useSelector(state => getRule(ruleId, state)))
   const [_viewMode, _setViewMode] = useState(
     isTmpRule(ruleId) ? viewModes.modeNew : viewModes.modeView
   )
+
+  const { criteria, actions } = _rule
+  
   const [_dirty, _setDirty] = useState(false)
 
   const _classes = useStyles()
+
+  
+
+  // useEffect(() => {
+  //   green('ruleId', ruleId)
+  //   _setRule(getRuleById(ruleId))
+  // }, [getRuleById, ruleId])
 
   if (areRequestsPending) {
     return null
@@ -100,7 +105,7 @@ const Rule = ({
   }
 
   const _handleEditClick = criterionId => {
-    ruleTmpAdd(rule)
+    ruleTmpAdd(_rule)
     _setViewMode(viewModes.modeEdit)
   }
 
@@ -115,7 +120,7 @@ const Rule = ({
   const _handleCriterionChange = criterion => {
     criteriaTestClear()
 
-    const { criteria } = rule
+    const { criteria } = _rule
 
     const criterionId = prop('_id', criterion)
     const idx = findIndex(propEq('_id', criterionId))(criteria)
@@ -125,27 +130,27 @@ const Rule = ({
         ? [criterion]
         : insert(idx, criterion, remove(idx, 1, criteria))
 
-    const newRule = mergeRight(rule, { criteria: newCriteria })
+    const newRule = mergeRight(_rule, { criteria: newCriteria })
     ruleTmpUpdate(newRule)
   }
 
   const _handleActionChange = action => {
-    const { actions } = rule
+    const { actions } = _rule
     const actionId = prop('_id', action)
     const idx = findIndex(propEq('_id', actionId))(actions)
     const newActions =
       actions.length === 0 || idx === -1
         ? [action]
         : insert(idx, action, remove(idx, 1, actions))
-    const newRule = mergeRight(rule, { actions: newActions })
+    const newRule = mergeRight(_rule, { actions: newActions })
     ruleTmpUpdate(newRule)
   }
 
   const _handleRuleSaveClick = async () => {
     criteriaTestClear()
-    green('_handleRuleSaveClick: rule', rule)
-    
-    await saveRule(ruleId, rule)
+    green('_handleRuleSaveClick: rule', _rule)
+
+    await saveRule(ruleId, _rule)
     ruleTmpRemove(ruleId)
   }
 
@@ -180,7 +185,7 @@ const Rule = ({
             </>
           )}
         </div>
-        <TestCriteriaResults arrayOfStrings={criteriaTestResults} />
+        <TestCriteriaResults />
         {criteria.map(c => {
           const { _id } = c
           if (_viewMode === viewModes.modeView) {
@@ -220,36 +225,8 @@ const Rule = ({
   )
 }
 
-const actions = {
-  criteriaTestClear,
-  criteriaTestReadRequest,
-  ruleTmpAdd: ruleTmpAddAction,
-  ruleTmpRemove: ruleTmpRemoveAction,
-  ruleTmpUpdate: ruleTmpUpdateAction,
-  ruleUpdateRequest: ruleUpdateRequestAction,
-  allDataByDescriptionRequest: viewReadRequestAction
-}
-
-const mstp = (state, ownProps) => {
-  const { ruleId } = ownProps
-  green('mstp: ruleId', ruleId)
-  green('mstp: state', state)
-  const rule = getRuleById(state, ruleId)
-  green('mstp: rule', rule)
-  return {
-    rule: rule,
-    areRequestsPending: areRequestsPending(state),
-    criteriaTestResults: getCriteriaTestResults(state)
-  }
-}
-
-export default connect(mstp, actions)(Rule)
+export default Rule
 
 Rule.propTypes = {
-  ruleId: PropTypes.string.isRequired,
-  rule: PropTypes.object,
-  ruleTmpAdd: PropTypes.func.isRequired,
-  ruleTmpRemove: PropTypes.func.isRequired,
-  ruleTmpUpdate: PropTypes.func.isRequired,
-  ruleUpdateRequest: PropTypes.func.isRequired
+  ruleId: PropTypes.string.isRequired
 }

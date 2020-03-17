@@ -13,14 +13,19 @@ import {
   ruleDeleteRequestAction,
   ruleTmpAddAction,
   ruleTmpRemoveAction,
-  ruleUpdateRequestAction
+  ruleUpdateRequestAction,
+  ruleReadByIdRequestAction,
+  rulesReadRequestAction
 } from 'store/rules/actions'
 import removeRule from 'lib/removeRule'
 import isNilOrEmpty from 'lib/isNillOrEmpty'
 import isTmpRule from 'lib/isTmpRule'
 
+import { useFinanceContext } from 'financeContext'
+
 // eslint-disable-next-line
 import { green, red } from 'logger'
+import { viewReadRequestAction } from 'store/views/actions'
 
 const useStyles = makeStyles({
   tr: {
@@ -35,12 +40,7 @@ const useStyles = makeStyles({
 
 const TR = ({
   doc,
-  ruleCreateRequest,
-  ruleDeleteRequest,
-  ruleTmpAdd,
-  ruleUpdateRequest,
   showOrigDescription,
-  updateRulesAndData,
   view
 }) => {
   const {
@@ -56,11 +56,20 @@ const TR = ({
     type
   } = doc
 
+  const {
+    ruleCreateRequest,
+    ruleUpdateRequest,
+    viewReadRequest,
+    rulesReadRequest,
+    ruleTmpRemove,
+    ruleDeleteRequest,
+    ruleTmpAdd
+  } = useFinanceContext()
+
   // console.group('TR')
   // green('doc', doc)
   // green('ruleIds', ruleIds)
   // console.groupEnd()
-
   const [_showRules, _setShowRules] = useState(false)
   const [_rowRuleIds, _setRowRuleIds] = useState(ruleIds || [])
 
@@ -69,10 +78,10 @@ const TR = ({
   const _handleRuleCancelClick = ruleId => {
     ruleTmpRemoveAction(ruleId)
     if (isTmpRule(ruleId)) {
+      // TODO: use lib/removeRule here?
       const newRuleIds = without([ruleId], _rowRuleIds)
       _setRowRuleIds(newRuleIds)
       _setShowRules(false)
-      // removeRule(ruleId)
     }
   }
 
@@ -108,19 +117,19 @@ const TR = ({
 
   const _handleRuleDeleteClick = async ruleId => {
     await ruleDeleteRequest(ruleId)
-    await updateRulesAndData(view)
-    ruleTmpRemoveAction(ruleId)
+    await rulesReadRequest()
+    await viewReadRequest()
+    ruleTmpRemove(ruleId)
   }
 
   const _saveRule = async (ruleId, ruleTmp) => {
-    ruleTmpRemoveAction(ruleId)
     if (isTmpRule(ruleId)) {
       red('TODO: tmp rule not implemented')
       await ruleCreateRequest()
     } else {
       await ruleUpdateRequest(ruleId, ruleTmp)
-      await updateRulesAndData(view)
-      // await allDataByDescriptionRequest('all-data-by-description')
+      await rulesReadRequest()
+      await viewReadRequest()
     }
   }
 
@@ -148,7 +157,6 @@ const TR = ({
             handleRuleCancelClick={_handleRuleCancelClick}
             handleRuleDeleteClick={_handleRuleDeleteClick}
             saveRule={_saveRule}
-            updateRulesAndData={updateRulesAndData}
             view={view}
           />
         </td>
@@ -181,24 +189,11 @@ const TR = ({
   )
 }
 
-const actions = {
-  ruleTmpAdd: ruleTmpAddAction,
-  ruleDeleteRequest: ruleDeleteRequestAction,
-  ruleUpdateRequest: ruleUpdateRequestAction,
-  ruleTmpRemove: ruleTmpRemoveAction
-}
 
-const mapStateToProps = state => ({})
-
-export default connect(mapStateToProps, actions)(TR)
+export default TR
 
 TR.propTypes = {
   doc: PropTypes.object.isRequired,
   showOrigDescription: PropTypes.bool.isRequired,
-  updateRulesAndData: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  newRule: PropTypes.func.isRequired,
-  ruleTmpAdd: PropTypes.func.isRequired,
-  ruleDeleteRequest: PropTypes.func.isRequired,
-  ruleUpdateRequest: PropTypes.func.isRequired
 }

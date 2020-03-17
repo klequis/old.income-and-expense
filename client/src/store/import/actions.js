@@ -13,7 +13,7 @@ import { purple, green, red } from 'logger'
 
 
 // import data
-export const importDataRequest = createRequestThunk({
+export const importDataRequestAction = createRequestThunk({
   request: api.data.importData,
   key: IMPORT_DATA_REQUEST_KEY,
   // success: [() => dataReadRequest()],

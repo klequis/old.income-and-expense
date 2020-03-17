@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TR from './TR'
@@ -12,10 +11,10 @@ const VIEW_NAME = 'all-data-by-description'
 
 const AllDataByDescription = () => {
   const {
-    rulesReadRequest,
+    viewData,
     viewReadRequest,
     ruleCreateRequest,
-    
+    rulesReadRequest
   } = useFinanceContext()
 
   const [_loading, _setLoading] = useState(false)
@@ -26,26 +25,23 @@ const AllDataByDescription = () => {
   useEffect(() => {
     _setLoading(true)
     ;(async () => {
-      await rulesReadRequest()
       await viewReadRequest(VIEW_NAME)
-      
+      await rulesReadRequest
     })()
     _setLoading(false)
     // eslint-disable-next-line
   }, [])
 
-  const viewData = useSelector(state => state.viewData)
-  const rules = useSelector(state => state.rules)
-  green('AllDataByDescription: rules', rules)
-
   if (_loading) {
     return <h1>Loading</h1>
   }
-
-  
-
   const _handleSwitchChange = name => event => {
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
+  }
+
+  const _newRule = async () => {
+    const newRuleId = await ruleCreateRequest()
+    green('TR._newRule: newRuleId', newRuleId)
   }
 
   return (
@@ -78,6 +74,7 @@ const AllDataByDescription = () => {
             const { _id } = doc
             return (
               <TR
+                newRule={_newRule}
                 key={_id}
                 doc={doc}
                 showOrigDescription={_switchState.showOrigDescription}

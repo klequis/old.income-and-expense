@@ -1,9 +1,11 @@
 // eslint-disable-next-line
 import {
-  requestPending,
-  requestSuccess,
-  requestFailed
+  requestPendingAction,
+  requestSuccessAction,
+  requestFailedAction
 } from './requests/actions'
+// import { useFinanceContext } from 'financeContext'
+
 // eslint-disable-next-line
 import { pink, red } from 'logger'
 
@@ -26,27 +28,28 @@ export const createRequestThunk = ({
   return (...args) => async dispatch => {
     
     const requestKey = typeof key === 'function' ? key(...args) : key
+    pink('requestKey', requestKey)
     start.map(async actionCreator => {
       await dispatch(actionCreator())
     })
-    await dispatch(requestPending(requestKey))
+    await dispatch(requestPendingAction(requestKey))
     
     try {
       const data = await request(...args)
-      await dispatch(requestSuccess(requestKey))
+      await dispatch(requestSuccessAction(requestKey))
       success.map(async actionCreator => {
         // pink('success.actionCreator', actionCreator)
-        dispatch(requestSuccess(requestKey))
+        dispatch(requestSuccessAction(requestKey))
         // pink('success: data', data)
         await dispatch(actionCreator(data))
       })
     } catch (e) {
-      await dispatch(requestFailed(e, requestKey))
+      await dispatch(requestFailedAction(e, requestKey))
       return failure.map(async actionCreator => {
         // pink('failure.actionCreator', actionCreator)
         red('action.helpers.createRequestThunk Error', e.message)
         console.log(e)
-        dispatch(requestFailed(e, requestKey))
+        dispatch(requestFailedAction(e, requestKey))
         await dispatch(actionCreator(e))
       })
     }

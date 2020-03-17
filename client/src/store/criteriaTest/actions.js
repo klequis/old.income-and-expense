@@ -11,23 +11,24 @@ import { TOAST_WARN } from 'global-constants'
 // eslint-disable-next-line
 import { yellow } from 'logger'
 
-const criteriaTestRead = data => {
+const criteriaTestReadAction = data => {
+  yellow('criteriaTestReadAction: data', data)
   return {
     type: CRITERIA_TEST_READ_KEY,
     payload: data
   }
 }
 
-export const criteriaTestClear = () => {
+export const criteriaTestClearAction = () => {
   return {
     type: CRITERIA_TEST_CLEAR_KEY
   }
 }
 
-export const criteriaTestReadRequest = createRequestThunk({
+export const criteriaTestReadRequestAction = createRequestThunk({
   request: api.criteria.read,
   key: CRITERIA_TEST_READ_REQUEST_KEY,
-  success: [criteriaTestRead],
+  success: [criteriaTestReadAction],
   failure: [
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })

@@ -6,7 +6,7 @@ import { filterBuilder } from 'actions/actionUtils'
 // eslint-disable-next-line
 import { redf, green, logRequest } from 'logger'
 
-const criteriaTest = wrap(async (req, res, next) => {
+const criteriaTest = wrap(async (req, res) => {
   try {
     const { body } = req
     // body is an array

@@ -20,13 +20,14 @@ import { orange, green, redf } from 'logger'
 export default {
   criteria: {
     async read(criteria) {
-      orange('readByCriteria: criteria', criteria)
+      orange('api.criteria.read: criteria', criteria)
       try {
         const url = `/api/criteria/criteria-test/`
         const data = await fetchJson(url, {
           method: 'POST',
           body: JSON.stringify(criteria)
         })
+        orange('api.criteria.read: data', data)
         return data
       } catch (e) {
         redf('api.criteria.read ERROR', e.message)
@@ -36,11 +37,17 @@ export default {
   },
   rules: {
     async read() {
-      const url = `/api/rules`
-      const data = await fetchJson(url, {
-        method: 'GET'
-      })
-      return data
+      try {
+        const url = `/api/rules`
+        const data = await fetchJson(url, {
+          method: 'GET'
+        })
+        orange('rules.read: data', data)
+        return data
+      } catch (e) {
+        redf('api.rules.read ERROR', e.message)
+        console.log(e)
+      }
     },
     async rulesReadById(ruleId) {
       const url = `api/rules/${ruleId}`

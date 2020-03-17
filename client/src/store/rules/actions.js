@@ -57,6 +57,7 @@ export const ruleTmpRemoveAction = (ruleId) => {
 }
 
 const rulesReadAction = data => {
+  orange('rulesReadAction: data', data)
   return {
     type: RULES_READ_KEY,
     payload: data

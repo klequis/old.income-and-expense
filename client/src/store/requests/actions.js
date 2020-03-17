@@ -4,21 +4,21 @@ import {
   REQUEST_FAILURE,
 } from 'global-constants'
 
-export const requestPending = (key) => {
+export const requestPendingAction = (key) => {
   return {
     type: REQUEST_PENDING,
     requestKey: key
   }
 }
 
-export const requestSuccess = (key) => {
+export const requestSuccessAction = (key) => {
   return {
     type: REQUEST_SUCCESS,
     requestKey: key
   }
 }
 
-export const requestFailed = (reason, key) => {
+export const requestFailedAction = (reason, key) => {
   return {
     type: REQUEST_FAILURE,
     payload: reason,
