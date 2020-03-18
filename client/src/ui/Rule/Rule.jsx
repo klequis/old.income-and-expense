@@ -9,7 +9,6 @@ import ActionEdit from './ActionEdit'
 import ActionButton from 'ui/elements/ActionButton'
 import TestCriteriaResults from './TestCriteriaResults'
 import { buttonTypes } from 'ui/elements/ActionButton'
-import Button from '@material-ui/core/Button'
 import { viewModes } from 'global-constants'
 import { findIndex, insert, mergeRight, prop, propEq, remove } from 'ramda'
 
@@ -70,8 +69,6 @@ const Rule = ({
     ruleTmpAdd,
     criteriaTestClear,
     ruleTmpUpdate,
-    areRequestsPending,
-    // getRuleById
   } = useFinanceContext()
 
   const [_rule, _setRule] = useState(useSelector(state => getRule(ruleId, state)))
@@ -85,16 +82,11 @@ const Rule = ({
 
   const _classes = useStyles()
 
-  
-
   // useEffect(() => {
   //   green('ruleId', ruleId)
   //   _setRule(getRuleById(ruleId))
   // }, [getRuleById, ruleId])
 
-  if (areRequestsPending) {
-    return null
-  }
 
   const _handleRuleCancelClick = () => {
     criteriaTestClear()
@@ -111,10 +103,6 @@ const Rule = ({
 
   const _handleDirtyChange = isDirty => {
     _setDirty(isDirty)
-  }
-
-  const _testCriteria = async () => {
-    await criteriaTestReadRequest(criteria)
   }
 
   const _handleCriterionChange = criterion => {
@@ -179,13 +167,12 @@ const Rule = ({
                 buttonType={buttonTypes.delete}
                 onClick={handleRuleDeleteClick}
               />
-              <Button variant="outlined" onClick={_testCriteria}>
-                Test Criteria
-              </Button>
             </>
           )}
         </div>
-        <TestCriteriaResults />
+        
+        <TestCriteriaResults ruleId={ruleId} />
+        
         {criteria.map(c => {
           const { _id } = c
           if (_viewMode === viewModes.modeView) {

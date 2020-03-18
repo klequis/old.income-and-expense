@@ -40,7 +40,6 @@ export const FinanceProvider = ({ children }) => {
 
   const rulesReadRequest = useCallback(
     async () => {
-      blue('rulesReadRequest()')
       dispatch(await rulesReadRequestAction())
     },
     [dispatch]

@@ -20,14 +20,14 @@ import { orange, green, redf } from 'logger'
 export default {
   criteria: {
     async read(criteria) {
-      orange('api.criteria.read: criteria', criteria)
+      // orange('api.criteria.read: criteria', criteria)
       try {
         const url = `/api/criteria/criteria-test/`
         const data = await fetchJson(url, {
           method: 'POST',
           body: JSON.stringify(criteria)
         })
-        orange('api.criteria.read: data', data)
+        // orange('api.criteria.read: data', data)
         return data
       } catch (e) {
         redf('api.criteria.read ERROR', e.message)
@@ -42,7 +42,7 @@ export default {
         const data = await fetchJson(url, {
           method: 'GET'
         })
-        orange('rules.read: data', data)
+        // orange('rules.read: data', data)
         return data
       } catch (e) {
         redf('api.rules.read ERROR', e.message)
@@ -57,16 +57,16 @@ export default {
       return data
     },
     async create() {
-      orange('rules.create')
+      // orange('rules.create')
       const url = `api/rules/new-rule`
       const data = await fetchJson(url, {
         method: 'POST'
       })
-      orange('rules.create: data', data)
+      // orange('rules.create: data', data)
       return data
     },
     async delete(ruleId) {
-      orange('api.rules.delete: ruleId', ruleId)
+      // orange('api.rules.delete: ruleId', ruleId)
       const url = `api/rules/ruleid/${ruleId}`
       const data = await fetchJson(url, {
         method: 'DELETE'
@@ -113,7 +113,7 @@ export default {
       return data
     },
     async readByCriteria(criteria) {
-      orange('readByCriteria: criteria', criteria)
+      // orange('readByCriteria: criteria', criteria)
       try {
         const url = `/api/data/criteria/`
         const data = await fetchJson(url, {
@@ -130,7 +130,7 @@ export default {
       const data = await fetchJson(`api/import`, {
         method: 'GET'
       })
-      orange('importData: data', data)
+      // orange('importData: data', data)
       return data
     }
   }

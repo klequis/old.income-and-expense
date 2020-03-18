@@ -35,14 +35,10 @@ const AllDataByDescription = () => {
   }, [])
 
   const viewData = useSelector(state => state.viewData)
-  const rules = useSelector(state => state.rules)
-  green('AllDataByDescription: rules', rules)
 
   if (_loading) {
     return <h1>Loading</h1>
   }
-
-  
 
   const _handleSwitchChange = name => event => {
     _setSwitchState({ ..._switchState, [name]: event.target.checked })

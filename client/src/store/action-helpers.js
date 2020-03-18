@@ -28,7 +28,7 @@ export const createRequestThunk = ({
   return (...args) => async dispatch => {
     
     const requestKey = typeof key === 'function' ? key(...args) : key
-    pink('requestKey', requestKey)
+    // pink('requestKey', requestKey)
     start.map(async actionCreator => {
       await dispatch(actionCreator())
     })
