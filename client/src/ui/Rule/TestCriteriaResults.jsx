@@ -29,6 +29,7 @@ const TestCriteriaResults = ({ ruleId }) => {
   const { criteriaTestReadRequest } = useFinanceContext()
   const _classes = useStyles()
   const rule = useSelector(state => getRuleById(ruleId, state))
+  green('TestCriteriaResults: rule', rule)
   const { criteria } = rule
   
   // useEffect(() => {

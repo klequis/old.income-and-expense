@@ -13,7 +13,7 @@ import removeRule from 'lib/removeRule'
 import { append } from 'ramda'
 
 // eslint-disable-next-line
-import { blue } from 'logger'
+import { blue, red } from 'logger'
 
 export function rulesReducer(state = [], { type, payload }) {
   switch (type) {
@@ -39,7 +39,7 @@ export const ruleNewReducer = (state = [], { type, payload }) => {
 }
 
 /**
- * 
+ *
  * @param {array} state ruleTmp state is an object
  * @param {string} type
  * @param {object || string} payload. Payload is an object for ADD & UPDATE
@@ -47,20 +47,26 @@ export const ruleNewReducer = (state = [], { type, payload }) => {
  */
 
 export const ruleTmpReducer = (state = [], { type, payload }) => {
-  switch (type) {
-    case RULETMP_ADD_KEY:
-      return append(payload, state)
-    case RULETMP_UPDATE_KEY:
-      // console.group()
-      // blue('ruleTmpReducer: state', state)
-      // blue('ruleTmpReducer: type', type)
-      // blue('ruleTmpReducer: payload', payload)
-      // console.groupEnd()
-      
-      return replaceRule(payload, state)
-    case RULETMP_REMOVE_KEY:
-      return removeRule(payload.ruleId, state)
-    default:
-      return state
+  blue('ruleTmpReducer: state', state)
+  blue('ruleTmpReducer: type', type)
+  blue('ruleTmpReducer: payload', payload)
+  try {
+    switch (type) {
+      case RULETMP_ADD_KEY:
+        return append(payload, state)
+        
+      case RULETMP_UPDATE_KEY:
+        const a = replaceRule(payload, state)
+        blue('a', a)
+
+        return a
+      case RULETMP_REMOVE_KEY:
+        return removeRule(payload.ruleId, state)
+      default:
+        return state
+    }
+  } catch (e) {
+    red('ruleTmpReducer ERROR', e.message)
+    console.log(e)
   }
 }
