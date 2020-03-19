@@ -42,11 +42,6 @@ const Icon = ({ buttonType }) => {
 }
 
 const ActionButton = ({ buttonType, onClick, disabled }) => {
-  // green('actionButton')
-  // green('buttonType', buttonType)
-  // if (typeof onClick !== 'function') {
-  //   throw new Error('onClick is not function')
-  // }
   return (
     <IconButton onClick={onClick} disabled={disabled}>
       <Icon buttonType={buttonType} />

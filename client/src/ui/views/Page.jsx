@@ -31,7 +31,6 @@ const useStyles = makeStyles({
 
 const groupOrigValues = array => {
   const grouped = array.reduce((acc, str) => {
-    // acc.push(str)
     const key = str
     if (!acc[key]) {
       acc[key] = []
@@ -39,34 +38,18 @@ const groupOrigValues = array => {
     acc[key].push(str)
     return acc
   }, {})
-  // green('obj')
   return Object.keys(grouped).map(key => {
     return <div key={grouped[key]}>{`${key} (${grouped[key].length})`}</div>
   })
 }
 
 const Page = ({ page, allRules }) => {
-  green('page', page)
   const [id, setId] = useState()
   const [_orig, _setOrig] = useState([])
   const [_category1, _setCategory1] = useState([])
   const [_category2, _setCategory2] = useState([])
   const [_ruleIds, _setRuleIds] = useState([])
 
-  // const [newRule, setNewRule] = useState({
-  //   _id: 'newRule',
-  //   criteria: [],
-  //   actions: []
-  // })
-
-  // const getRule = useCallback(ruleId => {
-  //   const r = allRules.find(r => r._id === ruleId)
-  //   if (isNil(r)) {
-  //     red('Page.getRule ERROR', `rule ${ruleId} not found`)
-  //     return []
-  //   }
-  //   return r
-  // })
   const getRule = ruleId => {
     const r = allRules.find(r => r._id === ruleId)
     if (isNil(r)) {
@@ -86,7 +69,6 @@ const Page = ({ page, allRules }) => {
     // const fullRules = rules.map(ruleId => getRule(ruleId))
     // _setRules(fullRules)
   }, [page])
-
 
   const classes = useStyles()
 
@@ -123,7 +105,6 @@ const Page = ({ page, allRules }) => {
         </div>
 
         {_ruleIds.map(ruleId => {
-          green('r', ruleId)
           return <Rule key={ruleId} rule={getRule(ruleId)} />
         })}
       </div>
@@ -132,9 +113,3 @@ const Page = ({ page, allRules }) => {
 }
 
 export default Page
-
-// {_rules.map(ruleId => {
-//   return ruleId === 'newRule'
-//     ? <Rule key={shortid.generate()} rule={getRule(ruleId)} />
-//     : <Rule key={shortid.generate()} rule={getRule(ruleId)} />
-// })}

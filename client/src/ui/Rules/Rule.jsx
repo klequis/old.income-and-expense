@@ -44,68 +44,75 @@ const useStyles = makeStyles({
   }
 })
 
-/**
- *
- * @param {string} ruleId -  a mongoDB ObjectID. Only used to get rule from Redux state
- * @param {object} rule - from Redux { _id, criteria[], actions[]}
- */
-
 const getRule = (ruleId, state) => {
   const rules = isTmpRule(ruleId) ? state.ruleTmp : state.rules
   const idx = findIndex(propEq('_id', ruleId))(rules)
   return rules[idx]
 }
 
-const Rule = ({
-  handleRuleCancelClick,
-  handleRuleDeleteClick,
-  saveRule,
-  ruleId
-}) => {
+const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
+  // actions
 
   const {
-    ruleTmpRemove,
-    criteriaTestReadRequest,
-    ruleTmpAdd,
     criteriaTestClear,
+    ruleCreateRequest,
+    ruleDeleteRequest,
+    rulesReadRequest,
+    ruleTmpAdd,
+    ruleTmpRemove,
     ruleTmpUpdate,
+    ruleUpdateRequest,
+    viewReadRequest
   } = useFinanceContext()
 
-  const [_rule, _setRule] = useState(useSelector(state => getRule(ruleId, state)))
-  const [_viewMode, _setViewMode] = useState(
-    isTmpRule(ruleId) ? viewModes.modeNew : viewModes.modeView
-  )
-
-  const { criteria, actions } = _rule
-  
-  const [_dirty, _setDirty] = useState(false)
+  // local vars
 
   const _classes = useStyles()
 
-  // useEffect(() => {
-  //   green('ruleId', ruleId)
-  //   _setRule(getRuleById(ruleId))
-  // }, [getRuleById, ruleId])
+  // state
 
+  const [_rule, _setRule] = useState(
+    useSelector(state => getRule(ruleId, state))
+  )
+  const [_viewMode, _setViewMode] = useState(
+    isTmpRule(ruleId) ? viewModes.modeNew : viewModes.modeView
+  )
+  const [_dirty, _setDirty] = useState(false)
 
-  const _handleRuleCancelClick = () => {
+  const { criteria, actions } = _rule
+
+  // methods
+
+  const _actionChange = action => {
+    const { actions } = _rule
+    const actionId = prop('_id', action)
+    const idx = findIndex(propEq('_id', actionId))(actions)
+    const newActions =
+      actions.length === 0 || idx === -1
+        ? [action]
+        : insert(idx, action, remove(idx, 1, actions))
+    const newRule = mergeRight(_rule, { actions: newActions })
+    ruleTmpUpdate(newRule)
+  }
+
+  const _cancelClick = () => {
+    ruleTmpRemove(ruleId)
     criteriaTestClear()
     if (isTmpRule(ruleId)) {
-      handleRuleCancelClick(ruleId)
+      removeRuleId(ruleId)
     }
     _setViewMode(viewModes.modeView)
   }
 
-  const _handleEditClick = criterionId => {
-    ruleTmpAdd(_rule)
-    _setViewMode(viewModes.modeEdit)
+  const _deleteClick = async () => {
+    await ruleDeleteRequest(ruleId)
+    await rulesReadRequest()
+    await viewReadRequest()
+    ruleTmpRemove(ruleId)
+    removeRuleId(ruleId)
   }
 
-  const _handleDirtyChange = isDirty => {
-    _setDirty(isDirty)
-  }
-
-  const _handleCriterionChange = criterion => {
+  const _criterionChange = criterion => {
     criteriaTestClear()
 
     const { criteria } = _rule
@@ -122,25 +129,28 @@ const Rule = ({
     ruleTmpUpdate(newRule)
   }
 
-  const _handleActionChange = action => {
-    const { actions } = _rule
-    const actionId = prop('_id', action)
-    const idx = findIndex(propEq('_id', actionId))(actions)
-    const newActions =
-      actions.length === 0 || idx === -1
-        ? [action]
-        : insert(idx, action, remove(idx, 1, actions))
-    const newRule = mergeRight(_rule, { actions: newActions })
-    ruleTmpUpdate(newRule)
+  const _dirtyChange = isDirty => {
+    _setDirty(isDirty)
   }
 
-  const _handleRuleSaveClick = async () => {
-    criteriaTestClear()
-    green('_handleRuleSaveClick: rule', _rule)
+  const _editClick = criterionId => {
+    ruleTmpAdd(_rule)
+    _setViewMode(viewModes.modeEdit)
+  }
 
-    await saveRule(ruleId, _rule)
+  const _saveClick = async () => {
+    if (isTmpRule()) {
+      await ruleCreateRequest(ruleId, _rule)
+    } else {
+      await ruleUpdateRequest(ruleId, _rule)
+    }
     ruleTmpRemove(ruleId)
+    _setViewMode(viewModes.modeView)
+    await rulesReadRequest()
+    await viewReadRequest()
   }
+
+  // render
 
   return (
     <div key={ruleId} className={_classes.wrapper}>
@@ -148,20 +158,17 @@ const Rule = ({
         <div className={_classes.ruleTitle}>
           <div className={_classes.ruleId}>RuleId: {ruleId}</div>
           {_viewMode === viewModes.modeView ? (
-            <ActionButton
-              buttonType={buttonTypes.edit}
-              onClick={_handleEditClick}
-            />
+            <ActionButton buttonType={buttonTypes.edit} onClick={_editClick} />
           ) : (
             <>
               <ActionButton
                 buttonType={buttonTypes.save}
-                onClick={_handleRuleSaveClick}
+                onClick={_saveClick}
                 disabled={!_dirty}
               />
               <ActionButton
                 buttonType={buttonTypes.cancel}
-                onClick={_handleRuleCancelClick}
+                onClick={_cancelClick}
               />
               <ActionButton
                 buttonType={buttonTypes.delete}
@@ -170,9 +177,7 @@ const Rule = ({
             </>
           )}
         </div>
-        
-        <TestCriteriaResults ruleId={ruleId} />
-        
+
         {criteria.map(c => {
           const { _id } = c
           if (_viewMode === viewModes.modeView) {
@@ -180,7 +185,7 @@ const Rule = ({
               <CriterionView
                 key={_id}
                 criterion={c}
-                handleEditClick={_handleEditClick}
+                handleEditClick={_editClick}
               />
             )
           }
@@ -188,8 +193,8 @@ const Rule = ({
             <CriterionEdit
               key={_id}
               criterion={c}
-              handleDirtyChange={_handleDirtyChange}
-              handleCriterionChange={_handleCriterionChange}
+              handleDirtyChange={_dirtyChange}
+              handleCriterionChange={_criterionChange}
             />
           )
         })}
@@ -202,11 +207,12 @@ const Rule = ({
             <ActionEdit
               key={_id}
               action={a}
-              handleDirtyChange={_handleDirtyChange}
-              handleActionChange={_handleActionChange}
+              handleDirtyChange={_dirtyChange}
+              handleActionChange={_actionChange}
             />
           )
         })}
+        <TestCriteriaResults ruleId={ruleId} />
       </div>
     </div>
   )

@@ -5,7 +5,6 @@ class ApiError extends Error {
     super(...params)
 
     console.group('ApiError')
-
     blue('statusNumber', statusNumber)
     blue('statusText', statusText)
     blue('url', resUrl)

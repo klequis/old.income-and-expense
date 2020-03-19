@@ -29,38 +29,19 @@ const TestCriteriaResults = ({ ruleId }) => {
   const { criteriaTestReadRequest } = useFinanceContext()
   const _classes = useStyles()
   const rule = useSelector(state => getRuleById(ruleId, state))
-  green('TestCriteriaResults: rule', rule)
   const { criteria } = rule
-  
-  // useEffect(() => {
-  //   ;(async () => {
-
-  //   })()
-  // }, [criteria, criteriaTestReadRequest])
 
   const _testCriteria = async () => {
     await criteriaTestReadRequest(criteria)
   }
 
-  // return (
-  //   <h1>hi</h1>
-  // )
-
-  // const { criteriaTestReadRequest } = useFinanceContext()
   const data = useSelector(state => state.criteriaTestResults)
-  // const rule = useSelector(state => getRuleById(ruleId, state))
-
-  // console.group('TestCriteriaResults')
-  // green('ruleId', ruleId)
-  // green('rule', rule)
-  // console.groupEnd()
 
   const groupedData = grouped(data)
-  green('groupedData', groupedData)
 
   return (
     <div className={_classes.wrapper}>
-      <Button variant="outlined" size='small' onClick={_testCriteria}>
+      <Button variant="outlined" size="small" onClick={_testCriteria}>
         Test Criteria
       </Button>
       {!isNilOrEmpty(groupedData)

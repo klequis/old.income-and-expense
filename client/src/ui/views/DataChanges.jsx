@@ -61,13 +61,11 @@ const DataChanges = ({
 
     if (action === 'incrementPage') {
       const newIdx = currPageIdx + 1
-      // green('newIdx', newIdx)
       setPageIdx(newIdx)
       setGotoIdx(newIdx)
     }
     if (action === 'decrementPage') {
       const newIdx = currPageIdx - 1
-      // green('newIdx', newIdx)
       setPageIdx(newIdx)
       setGotoIdx(newIdx)
     }
@@ -83,10 +81,6 @@ const DataChanges = ({
 
   if (loading) return <h1>Loading</h1>
 
-  
-  // green('pageIdx', pageIdx)
-  // green('gotoIdx', gotoIdx)
-  green('render')
   return (
     <div>
       <div className={classes.pageCount}>

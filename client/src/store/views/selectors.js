@@ -1,1 +1,0 @@
-export const getViewDataSelector = state => state.viewData || []

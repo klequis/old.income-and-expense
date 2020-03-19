@@ -24,8 +24,11 @@ const useStyles = makeStyles({
   }
 })
 
-const ActionEdit = ({ action: Action, handleDirtyChange, handleActionChange }) => {
-  // const {}
+const ActionEdit = ({
+  action: Action,
+  handleDirtyChange,
+  handleActionChange
+}) => {
   const {
     _id,
     action = '',
@@ -52,10 +55,7 @@ const ActionEdit = ({ action: Action, handleDirtyChange, handleActionChange }) =
 
   const _handleChange = event => {
     const { name, value } = event.target
-    // green('_handleChange: name', name)
-    // green('_handleChange: value', value)
     const newValues = mergeRight(_values, { [name]: value })
-    // green('_handleChange: newValues', newValues)
     _setValues(newValues)
     handleDirtyChange(true)
     handleActionChange(newValues)

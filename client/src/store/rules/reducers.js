@@ -47,19 +47,14 @@ export const ruleNewReducer = (state = [], { type, payload }) => {
  */
 
 export const ruleTmpReducer = (state = [], { type, payload }) => {
-  blue('ruleTmpReducer: state', state)
-  blue('ruleTmpReducer: type', type)
-  blue('ruleTmpReducer: payload', payload)
   try {
     switch (type) {
       case RULETMP_ADD_KEY:
-        return append(payload, state)
-        
+        const _append = append(payload, state)
+        return _append
       case RULETMP_UPDATE_KEY:
-        const a = replaceRule(payload, state)
-        blue('a', a)
-
-        return a
+        const _update = replaceRule(payload, state)
+        return _update
       case RULETMP_REMOVE_KEY:
         return removeRule(payload.ruleId, state)
       default:
