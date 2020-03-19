@@ -40,7 +40,6 @@ const TR = ({ doc, showOrigDescription }) => {
     type
   } = doc
 
-
   const _dispatch = useDispatch()
   const rowIdShow = useSelector(state => state.ui.rowIdShow)
   const _classes = useStyles({ showOrigDescription: showOrigDescription })
@@ -73,7 +72,7 @@ const TR = ({ doc, showOrigDescription }) => {
             : ruleIds.map(id => <div key={id}>{id}</div>)}
         </TD>
       </tr>
-      {_id === rowIdShow ? <Rules /> : null}
+      {_id === rowIdShow ? <Rules docId={_id} ruleIds={ruleIds} /> : null}
       
     </>
   )

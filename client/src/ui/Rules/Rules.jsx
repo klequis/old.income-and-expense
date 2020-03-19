@@ -1,14 +1,15 @@
-import React, { useSelector, useState } from 'react'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { append, without } from 'ramda'
 import { useFinanceContext } from 'financeContext'
 import shortid from 'shortid'
 import Rule from './Rule'
+import ActionButton, { buttonTypes } from 'ui/elements/ActionButton'
 
 // eslint-disable-next-line
 import { green, yellow, red } from 'logger'
 
-const Rules = ({ _id: docId, ruleIds }) => {
-  
+const Rules = ({ docId, ruleIds = [] }) => {
   // actions
 
   const { ruleTmpAdd } = useFinanceContext()
@@ -51,7 +52,7 @@ const Rules = ({ _id: docId, ruleIds }) => {
   }
 
   // render
-
+  
   if (docId !== rowIdShow) {
     return null
   }
@@ -59,7 +60,10 @@ const Rules = ({ _id: docId, ruleIds }) => {
     return (
       <tr>
         <td colSpan="8">
-          <button onClick={_addClick}>Add Rule</button>
+          Rules{' '}
+          <ActionButton buttonType={buttonTypes.add} onClick={_addClick}>
+            Add Rule
+          </ActionButton>
         </td>
       </tr>
     )
@@ -67,6 +71,10 @@ const Rules = ({ _id: docId, ruleIds }) => {
   return _ruleIds.map(id => (
     <tr key={id}>
       <td colSpan="8">
+        Rules{' '}
+        <ActionButton buttonType={buttonTypes.add} onClick={_addClick}>
+          Add Rule
+        </ActionButton>
         <Rule ruleId={id} ruleIds={_ruleIds} removeRuleId={_removeRuleId} />
       </td>
     </tr>

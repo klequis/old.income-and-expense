@@ -92,6 +92,7 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
         ? [action]
         : insert(idx, action, remove(idx, 1, actions))
     const newRule = mergeRight(_rule, { actions: newActions })
+    _setRule(newRule)
     ruleTmpUpdate(newRule)
   }
 
@@ -114,7 +115,6 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
 
   const _criterionChange = criterion => {
     criteriaTestClear()
-
     const { criteria } = _rule
 
     const criterionId = prop('_id', criterion)
@@ -126,6 +126,8 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
         : insert(idx, criterion, remove(idx, 1, criteria))
 
     const newRule = mergeRight(_rule, { criteria: newCriteria })
+    green('_criterionChange: newRule', newRule)
+    _setRule(newRule)
     ruleTmpUpdate(newRule)
   }
 
@@ -139,14 +141,22 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
   }
 
   const _saveClick = async () => {
-    if (isTmpRule()) {
+    green('_saveClick: ruleId', ruleId)
+
+    if (isTmpRule(ruleId)) {
+      green('_saveClick: saving tmp rule')
       await ruleCreateRequest(ruleId, _rule)
     } else {
+      green('_saveClick: saving existing rule')
       await ruleUpdateRequest(ruleId, _rule)
     }
+    green('_saveClick: ruleTmpRemove')
     ruleTmpRemove(ruleId)
+    green('_saveClick: setViewMode')
     _setViewMode(viewModes.modeView)
+    green('_saveClick: read rules')
     await rulesReadRequest()
+    green('_saveClick: read view')
     await viewReadRequest()
   }
 
