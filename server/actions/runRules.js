@@ -97,6 +97,7 @@ const runRules = async (passedInRules = []) => {
   }
   // green('rules', rules)
   for (let i = 0; i < rules.length; i++) {
+    yellow('running rules', i)
     const rule = rules[i]
     const { actions, criteria } = rule
     // yellow('acctId', acct)

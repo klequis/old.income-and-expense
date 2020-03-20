@@ -21,9 +21,19 @@ import {
   requestFailedAction,
   requestSuccessAction
 } from 'store/requests/actions'
+import {
+  rowIdShowClearAction,
+  rowIdShowSetAction,
+  currentViewNameClearAction,
+  currentViewNameSetAction
+} from 'store/ui/actions'
+
+import isNilOrEmpty from 'lib/isNillOrEmpty'
 
 // eslint-disable-next-line
 import { red, blue } from 'logger'
+
+const MODULE_NAME = 'financeContext'
 
 export const FinanceContext = React.createContext()
 export const useFinanceContext = () => useContext(FinanceContext)
@@ -33,20 +43,28 @@ export const FinanceProvider = ({ children }) => {
 
   const viewReadRequest = useCallback(
     async view => {
+      if (isNilOrEmpty(view)) {
+        throw new Error(`${MODULE_NAME} ERROR`, 'parameter view has no value')
+      }
       dispatch(await viewReadRequestAction(view))
     },
     [dispatch]
   )
 
-  const rulesReadRequest = useCallback(
-    async () => {
-      dispatch(await rulesReadRequestAction())
-    },
-    [dispatch]
-  )
+  const rulesReadRequest = useCallback(async () => {
+    dispatch(await rulesReadRequestAction())
+  }, [dispatch])
 
   const criteriaTestClear = () => {
     dispatch(criteriaTestClearAction())
+  }
+
+  const currentViewNameClear = () => {
+    dispatch(currentViewNameClearAction())
+  }
+
+  const currentViewNameSet = (viewName) => {
+    dispatch(currentViewNameSetAction(viewName))
   }
 
   const requestPending = key => {
@@ -72,6 +90,14 @@ export const FinanceProvider = ({ children }) => {
     dispatch(await importDataRequestAction())
   }, [dispatch])
 
+  const rowIdShowClear = () => {
+    dispatch(rowIdShowClearAction())
+  }
+
+  const rowIdShowSet = (ruleId) => {
+    dispatch(rowIdShowSetAction(ruleId))
+  }
+
   const ruleTmpAdd = data => {
     dispatch(ruleTmpAddAction(data))
   }
@@ -84,13 +110,22 @@ export const FinanceProvider = ({ children }) => {
     dispatch(ruleTmpRemoveAction(ruleId))
   }
 
-  const ruleCreateRequest = useCallback(async () => {
-    dispatch(await ruleCreateRequestAction())
-  }, [dispatch])
+  const ruleCreateRequest = useCallback(
+    async rule => {
+      dispatch(await ruleCreateRequestAction(rule))
+    },
+    [dispatch]
+  )
 
-  const ruleDeleteRequest = useCallback(async () => {
-    dispatch(await ruleDeleteRequestAction())
-  }, [dispatch])
+  const ruleDeleteRequest = useCallback(
+    async ruleId => {
+      if (isNilOrEmpty(ruleId)) {
+        throw new Error('parameter ruleId is incorrect.')
+      }
+      dispatch(await ruleDeleteRequestAction(ruleId))
+    },
+    [dispatch]
+  )
 
   const ruleUpdateRequest = useCallback(
     async (ruleId, newRule) => {
@@ -104,10 +139,14 @@ export const FinanceProvider = ({ children }) => {
       value={{
         criteriaTestClear,
         criteriaTestReadRequest,
+        currentViewNameClear,
+        currentViewNameSet,
         importDataRequest,
         requestFailed,
         requestPending,
         requestSuccess,
+        rowIdShowClear,
+        rowIdShowSet,
         ruleCreateRequest,
         rulesReadRequest,
         ruleTmpAdd,

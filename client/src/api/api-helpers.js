@@ -111,8 +111,14 @@ const getIt = async (url, options = {}) => {
 }
 
 export const fetchJson = async (url, options = {}) => {
+  logRequest({
+    from:'getIt', 
+    url: url, 
+    options,
+  })
   const r = await getIt(url, options)
   const { status, statusText, url: resUrl } = r
+
   purple(`fetchJson: url ${url}, status ${status}`)
   if (status >= 200 && status < 300) {
     // orange('status OK')

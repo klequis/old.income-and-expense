@@ -1,25 +1,36 @@
 import {
-  ROW_ID_SHOW_SET_KEY,
-  ROW_ID_SHOW_CLEAR_KEY
+  CURRENT_VIEW_NAME_SET,
+  CURRENT_VIEW_NAME_CLEAR,
+  ROW_ID_SHOW_CLEAR_KEY,
+  ROW_ID_SHOW_SET_KEY
 } from './constants'
-import { setToast } from 'store/toast/actions'
-import { createRequestThunk } from '../action-helpers'
-import api from 'api'
-import { TOAST_WARN } from 'global-constants'
 
 // eslint-disable-next-line
 import { yellow } from 'logger'
 
+export const currentViewNameSetAction = viewName => {
+  return {
+    type: CURRENT_VIEW_NAME_SET,
+    payload: viewName
+  }
+}
 
-export const rowIdShowSet = (tableRowId) => {
+export const currentViewNameClearAction = () => {
+  return {
+    type: CURRENT_VIEW_NAME_CLEAR
+  }
+}
+
+export const rowIdShowClearAction = () => {
+  return {
+    type: ROW_ID_SHOW_CLEAR_KEY
+  }
+}
+
+export const rowIdShowSetAction = tableRowId => {
   return {
     type: ROW_ID_SHOW_SET_KEY,
     payload: tableRowId
   }
 }
 
-export const rowIdShowClear = () => {
-  return {
-    type: ROW_ID_SHOW_CLEAR_KEY,
-  }
-}

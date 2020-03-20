@@ -14,8 +14,7 @@ const AllDataByDescription = () => {
   const {
     rulesReadRequest,
     viewReadRequest,
-    ruleCreateRequest,
-    
+    currentViewNameSet
   } = useFinanceContext()
 
   const [_loading, _setLoading] = useState(false)
@@ -28,6 +27,7 @@ const AllDataByDescription = () => {
     ;(async () => {
       await rulesReadRequest()
       await viewReadRequest(VIEW_NAME)
+      currentViewNameSet(VIEW_NAME)
       
     })()
     _setLoading(false)

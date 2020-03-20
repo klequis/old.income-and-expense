@@ -56,13 +56,14 @@ export default {
       })
       return data
     },
-    async create() {
-      // orange('rules.create')
+    async create(rule) {
+      orange('rules.create: rule', rule)
       const url = `api/rules/new-rule`
       const data = await fetchJson(url, {
-        method: 'POST'
+        method: 'POST',
+        body: JSON.stringify(rule)
       })
-      // orange('rules.create: data', data)
+      orange('rules.create: data', data)
       return data
     },
     async delete(ruleId) {

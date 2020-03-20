@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
 import TD from './TD'
 import { format } from 'date-fns'
 import Rules from 'ui/Rules'
 import isNilOrEmpty from 'lib/isNillOrEmpty'
-import { rowIdShowSet } from 'store/ui/actions'
+import { useFinanceContext } from 'financeContext'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -24,6 +24,10 @@ const useStyles = makeStyles({
 
 const TR = ({ doc, showOrigDescription }) => {
 
+  // actions
+
+  const { rowIdShowSet} = useFinanceContext()
+
   // local vars
 
   const {
@@ -40,14 +44,13 @@ const TR = ({ doc, showOrigDescription }) => {
     type
   } = doc
 
-  const _dispatch = useDispatch()
   const rowIdShow = useSelector(state => state.ui.rowIdShow)
   const _classes = useStyles({ showOrigDescription: showOrigDescription })
 
   // methods
 
   const _handleRowClick = () => {
-    _dispatch(rowIdShowSet(_id))
+    rowIdShowSet(_id)
   }
 
   // render

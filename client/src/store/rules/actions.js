@@ -94,7 +94,8 @@ export const ruleCreateRequestAction = createRequestThunk({
   request: api.rules.create,
   key: RULE_CREATE_REQUEST_KEY,
   // a successful create will always return [rule]
-  success: [(data) => rulesReadRequestAction(data)],
+  // TODO: rulesReadRequestAction does not take any params?
+  success: [rulesReadRequestAction()],
   failure: [
     e =>
       setToast({
@@ -109,7 +110,7 @@ export const ruleCreateRequestAction = createRequestThunk({
 export const ruleDeleteRequestAction = createRequestThunk({
   request: api.rules.delete,
   key: RULE_DELETE_REQUEST_KEY,
-  success: [rule => rulesReadRequestAction(rule[0]._id)],
+  success: [rulesReadRequestAction()],
   failure: [
     e =>
       setToast({ error: e, message: 'Could not deleteRule', level: TOAST_WARN })

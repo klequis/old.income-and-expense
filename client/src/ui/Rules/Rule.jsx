@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
@@ -7,7 +7,7 @@ import CriterionEdit from './CriterionEdit'
 import ActionView from './ActionView'
 import ActionEdit from './ActionEdit'
 import ActionButton from 'ui/elements/ActionButton'
-import TestCriteriaResults from './TestCriteriaResults'
+import CriteriaTestResults from './CriteriaTestResults'
 import { buttonTypes } from 'ui/elements/ActionButton'
 import { viewModes } from 'global-constants'
 import { findIndex, insert, mergeRight, prop, propEq, remove } from 'ramda'
@@ -50,11 +50,13 @@ const getRule = (ruleId, state) => {
   return rules[idx]
 }
 
-const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
+const Rule = ({ ruleId, removeRuleId }) => {
+
   // actions
 
   const {
     criteriaTestClear,
+    criteriaTestReadRequest,
     ruleCreateRequest,
     ruleDeleteRequest,
     rulesReadRequest,
@@ -65,10 +67,6 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
     viewReadRequest
   } = useFinanceContext()
 
-  // local vars
-
-  const _classes = useStyles()
-
   // state
 
   const [_rule, _setRule] = useState(
@@ -78,8 +76,15 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
     isTmpRule(ruleId) ? viewModes.modeNew : viewModes.modeView
   )
   const [_dirty, _setDirty] = useState(false)
+  
+  // local vars
 
-  const { criteria, actions } = _rule
+  const _ruleTmp = useSelector(state => getRule(ruleId, state))
+  green('Rule._ruleTmp', _ruleTmp)
+  const _criteriaTestResults = useSelector(state => state.criteriaTestResults)
+  green('Rule: _criteriaTestResults', _criteriaTestResults)
+  const _currentViewName = useSelector(state => state.ui.currentViewName)
+  const _classes = useStyles()
 
   // methods
 
@@ -105,14 +110,6 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
     _setViewMode(viewModes.modeView)
   }
 
-  const _deleteClick = async () => {
-    await ruleDeleteRequest(ruleId)
-    await rulesReadRequest()
-    await viewReadRequest()
-    ruleTmpRemove(ruleId)
-    removeRuleId(ruleId)
-  }
-
   const _criterionChange = criterion => {
     criteriaTestClear()
     const { criteria } = _rule
@@ -131,6 +128,15 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
     ruleTmpUpdate(newRule)
   }
 
+  const _deleteClick = async () => {
+    green('_deleteClick: ruleId', ruleId)
+    await ruleDeleteRequest(ruleId)
+    await rulesReadRequest()
+    await viewReadRequest(_currentViewName)
+    ruleTmpRemove(ruleId)
+    removeRuleId(ruleId)
+  }
+
   const _dirtyChange = isDirty => {
     _setDirty(isDirty)
   }
@@ -141,23 +147,25 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
   }
 
   const _saveClick = async () => {
-    green('_saveClick: ruleId', ruleId)
+    
 
     if (isTmpRule(ruleId)) {
-      green('_saveClick: saving tmp rule')
-      await ruleCreateRequest(ruleId, _rule)
+      green('_saveRule: ruleId', ruleId)  
+      green('_saveRule: _rule', _rule)  
+      await ruleCreateRequest(_rule)
     } else {
       green('_saveClick: saving existing rule')
       await ruleUpdateRequest(ruleId, _rule)
     }
-    green('_saveClick: ruleTmpRemove')
     ruleTmpRemove(ruleId)
-    green('_saveClick: setViewMode')
     _setViewMode(viewModes.modeView)
-    green('_saveClick: read rules')
     await rulesReadRequest()
-    green('_saveClick: read view')
-    await viewReadRequest()
+    await viewReadRequest(_currentViewName)
+  }
+
+  const _criteriaTestClick = async () => {
+    const { criteria } = _ruleTmp
+    await criteriaTestReadRequest(criteria)
   }
 
   // render
@@ -182,13 +190,13 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
               />
               <ActionButton
                 buttonType={buttonTypes.delete}
-                onClick={handleRuleDeleteClick}
+                onClick={_deleteClick}
               />
             </>
           )}
         </div>
 
-        {criteria.map(c => {
+        {_rule.criteria.map(c => {
           const { _id } = c
           if (_viewMode === viewModes.modeView) {
             return (
@@ -208,7 +216,7 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
             />
           )
         })}
-        {actions.map(a => {
+        {_rule.actions.map(a => {
           const { _id } = a
           if (_viewMode === viewModes.modeView) {
             return <ActionView key={_id} action={a} />
@@ -222,7 +230,10 @@ const Rule = ({ handleRuleDeleteClick, ruleId, removeRuleId }) => {
             />
           )
         })}
-        <TestCriteriaResults ruleId={ruleId} />
+        <CriteriaTestResults
+          data={_criteriaTestResults}
+          criteriaTestClick={_criteriaTestClick}
+        />
       </div>
     </div>
   )

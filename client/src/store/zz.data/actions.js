@@ -109,7 +109,6 @@ export const dataViewReadRequest = createRequestThunk({
     e =>
       setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
   ]
-
 })
 
 export const dataReadByCriteriaRequest = createRequestThunk({

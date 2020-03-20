@@ -4,7 +4,7 @@ import { toastReducer } from './toast/reducers'
 import { viewDataReducer } from './views/reducers'
 import { rulesReducer, ruleTmpReducer } from './rules/reducers'
 import { criteriaTestReducer } from './criteriaTest/reducers'
-import { rowIdShowReducer } from './ui/reducers'
+import { rowIdShowReducer, currentViewNameReducer } from './ui/reducers'
 
 const rootReducer = combineReducers({
   criteriaTestResults: criteriaTestReducer,
@@ -13,7 +13,8 @@ const rootReducer = combineReducers({
   ruleTmp: ruleTmpReducer,
   toast: toastReducer,
   ui: combineReducers({
-    rowIdShow: rowIdShowReducer
+    rowIdShow: rowIdShowReducer,
+    currentViewName: currentViewNameReducer
   }),
   viewData: viewDataReducer
 })
