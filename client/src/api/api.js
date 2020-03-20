@@ -42,7 +42,7 @@ export default {
         const data = await fetchJson(url, {
           method: 'GET'
         })
-        // orange('rules.read: data', data)
+        orange('api.rules.read: data', data)
         return data
       } catch (e) {
         redf('api.rules.read ERROR', e.message)
@@ -80,6 +80,7 @@ export default {
         method: 'PATCH',
         body: JSON.stringify(rule)
       })
+      orange('api.rules.update: data', data)
       return data
     }
   },
@@ -91,7 +92,7 @@ export default {
         const data = await fetchJson(url, {
           method: 'GET'
         })
-        // orange('data', data)
+        orange('api.views.read: data', data)
         return data
       } catch (e) {
         redf('api.data.views ERROR', e.message)

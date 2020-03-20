@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 
-const Test = ({ updateRulesAndData }) => {
+const Test = ({ updateRulesAndView }) => {
 
   useEffect(() => {
     ;(async () => {
-      await updateRulesAndData('all-data-by-description')
+      await updateRulesAndView('all-data-by-description')
     })()
     // eslint-disable-next-line
   }, [])
@@ -17,12 +17,12 @@ const Test = ({ updateRulesAndData }) => {
         {typeof test === 'function' ? 'is a function' : 'is NOT a function'}
       </div>
       <div>
-        updateRulesAndData{' '}
-        {typeof updateRulesAndData === 'function'
+        updateRulesAndView{' '}
+        {typeof updateRulesAndView === 'function'
           ? 'is a function'
           : 'is NOT a function'}
       </div>
-      <div>updateRulesAndData is a {typeof updateRulesAndData}</div>
+      <div>updateRulesAndView is a {typeof updateRulesAndView}</div>
     </>
   )
 }

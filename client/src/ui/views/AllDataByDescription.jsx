@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -22,19 +22,26 @@ const AllDataByDescription = () => {
     showOrigDescription: false
   })
 
+  const _updateRulesAndView = useCallback(async () => {
+    await rulesReadRequest()
+    await viewReadRequest(VIEW_NAME)
+  },[rulesReadRequest, viewReadRequest])
+
   useEffect(() => {
     _setLoading(true)
     ;(async () => {
-      await rulesReadRequest()
-      await viewReadRequest(VIEW_NAME)
+      // await rulesReadRequest()
+      // await viewReadRequest(VIEW_NAME)
+      await _updateRulesAndView()
       currentViewNameSet(VIEW_NAME)
       
     })()
     _setLoading(false)
-    // eslint-disable-next-line
-  }, [])
+    // // eslint-disable-next-line
+  }, [currentViewNameSet, _updateRulesAndView])
 
-  const viewData = useSelector(state => state.viewData)
+  const _viewData = useSelector(state => state.viewData)
+  green('AllDataByDescription: _viewData', _viewData)
 
   if (_loading) {
     return <h1>Loading</h1>
@@ -70,13 +77,14 @@ const AllDataByDescription = () => {
           </tr>
         </thead>
         <tbody>
-          {viewData.map(doc => {
+          {_viewData.map(doc => {
             const { _id } = doc
             return (
               <TR
                 key={_id}
                 doc={doc}
                 showOrigDescription={_switchState.showOrigDescription}
+                updateRulesAndView={_updateRulesAndView}
                 view={VIEW_NAME}
               />
             )

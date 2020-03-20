@@ -9,7 +9,7 @@ import ActionButton, { buttonTypes } from 'ui/elements/ActionButton'
 // eslint-disable-next-line
 import { green, yellow, red } from 'logger'
 
-const Rules = ({ docId, ruleIds = [] }) => {
+const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
   // actions
 
   const { ruleTmpAdd } = useFinanceContext()
@@ -75,7 +75,7 @@ const Rules = ({ docId, ruleIds = [] }) => {
         <ActionButton buttonType={buttonTypes.add} onClick={_addClick}>
           Add Rule
         </ActionButton>
-        <Rule ruleId={id} ruleIds={_ruleIds} removeRuleId={_removeRuleId} />
+        <Rule ruleId={id} ruleIds={_ruleIds} removeRuleId={_removeRuleId} updateRulesAndView={updateRulesAndView} />
       </td>
     </tr>
   ))

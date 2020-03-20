@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import isNilOrEmpty from 'lib/isNillOrEmpty'
-// import getRuleById from 'lib/getRuleById'
 import Button from '@material-ui/core/Button'
 
 

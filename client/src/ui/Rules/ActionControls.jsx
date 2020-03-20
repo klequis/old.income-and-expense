@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import TextField from 'ui/elements/TextField'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from 'ui/elements/Select'

@@ -22,11 +22,10 @@ const useStyles = makeStyles({
   })
 })
 
-const TR = ({ doc, showOrigDescription }) => {
-
+const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
   // actions
 
-  const { rowIdShowSet} = useFinanceContext()
+  const { rowIdShowSet } = useFinanceContext()
 
   // local vars
 
@@ -75,8 +74,13 @@ const TR = ({ doc, showOrigDescription }) => {
             : ruleIds.map(id => <div key={id}>{id}</div>)}
         </TD>
       </tr>
-      {_id === rowIdShow ? <Rules docId={_id} ruleIds={ruleIds} /> : null}
-      
+      {_id === rowIdShow ? (
+        <Rules
+          docId={_id}
+          ruleIds={ruleIds}
+          updateRulesAndView={updateRulesAndView}
+        />
+      ) : null}
     </>
   )
 }

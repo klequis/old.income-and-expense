@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import PropTypes, { string } from 'prop-types'
+import PropTypes from 'prop-types'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from 'ui/elements/Select'
 import ActionControls from './ActionControls'

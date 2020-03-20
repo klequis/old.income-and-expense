@@ -33,6 +33,7 @@ import isNilOrEmpty from 'lib/isNillOrEmpty'
 // eslint-disable-next-line
 import { red, blue } from 'logger'
 
+
 const MODULE_NAME = 'financeContext'
 
 export const FinanceContext = React.createContext()
@@ -113,6 +114,9 @@ export const FinanceProvider = ({ children }) => {
   const ruleCreateRequest = useCallback(
     async rule => {
       dispatch(await ruleCreateRequestAction(rule))
+      dispatch(await viewReadRequestAction())
+      dispatch(await rulesReadRequestAction())
+
     },
     [dispatch]
   )
@@ -128,8 +132,14 @@ export const FinanceProvider = ({ children }) => {
   )
 
   const ruleUpdateRequest = useCallback(
-    async (ruleId, newRule) => {
+    async (ruleId, newRule, currentViewName) => {
+      blue('ruleUpdateRequest', currentViewName)
       dispatch(await ruleUpdateRequestAction(ruleId, newRule))
+      blue('DONE ruleUpdateRequestAction')
+      dispatch(await viewReadRequestAction(currentViewName))
+      blue('DONE viewReadRequestAction')
+      dispatch(await rulesReadRequestAction())
+      blue('DONE rulesReadRequestAction')
     },
     [dispatch]
   )

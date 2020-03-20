@@ -50,7 +50,7 @@ const getRule = (ruleId, state) => {
   return rules[idx]
 }
 
-const Rule = ({ ruleId, removeRuleId }) => {
+const Rule = ({ ruleId, removeRuleId, updateRulesAndView, }) => {
 
   // actions
 
@@ -59,12 +59,10 @@ const Rule = ({ ruleId, removeRuleId }) => {
     criteriaTestReadRequest,
     ruleCreateRequest,
     ruleDeleteRequest,
-    rulesReadRequest,
     ruleTmpAdd,
     ruleTmpRemove,
     ruleTmpUpdate,
     ruleUpdateRequest,
-    viewReadRequest
   } = useFinanceContext()
 
   // state
@@ -80,10 +78,9 @@ const Rule = ({ ruleId, removeRuleId }) => {
   // local vars
 
   const _ruleTmp = useSelector(state => getRule(ruleId, state))
-  green('Rule._ruleTmp', _ruleTmp)
+  // green('Rule._ruleTmp', _ruleTmp)
   const _criteriaTestResults = useSelector(state => state.criteriaTestResults)
-  green('Rule: _criteriaTestResults', _criteriaTestResults)
-  const _currentViewName = useSelector(state => state.ui.currentViewName)
+  // green('Rule: _criteriaTestResults', _criteriaTestResults)
   const _classes = useStyles()
 
   // methods
@@ -131,8 +128,9 @@ const Rule = ({ ruleId, removeRuleId }) => {
   const _deleteClick = async () => {
     green('_deleteClick: ruleId', ruleId)
     await ruleDeleteRequest(ruleId)
-    await rulesReadRequest()
-    await viewReadRequest(_currentViewName)
+    // await rulesReadRequest()
+    // await viewReadRequest(_currentViewName)
+    await updateRulesAndView()
     ruleTmpRemove(ruleId)
     removeRuleId(ruleId)
   }
@@ -159,8 +157,9 @@ const Rule = ({ ruleId, removeRuleId }) => {
     }
     ruleTmpRemove(ruleId)
     _setViewMode(viewModes.modeView)
-    await rulesReadRequest()
-    await viewReadRequest(_currentViewName)
+    // await rulesReadRequest()
+    // await viewReadRequest(_currentViewName)
+    await updateRulesAndView()
   }
 
   const _criteriaTestClick = async () => {
