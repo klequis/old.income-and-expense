@@ -19,13 +19,14 @@ const AllDataByDescription = () => {
 
   const [_loading, _setLoading] = useState(false)
   const [_switchState, _setSwitchState] = useState({
-    showOrigDescription: false
+    showOrigDescription: false,
+    showOmitted: false
   })
 
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
     await viewReadRequest(VIEW_NAME)
-  },[rulesReadRequest, viewReadRequest])
+  }, [rulesReadRequest, viewReadRequest])
 
   useEffect(() => {
     _setLoading(true)
@@ -34,7 +35,6 @@ const AllDataByDescription = () => {
       // await viewReadRequest(VIEW_NAME)
       await _updateRulesAndView()
       currentViewNameSet(VIEW_NAME)
-      
     })()
     _setLoading(false)
     // // eslint-disable-next-line
@@ -63,6 +63,17 @@ const AllDataByDescription = () => {
         }
         label="Show Original Description"
       />
+      <FormControlLabel
+        control={
+          <Switch
+            checked={_switchState.showOmitted}
+            onChange={_handleSwitchChange('showOmitted')}
+            value="showOmitted"
+          />
+        }
+        label="Show Omitted"
+      />
+
       <table>
         <thead>
           <tr>
@@ -78,12 +89,16 @@ const AllDataByDescription = () => {
         </thead>
         <tbody>
           {_viewData.map(doc => {
-            const { _id } = doc
+            const { _id, omit } = doc
+            if (_switchState.showOmitted === false && omit) {
+              return null
+            }
             return (
               <TR
                 key={_id}
                 doc={doc}
                 showOrigDescription={_switchState.showOrigDescription}
+                showOmitted={_switchState.showOmitted}
                 updateRulesAndView={_updateRulesAndView}
                 view={VIEW_NAME}
               />

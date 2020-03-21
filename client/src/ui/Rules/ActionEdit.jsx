@@ -63,7 +63,7 @@ const ActionEdit = ({
     const { name, value } = event.target
     const newValues = mergeRight(_values, { [name]: value })
     _setValues(newValues)
-    handleDirtyChange(true)
+    handleDirtyChange(true) 
     handleActionChange(newValues)
   }
 
