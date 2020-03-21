@@ -10,15 +10,23 @@ import ActionButton from 'ui/elements/ActionButton'
 import CriteriaTestResults from './CriteriaTestResults'
 import { buttonTypes } from 'ui/elements/ActionButton'
 import { viewModes } from 'global-constants'
-import { findIndex, insert, mergeRight, prop, propEq, remove } from 'ramda'
+import {
+  append,
+  findIndex,
+  insert,
+  mergeRight,
+  prop,
+  propEq,
+  remove
+} from 'ramda'
 import isTmpRule from 'lib/isTmpRule'
 import { useFinanceContext } from 'financeContext'
 import removeLeadingSlash from 'lib/removeLeadingSlash'
 import { withRouter } from 'react-router-dom'
+import shortid from 'shortid'
 
 // eslint-disable-next-line
 import { green, yellow, red } from 'logger'
-
 
 const useStyles = makeStyles({
   wrapper: {
@@ -53,7 +61,6 @@ const getRule = (ruleId, state) => {
 }
 
 const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
-
   // actions
 
   const {
@@ -64,7 +71,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     ruleTmpAdd,
     ruleTmpRemove,
     ruleTmpUpdate,
-    ruleUpdateRequest,
+    ruleUpdateRequest
   } = useFinanceContext()
 
   // state
@@ -76,7 +83,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     isTmpRule(ruleId) ? viewModes.modeNew : viewModes.modeView
   )
   const [_dirty, _setDirty] = useState(false)
-  
+
   // local vars
 
   const _ruleTmp = useSelector(state => getRule(ruleId, state))
@@ -98,6 +105,14 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
       actions.length === 0 || idx === -1
         ? [action]
         : insert(idx, action, remove(idx, 1, actions))
+    const newRule = mergeRight(_rule, { actions: newActions })
+    _setRule(newRule)
+    ruleTmpUpdate(newRule)
+  }
+
+  const _actionAdd = () => {
+    const { actions } = _rule
+    const newActions = append({ _id: shortid.generate() }, actions)
     const newRule = mergeRight(_rule, { actions: newActions })
     _setRule(newRule)
     ruleTmpUpdate(newRule)
@@ -150,11 +165,9 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
   }
 
   const _saveClick = async () => {
-    
-
     if (isTmpRule(ruleId)) {
-      green('_saveRule: ruleId', ruleId)  
-      green('_saveRule: _rule', _rule)  
+      green('_saveRule: ruleId', ruleId)
+      green('_saveRule: _rule', _rule)
       await ruleCreateRequest(_rule, _currentViewName)
     } else {
       green('_saveClick: saving existing rule')
@@ -220,6 +233,13 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
             />
           )
         })}
+        <div>
+          Actions{' '}
+          <ActionButton
+            buttonType={buttonTypes.add}
+            onClick={_actionAdd}
+          />
+        </div>
         {_rule.actions.map(a => {
           const { _id } = a
           if (_viewMode === viewModes.modeView) {
