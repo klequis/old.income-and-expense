@@ -52,7 +52,7 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
   }
 
   // render
-  
+
   if (docId !== rowIdShow) {
     return null
   }
@@ -75,7 +75,12 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
         <ActionButton buttonType={buttonTypes.add} onClick={_addClick}>
           Add Rule
         </ActionButton>
-        <Rule ruleId={id} ruleIds={_ruleIds} removeRuleId={_removeRuleId} updateRulesAndView={updateRulesAndView} />
+        <Rule
+          ruleId={id}
+          ruleIds={_ruleIds}
+          removeRuleId={_removeRuleId}
+          updateRulesAndView={updateRulesAndView}
+        />
       </td>
     </tr>
   ))

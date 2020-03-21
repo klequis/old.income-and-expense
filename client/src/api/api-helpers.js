@@ -119,7 +119,7 @@ export const fetchJson = async (url, options = {}) => {
   const r = await getIt(url, options)
   const { status, statusText, url: resUrl } = r
 
-  purple(`fetchJson: url ${url}, status ${status}`)
+  // purple(`fetchJson: url ${url}, status ${status}`)
   if (status >= 200 && status < 300) {
     // orange('status OK')
     return await r.json()

@@ -63,6 +63,13 @@ const ActionView = ({ action: Action }) => {
       </div>
     )
   }
+  if (action === actionTypes.omit) {
+    return (
+      <div>
+        <span className={_classes.viewModeField}>{action}</span>
+      </div>
+    )
+  }
 }
 
 export default ActionView

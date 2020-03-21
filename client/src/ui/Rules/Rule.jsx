@@ -66,6 +66,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
   const {
     criteriaTestClear,
     criteriaTestReadRequest,
+    rowIdShowClear,
     ruleCreateRequest,
     ruleDeleteRequest,
     ruleTmpAdd,
@@ -118,6 +119,19 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     ruleTmpUpdate(newRule)
   }
 
+  // 5e75907cef968d03020d1952
+  const _actionRemove = (actionId) => {
+    green('_actionRemove: actionId', actionId)
+    const { actions } = _rule
+    // const actionId = prop('_id', action)
+    const idx = findIndex(propEq('_id', actionId))(actions)
+    const newActions = remove(idx, 1, actions)
+    const newRule = mergeRight(_rule, { actions: newActions })
+    _setRule(newRule)
+    ruleTmpUpdate(newRule)
+    _setDirty(true)
+  }
+
   const _cancelClick = () => {
     ruleTmpRemove(ruleId)
     criteriaTestClear()
@@ -140,7 +154,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
         : insert(idx, criterion, remove(idx, 1, criteria))
 
     const newRule = mergeRight(_rule, { criteria: newCriteria })
-    green('_criterionChange: newRule', newRule)
+    // green('_criterionChange: newRule', newRule)
     _setRule(newRule)
     ruleTmpUpdate(newRule)
   }
@@ -166,15 +180,16 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
 
   const _saveClick = async () => {
     if (isTmpRule(ruleId)) {
-      green('_saveRule: ruleId', ruleId)
-      green('_saveRule: _rule', _rule)
+      green('_saveClick: ruleId', ruleId)
       await ruleCreateRequest(_rule, _currentViewName)
     } else {
-      green('_saveClick: saving existing rule')
+      green('_saveClick: ruleId', ruleId)
       await ruleUpdateRequest(ruleId, _rule, _currentViewName)
     }
     ruleTmpRemove(ruleId)
     _setViewMode(viewModes.modeView)
+    removeRuleId(ruleId)
+    rowIdShowClear()
     // await rulesReadRequest()
     // await viewReadRequest(_currentViewName)
     // await updateRulesAndView()
@@ -249,6 +264,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
             <ActionEdit
               key={_id}
               action={a}
+              actionRemove={_actionRemove}
               handleDirtyChange={_dirtyChange}
               handleActionChange={_actionChange}
             />

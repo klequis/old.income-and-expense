@@ -20,14 +20,12 @@ import { orange, green, redf } from 'logger'
 export default {
   criteria: {
     async read(criteria) {
-      // orange('api.criteria.read: criteria', criteria)
       try {
         const url = `/api/criteria/criteria-test/`
         const data = await fetchJson(url, {
           method: 'POST',
           body: JSON.stringify(criteria)
         })
-        // orange('api.criteria.read: data', data)
         return data
       } catch (e) {
         redf('api.criteria.read ERROR', e.message)
@@ -42,7 +40,7 @@ export default {
         const data = await fetchJson(url, {
           method: 'GET'
         })
-        orange('api.rules.read: data', data)
+        orange('api.rules.read: data.length', data.length)
         return data
       } catch (e) {
         redf('api.rules.read ERROR', e.message)
@@ -57,21 +55,20 @@ export default {
       return data
     },
     async create(rule) {
-      orange('rules.create: rule', rule)
       const url = `api/rules/new-rule`
       const data = await fetchJson(url, {
         method: 'POST',
         body: JSON.stringify(rule)
       })
-      orange('rules.create: data', data)
+      orange('rules.create: data.length', data.length)
       return data
     },
     async delete(ruleId) {
-      // orange('api.rules.delete: ruleId', ruleId)
       const url = `api/rules/ruleid/${ruleId}`
       const data = await fetchJson(url, {
         method: 'DELETE'
       })
+      orange('rules.delete: data.length', data.length)
       return data
     },
     async update(_id, rule) {
@@ -80,19 +77,18 @@ export default {
         method: 'PATCH',
         body: JSON.stringify(rule)
       })
-      orange('api.rules.update: data', data)
+      orange('api.rules.update: data.length', data.length)
       return data
     }
   },
   views: {
     async read(viewUrlPart) {
-      // orange('reportUrlPart', reportUrlPart)
       try {
         const url = `/api/views/${viewUrlPart}`
         const data = await fetchJson(url, {
           method: 'GET'
         })
-        orange('api.views.read: data', data)
+        orange('api.views.read: data.length', data.length)
         return data
       } catch (e) {
         redf('api.data.views ERROR', e.message)
@@ -115,7 +111,6 @@ export default {
       return data
     },
     async readByCriteria(criteria) {
-      // orange('readByCriteria: criteria', criteria)
       try {
         const url = `/api/data/criteria/`
         const data = await fetchJson(url, {
@@ -132,7 +127,6 @@ export default {
       const data = await fetchJson(`api/import`, {
         method: 'GET'
       })
-      // orange('importData: data', data)
       return data
     }
   }

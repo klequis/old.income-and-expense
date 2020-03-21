@@ -26,7 +26,7 @@ export const createRequestThunk = ({
   // pink('success', success)
   // console.groupEnd()
   return (...args) => async dispatch => {
-    pink('args', args)
+    // pink('args', args)
     const requestKey = typeof key === 'function' ? key(...args) : key
     // pink('requestKey', requestKey)
     start.map(async actionCreator => {

@@ -33,7 +33,6 @@ import isNilOrEmpty from 'lib/isNillOrEmpty'
 
 // eslint-disable-next-line
 import { red, blue } from 'logger'
-import { isNil } from 'ramda'
 
 const MODULE_NAME = 'financeContext'
 
@@ -151,6 +150,10 @@ export const FinanceProvider = ({ children }) => {
   const ruleUpdateRequest = useCallback(
     async (ruleId, newRule, currentViewName) => {
       dispatch(await ruleUpdateRequestAction(ruleId, newRule))
+        .then(async () =>
+          dispatch(await viewReadRequestAction(currentViewName))
+        )
+        .then(async () => dispatch(await rulesReadRequestAction()))
     },
     [dispatch]
   )

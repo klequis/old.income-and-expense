@@ -1,6 +1,5 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
-import { useSelector } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import { useFinanceContext } from 'financeContext'
 import { withRouter } from 'react-router-dom'

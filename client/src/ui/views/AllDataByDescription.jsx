@@ -41,7 +41,7 @@ const AllDataByDescription = () => {
   }, [currentViewNameSet, _updateRulesAndView])
 
   const _viewData = useSelector(state => state.viewData)
-  green('AllDataByDescription: _viewData', _viewData)
+  // green('3. AllDataByDescription: _viewData', _viewData.length)
 
   if (_loading) {
     return <h1>Loading</h1>

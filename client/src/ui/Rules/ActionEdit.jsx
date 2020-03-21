@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from 'ui/elements/Select'
 import ActionControls from './ActionControls'
+import ActionButton, { buttonTypes } from 'ui/elements/ActionButton'
 import { makeStyles } from '@material-ui/styles'
 import { mergeRight } from 'ramda'
 
@@ -26,6 +27,7 @@ const useStyles = makeStyles({
 
 const ActionEdit = ({
   action: Action,
+  actionRemove,
   handleDirtyChange,
   handleActionChange
 }) => {
@@ -53,6 +55,10 @@ const ActionEdit = ({
 
   const _classes = useStyles()
 
+  const _actionRemove = () => {
+    actionRemove(_id)
+  }
+
   const _handleChange = event => {
     const { name, value } = event.target
     const newValues = mergeRight(_values, { [name]: value })
@@ -71,6 +77,7 @@ const ActionEdit = ({
           <MenuItem value="categorize">Categorize</MenuItem>
         </Select>
         <ActionControls values={_values} handleChange={_handleChange} />
+        <ActionButton buttonType={buttonTypes.remove} onClick={_actionRemove} />
       </div>
     </div>
   )

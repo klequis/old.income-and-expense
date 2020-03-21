@@ -118,7 +118,9 @@ const runRules = async (passedInRules = []) => {
 
       switch (action.action) {
         case 'omit':
-          await updateMany(DATA_COLLECTION_NAME, filter, createOmitUpdate(rule))
+          const omitUpdate = createOmitUpdate(rule)
+          green('omitUpdate', omitUpdate)
+          await updateMany(DATA_COLLECTION_NAME, filter, omitUpdate)
           break
         case 'strip':
           for (let j = 0; j < f.length; j++) {

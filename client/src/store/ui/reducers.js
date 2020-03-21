@@ -9,11 +9,14 @@ import {
 import { blue } from 'logger'
 
 export const rowIdShowReducer = (state = '', { type, payload }) => {
+  
   switch (type) {
     case ROW_ID_SHOW_CLEAR_KEY:
       // payload will be a string id
+      blue('CLEAR type', type)
       return ''
     case ROW_ID_SHOW_SET_KEY:
+      blue('SET type', type)
       return payload
     default:
       return state

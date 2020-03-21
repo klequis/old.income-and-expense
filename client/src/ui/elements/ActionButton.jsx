@@ -7,6 +7,7 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import DoneIcon from '@material-ui/icons/Done'
 import IconButton from '@material-ui/core/IconButton'
 import SaveIcon from '@material-ui/icons/Save'
+import RemoveIcon from '@material-ui/icons/Remove'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -17,6 +18,7 @@ export const buttonTypes = {
   delete: 'deleteButton',
   done: 'doneButton',
   edit: 'editButton',
+  remove: 'removeButton',
   save: 'saveButton'
 }
 
@@ -32,6 +34,8 @@ const Icon = ({ buttonType }) => {
       return <DoneIcon />
     case buttonTypes.edit:
       return <EditIcon />
+    case buttonTypes.remove:
+      return <RemoveIcon />
     case buttonTypes.save:
       return <SaveIcon />
     default:
@@ -58,6 +62,7 @@ ActionButton.propTypes = {
     buttonTypes.delete,
     buttonTypes.done,
     buttonTypes.edit,
+    buttonTypes.remove,
     buttonTypes.save
   ]).isRequired,
   onClick: PropTypes.func.isRequired
