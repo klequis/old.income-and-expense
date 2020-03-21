@@ -11,12 +11,14 @@ import CriteriaTestResults from './CriteriaTestResults'
 import { buttonTypes } from 'ui/elements/ActionButton'
 import { viewModes } from 'global-constants'
 import { findIndex, insert, mergeRight, prop, propEq, remove } from 'ramda'
-
 import isTmpRule from 'lib/isTmpRule'
 import { useFinanceContext } from 'financeContext'
+import removeLeadingSlash from 'lib/removeLeadingSlash'
+import { withRouter } from 'react-router-dom'
 
 // eslint-disable-next-line
 import { green, yellow, red } from 'logger'
+
 
 const useStyles = makeStyles({
   wrapper: {
@@ -50,7 +52,7 @@ const getRule = (ruleId, state) => {
   return rules[idx]
 }
 
-const Rule = ({ ruleId, removeRuleId, updateRulesAndView, }) => {
+const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
 
   // actions
 
@@ -82,6 +84,9 @@ const Rule = ({ ruleId, removeRuleId, updateRulesAndView, }) => {
   const _criteriaTestResults = useSelector(state => state.criteriaTestResults)
   // green('Rule: _criteriaTestResults', _criteriaTestResults)
   const _classes = useStyles()
+
+  const { pathname } = location
+  const _currentViewName = removeLeadingSlash(pathname)
 
   // methods
 
@@ -150,16 +155,16 @@ const Rule = ({ ruleId, removeRuleId, updateRulesAndView, }) => {
     if (isTmpRule(ruleId)) {
       green('_saveRule: ruleId', ruleId)  
       green('_saveRule: _rule', _rule)  
-      await ruleCreateRequest(_rule)
+      await ruleCreateRequest(_rule, _currentViewName)
     } else {
       green('_saveClick: saving existing rule')
-      await ruleUpdateRequest(ruleId, _rule)
+      await ruleUpdateRequest(ruleId, _rule, _currentViewName)
     }
     ruleTmpRemove(ruleId)
     _setViewMode(viewModes.modeView)
     // await rulesReadRequest()
     // await viewReadRequest(_currentViewName)
-    await updateRulesAndView()
+    // await updateRulesAndView()
   }
 
   const _criteriaTestClick = async () => {
@@ -238,7 +243,7 @@ const Rule = ({ ruleId, removeRuleId, updateRulesAndView, }) => {
   )
 }
 
-export default Rule
+export default withRouter(Rule)
 
 Rule.propTypes = {
   ruleId: PropTypes.string.isRequired

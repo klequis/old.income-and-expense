@@ -27,12 +27,13 @@ import {
   currentViewNameClearAction,
   currentViewNameSetAction
 } from 'store/ui/actions'
+// import * as Promise from 'bluebird'
 
 import isNilOrEmpty from 'lib/isNillOrEmpty'
 
 // eslint-disable-next-line
 import { red, blue } from 'logger'
-
+import { isNil } from 'ramda'
 
 const MODULE_NAME = 'financeContext'
 
@@ -42,30 +43,39 @@ export const useFinanceContext = () => useContext(FinanceContext)
 export const FinanceProvider = ({ children }) => {
   const dispatch = useDispatch()
 
-  const viewReadRequest = useCallback(
-    async view => {
-      if (isNilOrEmpty(view)) {
-        throw new Error(`${MODULE_NAME} ERROR`, 'parameter view has no value')
-      }
-      dispatch(await viewReadRequestAction(view))
-    },
-    [dispatch]
-  )
-
-  const rulesReadRequest = useCallback(async () => {
-    dispatch(await rulesReadRequestAction())
-  }, [dispatch])
-
+  // C
   const criteriaTestClear = () => {
     dispatch(criteriaTestClearAction())
   }
+
+  const criteriaTestReadRequest = useCallback(
+    async criteria => {
+      dispatch(await criteriaTestReadRequestAction(criteria))
+    },
+    [dispatch]
+  )
 
   const currentViewNameClear = () => {
     dispatch(currentViewNameClearAction())
   }
 
-  const currentViewNameSet = (viewName) => {
+  const currentViewNameSet = viewName => {
     dispatch(currentViewNameSetAction(viewName))
+  }
+
+  // I
+  const importDataRequest = useCallback(
+    async currentViewName => {
+      dispatch(await importDataRequestAction()).then(async () =>
+        dispatch(await viewReadRequestAction(currentViewName))
+      )
+    },
+    [dispatch]
+  )
+
+  // R
+  const requestFailed = (reason, key) => {
+    dispatch(requestFailedAction(reason, key))
   }
 
   const requestPending = key => {
@@ -76,70 +86,95 @@ export const FinanceProvider = ({ children }) => {
     dispatch(requestSuccessAction(key))
   }
 
-  const requestFailed = (reason, key) => {
-    dispatch(requestFailedAction(reason, key))
-  }
-
-  const criteriaTestReadRequest = useCallback(
-    async criteria => {
-      dispatch(await criteriaTestReadRequestAction(criteria))
-    },
-    [dispatch]
-  )
-
-  const importDataRequest = useCallback(async () => {
-    dispatch(await importDataRequestAction())
-  }, [dispatch])
-
   const rowIdShowClear = () => {
     dispatch(rowIdShowClearAction())
   }
 
-  const rowIdShowSet = (ruleId) => {
+  const rowIdShowSet = ruleId => {
     dispatch(rowIdShowSetAction(ruleId))
   }
 
+  const rulesReadRequest = useCallback(async () => {
+    dispatch(await rulesReadRequestAction())
+  }, [dispatch])
+
   const ruleTmpAdd = data => {
     dispatch(ruleTmpAddAction(data))
-  }
-
-  const ruleTmpUpdate = data => {
-    dispatch(ruleTmpUpdateAction(data))
   }
 
   const ruleTmpRemove = ruleId => {
     dispatch(ruleTmpRemoveAction(ruleId))
   }
 
-  const ruleCreateRequest = useCallback(
-    async rule => {
-      dispatch(await ruleCreateRequestAction(rule))
-      dispatch(await viewReadRequestAction())
-      dispatch(await rulesReadRequestAction())
+  const ruleTmpUpdate = data => {
+    dispatch(ruleTmpUpdateAction(data))
+  }
 
+  // const ruleCreateRequestOrig = useCallback(
+  //   async (rule, currentViewName) => {
+  //     if (isNilOrEmpty(currentViewName)) {
+  //       red('ruleCreateRequest ERROR', 'must pass in a view name')
+  //     }
+  //     dispatch(await ruleCreateRequestAction(rule))
+  //     dispatch(await viewReadRequestAction(currentViewName))
+  //     dispatch(await rulesReadRequestAction())
+  //   },
+  //   [dispatch]
+  // )
+
+  // if (isNilOrEmpty(ruleId)) {
+  //   throw new Error('parameter ruleId is incorrect.')
+  // }
+
+  const ruleCreateRequest = useCallback(
+    async (rule, currentViewName) => {
+      dispatch(await ruleCreateRequestAction(rule))
+        .then(async () =>
+          dispatch(await viewReadRequestAction(currentViewName))
+        )
+        .then(async () => dispatch(await rulesReadRequestAction()))
     },
     [dispatch]
   )
 
   const ruleDeleteRequest = useCallback(
-    async ruleId => {
-      if (isNilOrEmpty(ruleId)) {
-        throw new Error('parameter ruleId is incorrect.')
-      }
+    async (ruleId, currentViewName) => {
       dispatch(await ruleDeleteRequestAction(ruleId))
+        .then(async () =>
+          dispatch(await viewReadRequestAction(currentViewName))
+        )
+        .then(async () => dispatch(await rulesReadRequestAction()))
     },
     [dispatch]
   )
 
   const ruleUpdateRequest = useCallback(
     async (ruleId, newRule, currentViewName) => {
-      blue('ruleUpdateRequest', currentViewName)
       dispatch(await ruleUpdateRequestAction(ruleId, newRule))
-      blue('DONE ruleUpdateRequestAction')
-      dispatch(await viewReadRequestAction(currentViewName))
-      blue('DONE viewReadRequestAction')
-      dispatch(await rulesReadRequestAction())
-      blue('DONE rulesReadRequestAction')
+    },
+    [dispatch]
+  )
+
+  // BLUEBIRD VERSION
+  // const ruleUpdateRequest = useCallback(
+  //   (ruleId, newRule, currentViewName) => {
+  //     const arr = [
+  //       dispatch(ruleUpdateRequestAction(ruleId, newRule)),
+  //       dispatch(viewReadRequestAction(currentViewName)),
+  //       dispatch(rulesReadRequestAction())
+  //     ]
+  //     Promise.mapSeries(arr, (fn) => { return fn })
+  //   },
+  //   [dispatch]
+  // )
+
+  // V
+  const viewReadRequest = useCallback(
+    async view => {
+      if (isNilOrEmpty(view)) {
+        throw new Error(`${MODULE_NAME} ERROR`, 'parameter view has no value')
+      }
+      dispatch(await viewReadRequestAction(view))
     },
     [dispatch]
   )

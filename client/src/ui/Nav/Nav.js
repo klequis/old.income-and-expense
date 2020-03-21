@@ -1,10 +1,13 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
+import { useSelector } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import { useFinanceContext } from 'financeContext'
-
+import { withRouter } from 'react-router-dom'
+import removeLeadingSlash from 'lib/removeLeadingSlash'
 // eslint-disable-next-line
 import { green } from 'logger'
+
 
 const useStyles = makeStyles({
   nav: {
@@ -20,17 +23,23 @@ const useStyles = makeStyles({
   }
 })
 
-const Nav = ({ importData }) => {
+
+
+const Nav = ({ location }) => {
+
   const { importDataRequest } = useFinanceContext()
   const classes = useStyles()
 
+  const { pathname } = location
+  const _currentViewName = removeLeadingSlash(pathname)
+
   return (
     <div className={classes.nav}>
-      <Button variant="outlined" onClick={() => importDataRequest()}>
+      <Button variant="outlined" onClick={() => importDataRequest(_currentViewName)}>
         Import Data
       </Button>
     </div>
   )
 }
 
-export default Nav
+export default withRouter(Nav)
