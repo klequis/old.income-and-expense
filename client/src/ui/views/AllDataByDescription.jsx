@@ -4,6 +4,7 @@ import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TR from './TR'
 import { useFinanceContext } from 'financeContext'
+import SortIcon from '@material-ui/icons/Sort'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -77,7 +78,7 @@ const AllDataByDescription = () => {
       <table>
         <thead>
           <tr>
-            <th>Date</th>
+            <th>Date <SortIcon /></th>
             <th>Description</th>
             <th>Credit</th>
             <th>Debit</th>

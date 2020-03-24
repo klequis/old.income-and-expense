@@ -119,8 +119,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     ruleTmpUpdate(newRule)
   }
 
-  // 5e75907cef968d03020d1952
-  const _actionRemove = (actionId) => {
+  const _actionRemove = actionId => {
     green('_actionRemove: actionId', actionId)
     const { actions } = _rule
     // const actionId = prop('_id', action)
@@ -159,6 +158,29 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     ruleTmpUpdate(newRule)
   }
 
+  const _criterionAdd = () => {
+    const { criteria } = _rule
+    const newCriteria = append(
+      { _id: shortid.generate(), field: '', operation: '', value: '' },
+      criteria
+    )
+    const newRule = mergeRight(_rule, { criteria: newCriteria })
+    _setRule(newRule)
+    ruleTmpUpdate(newRule)
+  }
+
+  const _criterionRemove = criterionId => {
+    green('_criterionRemove: actionId', criterionId)
+    const { criteria } = _rule
+    // const actionId = prop('_id', action)
+    const idx = findIndex(propEq('_id', criterionId))(criteria)
+    const newCriteria = remove(idx, 1, criteria)
+    const newRule = mergeRight(_rule, { criteria: newCriteria })
+    _setRule(newRule)
+    ruleTmpUpdate(newRule)
+    _setDirty(true)
+  }
+
   const _deleteClick = async () => {
     green('_deleteClick: ruleId', ruleId)
     await ruleDeleteRequest(ruleId)
@@ -180,19 +202,14 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
 
   const _saveClick = async () => {
     if (isTmpRule(ruleId)) {
-      green('_saveClick: ruleId', ruleId)
       await ruleCreateRequest(_rule, _currentViewName)
     } else {
-      green('_saveClick: ruleId', ruleId)
       await ruleUpdateRequest(ruleId, _rule, _currentViewName)
     }
     ruleTmpRemove(ruleId)
     _setViewMode(viewModes.modeView)
     removeRuleId(ruleId)
     rowIdShowClear()
-    // await rulesReadRequest()
-    // await viewReadRequest(_currentViewName)
-    // await updateRulesAndView()
   }
 
   const _criteriaTestClick = async () => {
@@ -227,7 +244,15 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
             </>
           )}
         </div>
-
+        <div>
+          Criteria{' '}
+          {_viewMode === viewModes.modeView ? null : (
+            <ActionButton
+              buttonType={buttonTypes.add}
+              onClick={_criterionAdd}
+            />
+          )}
+        </div>
         {_rule.criteria.map(c => {
           const { _id } = c
           if (_viewMode === viewModes.modeView) {
@@ -243,6 +268,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
             <CriterionEdit
               key={_id}
               criterion={c}
+              criterionRemove={_criterionRemove}
               handleDirtyChange={_dirtyChange}
               handleCriterionChange={_criterionChange}
             />
@@ -250,10 +276,9 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
         })}
         <div>
           Actions{' '}
-          <ActionButton
-            buttonType={buttonTypes.add}
-            onClick={_actionAdd}
-          />
+          {_viewMode === viewModes.modeView ? null : (
+            <ActionButton buttonType={buttonTypes.add} onClick={_actionAdd} />
+          )}
         </div>
         {_rule.actions.map(a => {
           const { _id } = a
@@ -273,6 +298,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
         <CriteriaTestResults
           data={_criteriaTestResults}
           criteriaTestClick={_criteriaTestClick}
+          ruleViewMode={_viewMode}
         />
       </div>
     </div>

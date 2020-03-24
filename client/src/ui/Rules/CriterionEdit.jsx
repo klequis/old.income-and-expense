@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/styles'
 import { operators, dataFields } from 'global-constants'
 import TextField from 'ui/elements/TextField'
 import { mergeRight } from 'ramda'
+import ActionButton, {buttonTypes} from 'ui/elements/ActionButton'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -28,7 +29,7 @@ const useStyles = makeStyles({
   }
 })
 
-const CriterionEdit = ({ criterion, handleCriterionChange, handleDirtyChange }) => {
+const CriterionEdit = ({ criterion, criterionRemove, handleCriterionChange, handleDirtyChange }) => {
 
   const { _id, field, operation, value } = criterion
 
@@ -50,6 +51,10 @@ const CriterionEdit = ({ criterion, handleCriterionChange, handleDirtyChange }) 
 
   const _classes = useStyles()
 
+  const _criterionRemove = () => {
+    criterionRemove(_id)
+  }
+
   return (
     <div className={_classes.wrapper}>
       <div /*className={classes.fields}*/>
@@ -61,6 +66,8 @@ const CriterionEdit = ({ criterion, handleCriterionChange, handleDirtyChange }) 
         >
           <MenuItem value={dataFields.description}>Description</MenuItem>
           <MenuItem value={dataFields.typeOrig}>Type</MenuItem>
+          <MenuItem value={dataFields.credit}>Credit</MenuItem>
+          <MenuItem value={dataFields.debit}>Debit</MenuItem>
         </Select>
 
         <Select
@@ -83,6 +90,7 @@ const CriterionEdit = ({ criterion, handleCriterionChange, handleDirtyChange }) 
           onChange={_handleChange}
           fullWidth
         />
+        <ActionButton buttonType={buttonTypes.remove} onClick={_criterionRemove} />
       </div>
     </div>
   )

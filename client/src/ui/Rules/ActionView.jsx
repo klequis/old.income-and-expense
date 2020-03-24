@@ -33,6 +33,7 @@ const ActionView = ({ action: Action }) => {
     category1,
     category2
   } = Action
+
   const _classes = useStyles()
 
   if (action === actionTypes.strip) {

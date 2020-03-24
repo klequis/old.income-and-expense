@@ -40,7 +40,7 @@ const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
     omit,
     origDescription,
     ruleIds,
-    type
+    typeOrig
   } = doc
 
   const rowIdShow = useSelector(state => state.ui.rowIdShow)
@@ -66,8 +66,8 @@ const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
         <TD align="right">{debit}</TD>
         <TD align="right">{category1}</TD>
         <TD align="right">{category2}</TD>
-        <TD align="right">{type}</TD>
-        <TD align="right">{omit}</TD>
+        <TD align="right">{typeOrig}</TD>
+        <TD align="right">{omit ? 'yes' : ''}</TD>
         <TD align="center">
           {isNilOrEmpty(ruleIds)
             ? null

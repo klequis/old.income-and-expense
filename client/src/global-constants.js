@@ -14,7 +14,9 @@ export const operators = {
 
 export const dataFields = {
   description: 'description',
-  typeOrig: 'typeOrig'
+  typeOrig: 'typeOrig',
+  credit: 'credit',
+  debit: 'debit'
 }
 
 export const actionTypes = {

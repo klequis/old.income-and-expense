@@ -97,7 +97,6 @@ const runRules = async (passedInRules = []) => {
   }
   // green('rules', rules)
   for (let i = 0; i < rules.length; i++) {
-    yellow('running rules', i)
     const rule = rules[i]
     const { actions, criteria } = rule
     // yellow('acctId', acct)
@@ -112,6 +111,9 @@ const runRules = async (passedInRules = []) => {
     // )
     // yellow('runRules: criteriaWithAcctId', criteriaWithAcctId)
     const filter = filterBuilder(criteria)
+    if (criteria.length > 1) {
+      green('filter', filter)
+    }
     const f = await find(DATA_COLLECTION_NAME, filter)
     for (let j = 0; j < actions.length; j++) {
       const action = actions[j]
@@ -119,7 +121,6 @@ const runRules = async (passedInRules = []) => {
       switch (action.action) {
         case 'omit':
           const omitUpdate = createOmitUpdate(rule)
-          green('omitUpdate', omitUpdate)
           await updateMany(DATA_COLLECTION_NAME, filter, omitUpdate)
           break
         case 'strip':

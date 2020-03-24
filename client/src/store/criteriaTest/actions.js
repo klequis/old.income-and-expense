@@ -12,7 +12,6 @@ import { TOAST_WARN } from 'global-constants'
 import { yellow } from 'logger'
 
 const criteriaTestReadAction = data => {
-  yellow('criteriaTestReadAction: data', data)
   return {
     type: CRITERIA_TEST_READ_KEY,
     payload: data

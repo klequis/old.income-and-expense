@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import isNilOrEmpty from 'lib/isNillOrEmpty'
 import Button from '@material-ui/core/Button'
-
+import { viewModes } from 'global-constants'
 
 // eslint-disable-next-line
 import { green } from 'logger'
@@ -23,26 +23,22 @@ const grouped = array =>
     return acc
   }, {})
 
-const TestCriteriaResults = ({ data, criteriaTestClick }) => {
-
+const TestCriteriaResults = ({ data, criteriaTestClick, ruleViewMode }) => {
   // local vars
 
   const _classes = useStyles()
 
   // methods
 
-  if (isNilOrEmpty(data)) {
-    return (
-      <Button variant="outlined" size="small" onClick={criteriaTestClick}>
-        Test Criteria
-      </Button>
-    )
-  }
-
   const groupedData = grouped(data)
 
   return (
     <div className={_classes.wrapper}>
+      {ruleViewMode !== viewModes.modeView ? (
+        <Button variant="outlined" size="small" onClick={criteriaTestClick}>
+          Test Criteria
+        </Button>
+      ) : null}
       {!isNilOrEmpty(groupedData)
         ? Object.keys(groupedData).map(key => {
             return (
