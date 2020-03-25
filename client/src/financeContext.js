@@ -29,7 +29,7 @@ import {
 } from 'store/ui/actions'
 // import * as Promise from 'bluebird'
 
-import isNilOrEmpty from 'lib/isNillOrEmpty'
+import isNilOrEmpty from 'lib/isNilOrEmpty'
 
 // eslint-disable-next-line
 import { red, blue } from 'logger'

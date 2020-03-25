@@ -14,7 +14,7 @@ export const operators = {
 
 export const dataFields = {
   description: 'description',
-  typeOrig: 'typeOrig',
+  type: 'type',
   credit: 'credit',
   debit: 'debit'
 }
@@ -30,4 +30,20 @@ export const viewModes = {
   modeView: 'modeView',
   modeEdit: 'modeEdit',
   modeNew: 'modeNew'
+}
+
+export const dataFieldNames = {
+  date: 'date',
+  description: 'description',
+  credit: 'credit',
+  debit: 'debit',
+  category1: 'category1',
+  category2: 'category2',
+  type: 'type',
+  omit: 'omit'
+}
+
+export const sortDirections = {
+  ascending: 'ascending',
+  descending: 'descending'
 }

@@ -1,8 +1,9 @@
 import { createIndex, dropCollection, find, insertMany } from 'db'
 import { ACCOUNTS_COLLECTION_NAME, DATA_COLLECTION_NAME } from 'db/constants'
 import csv from 'csvtojson'
-import { has, filter } from 'ramda'
+import { has, filter, pipe, trim, toLower, isNil } from 'ramda'
 import runRules from './runRules'
+import dataFields from 'dataCollection'
 
 // eslint-disable-next-line
 import { green, red, redf, yellow } from 'logger'
@@ -31,56 +32,88 @@ const readCsvFile = async (file, hasHeaders) => {
   }
 }
 
-// const successFail = (condition, message, value) => {
-//   if (condition) {
-//     green(message, value)
-//   } else {
-//     red(message, value)
-//   }
-// }
-
-const isDebit = value => (value < 0 ? value : null)
-
-const isCredit = value => (value > 0 ? value : null)
-
-// const hasDate = has('date')
-// const hasDescription = has('description')
-const hasDebit = has('debit')
-const hasCredit = has('credit')
-const hasTypeOrig = has('typeOrig')
-const hasCheckNumber = has('checkNumber')
-
-const toLower = value => value.toLowerCase()
-
+const isDebit = value => value < 0
+const isCredit = value => value > 0
 const removeDoubleSpace = value => value.replace(/\s{2,}/g, ' ').trim()
-
-const transformData = (account, data) => {
-  const { fieldToCol, acctId } = account
-  const docs = data.map(doc => {
-    const description = removeDoubleSpace(
-      doc[`field${fieldToCol.description.col}`]
-    )
-    const date = new Date(doc[`field${fieldToCol.date.col}`]).toISOString()
-    return {
-      acctId: acctId,
-      date: date,
-      description: description,
-      origDescription: description,
-      debit: hasDebit(fieldToCol)
-        ? isDebit(doc[`field${fieldToCol.debit.col}`])
-        : null,
-      credit: hasCredit(fieldToCol)
-        ? isCredit(doc[`field${fieldToCol.credit.col}`])
-        : null,
-      typeOrig: hasTypeOrig(fieldToCol)
-        ? toLower(doc[`field${fieldToCol.typeOrig.col}`])
-        : null,
-      checkNumber: hasCheckNumber(fieldToCol)
-        ? doc[`field${fieldToCol.checkNumber.col}`]
-        : null,
-      omit: false
+const checkO = o => {
+  const keys = Object.keys(o)
+  keys.forEach(key => {
+    if (isNil(o[key])) {
+      red(`field${key} `, typeof o[key])
     }
   })
+}
+
+const _swapCreditDebit = value => {
+  if (value === 0) {
+    return value
+  }
+
+  return value * -1
+}
+
+const transformCreditDebit = (swapCreditDebit, value) => {
+  // yellow('value', value)
+  const nv1 = typeof value === 'string' ? 0 : value
+  const nv2 = swapCreditDebit ? _swapCreditDebit(nv1) : nv1
+  // yellow('nv2', nv2)
+  return nv2
+}
+
+/*
+    data collection field names are: field[n]
+*/
+const transformData = (account, data) => {
+  const { fieldToCol, acctId, swapCreditDebit } = account
+  const docs = data.map(doc => {
+    // description
+    const description = pipe(
+      removeDoubleSpace,
+      trim
+    )(doc[`field${fieldToCol.description.col}`])
+
+    // date
+    const date = new Date(doc[`field${fieldToCol.date.col}`]).toISOString()
+
+    // credit
+    const credit = transformCreditDebit(
+      swapCreditDebit,
+      doc[`field${fieldToCol.credit.col}`]
+    )
+
+    // debit
+    const debit = transformCreditDebit(
+      swapCreditDebit,
+      doc[`field${fieldToCol.debit.col}`]
+    )
+
+    // type
+    const type = has(dataFields.type)(fieldToCol)
+      ? pipe(toLower, trim)(doc[`field${fieldToCol.typeOrig.col}`]) || ''
+      : ''
+
+    // checkNumber
+    const checkNumber = has(dataFields.checkNumber)(fieldToCol)
+      ? doc[`field${fieldToCol.checkNumber.col}`] || ''
+      : ''
+
+    const o = {
+      acctId,
+      date,
+      description,
+      origDescription: description,
+      debit: isDebit(debit) ? debit : 0,
+      credit: isCredit(credit) ? credit : 0,
+      type,
+      checkNumber,
+      omit: false,
+      category1: 'none', // set default value
+      category2: '' // set default value
+    }
+    checkO(o)
+    return o
+  })
+
   return docs.map(obj => filter(n => n !== null, obj))
 }
 
@@ -96,18 +129,23 @@ const dataImport = async (loadRaw = false) => {
       const { name: dataFileName, hasHeaders } = accounts[i].dataFile
       const dataFileHasHeaders = hasHeaders === false ? hasHeaders : true
       const rawData = await readCsvFile(dataFileName, dataFileHasHeaders)
+      yellow('dataFileName', dataFileName)
+      yellow('rawData.length', rawData.length)
+      if (loadRaw) {
+        await insertMany('raw-data', rawData)
+      }
+
       const transformedData = transformData(accounts[i], rawData)
       const inserted = await insertMany(DATA_COLLECTION_NAME, transformedData)
+
       docsInserted += inserted.length
     }
-    if (loadRaw) {
-      await createIndex(DATA_COLLECTION_NAME, 'description', {
-        collation: { caseLevel: true, locale: 'en_US' }
-      })
-      await createIndex(DATA_COLLECTION_NAME, 'typeOrig', {
-        collation: { caseLevel: true, locale: 'en_US' }
-      })
-    }
+    await createIndex(DATA_COLLECTION_NAME, 'description', {
+      collation: { caseLevel: true, locale: 'en_US' }
+    })
+    await createIndex(DATA_COLLECTION_NAME, 'typeOrig', {
+      collation: { caseLevel: true, locale: 'en_US' }
+    })
     await runRules()
     return JSON.stringify([
       {

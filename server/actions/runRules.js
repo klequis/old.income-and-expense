@@ -111,9 +111,9 @@ const runRules = async (passedInRules = []) => {
     // )
     // yellow('runRules: criteriaWithAcctId', criteriaWithAcctId)
     const filter = filterBuilder(criteria)
-    if (criteria.length > 1) {
-      green('filter', filter)
-    }
+    // if (criteria.length > 1) {
+    //   green('filter', filter)
+    // }
     const f = await find(DATA_COLLECTION_NAME, filter)
     for (let j = 0; j < actions.length; j++) {
       const action = actions[j]

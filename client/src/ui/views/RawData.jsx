@@ -45,7 +45,7 @@ const RawData = ({ dataReadRequest, data, description, showOrigDesc }) => {
         { title: 'Debit', field: 'debit', type: 'currency' },
         { title: 'Category1', field: 'category1', cellStyle: noWrapStyle },
         { title: 'Category2', field: 'category2', cellStyle: noWrapStyle },
-        { title: 'Type', field: 'typeOrig' },
+        { title: 'Type', field: 'type' },
         { title: 'Omit', field: 'Omit' }
       ]}
       data={sorted.map(doc =>

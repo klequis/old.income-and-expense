@@ -127,6 +127,7 @@ export default {
       const data = await fetchJson(`api/import`, {
         method: 'GET'
       })
+      orange('importData: data', data)
       return data
     }
   }

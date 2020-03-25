@@ -65,7 +65,7 @@ const CriterionEdit = ({ criterion, criterionRemove, handleCriterionChange, hand
           onChange={_handleChange}
         >
           <MenuItem value={dataFields.description}>Description</MenuItem>
-          <MenuItem value={dataFields.typeOrig}>Type</MenuItem>
+          <MenuItem value={dataFields.type}>Type</MenuItem>
           <MenuItem value={dataFields.credit}>Credit</MenuItem>
           <MenuItem value={dataFields.debit}>Debit</MenuItem>
         </Select>

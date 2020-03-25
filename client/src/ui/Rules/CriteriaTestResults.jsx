@@ -1,6 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
-import isNilOrEmpty from 'lib/isNillOrEmpty'
+import isNilOrEmpty from 'lib/isNilOrEmpty'
 import Button from '@material-ui/core/Button'
 import { viewModes } from 'global-constants'
 

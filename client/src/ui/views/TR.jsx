@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles'
 import TD from './TD'
 import { format } from 'date-fns'
 import Rules from 'ui/Rules'
-import isNilOrEmpty from 'lib/isNillOrEmpty'
+import isNilOrEmpty from 'lib/isNilOrEmpty'
 import { useFinanceContext } from 'financeContext'
 
 // eslint-disable-next-line
@@ -31,6 +31,7 @@ const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
 
   const {
     _id,
+    acctId,
     category1,
     category2,
     credit,
@@ -40,7 +41,7 @@ const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
     omit,
     origDescription,
     ruleIds,
-    typeOrig
+    type
   } = doc
 
   const rowIdShow = useSelector(state => state.ui.rowIdShow)
@@ -58,6 +59,7 @@ const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
     <>
       <tr className={_classes.tr} onClick={_handleRowClick}>
         <TD align="left">{format(new Date(date), 'MM/dd/yyyy')}</TD>
+        <TD align="right">{acctId}</TD>
         <TD align="left">
           <div>{description}</div>
           <div className={_classes.origDescriptionShow}>{origDescription}</div>
@@ -66,7 +68,7 @@ const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
         <TD align="right">{debit}</TD>
         <TD align="right">{category1}</TD>
         <TD align="right">{category2}</TD>
-        <TD align="right">{typeOrig}</TD>
+        <TD align="right">{type}</TD>
         <TD align="right">{omit ? 'yes' : ''}</TD>
         <TD align="center">
           {isNilOrEmpty(ruleIds)
