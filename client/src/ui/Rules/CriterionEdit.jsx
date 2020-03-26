@@ -35,8 +35,8 @@ const CriterionEdit = ({ criterion, criterionRemove, handleCriterionChange, hand
 
   const [values, setValues] = useState({
     _id,
-    field,
-    operation,
+    field: dataFields.description,
+    operation: operators.beginsWith,
     value
   })
 

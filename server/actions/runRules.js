@@ -1,6 +1,6 @@
 import { find, updateMany, findOneAndUpdate } from 'db'
 import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
-import { filterBuilder } from 'actions/actionUtils'
+import { filterBuilder } from 'actions/filterBuilder'
 import { hasProp } from 'lib'
 
 // eslint-disable-next-line
@@ -10,7 +10,6 @@ const printFilter = filter => {
   console.log('// filter')
   if (hasProp('$and', filter)) {
     const a = filter.$and
-    // yellow('filter', filter)
     // yellow('$and:', a)
   } else {
     // yellow('filter', filter)
@@ -90,7 +89,6 @@ const runRules = async (passedInRules = []) => {
     // const ruleIds = rules.map(rule => rule._id)
     // green('running rules', ruleIds)
   } else {
-    // yellow(typeof allRules[0]._id)
     // const rules = allRules.filter(rule => rule._id.toString() === '5e45ca2f6d8f4438b8ee5926')
     const allRules = await find(RULES_COLLECTION_NAME, {})
     rules = allRules
@@ -99,8 +97,6 @@ const runRules = async (passedInRules = []) => {
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
     const { actions, criteria } = rule
-    // yellow('acctId', acct)
-    // yellow('runRules: criteria', criteria)
     // const criteriaWithAcctId = append(
     //   {
     //     field: 'acctId',
@@ -109,7 +105,6 @@ const runRules = async (passedInRules = []) => {
     //   },
     //   criteria
     // )
-    // yellow('runRules: criteriaWithAcctId', criteriaWithAcctId)
     const filter = filterBuilder(criteria)
     // if (criteria.length > 1) {
     //   green('filter', filter)

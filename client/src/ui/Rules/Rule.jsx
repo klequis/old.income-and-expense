@@ -33,7 +33,7 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'flex-end',
     width: '100%',
-    backgroundColor: 'red'
+    // backgroundColor: 'red'
   },
   ruleId: {
     marginTop: 4,
@@ -88,9 +88,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
   // local vars
 
   const _ruleTmp = useSelector(state => getRule(ruleId, state))
-  // green('Rule._ruleTmp', _ruleTmp)
   const _criteriaTestResults = useSelector(state => state.criteriaTestResults)
-  // green('Rule: _criteriaTestResults', _criteriaTestResults)
   const _classes = useStyles()
 
   const { pathname } = location
@@ -120,7 +118,6 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
   }
 
   const _actionRemove = actionId => {
-    green('_actionRemove: actionId', actionId)
     const { actions } = _rule
     // const actionId = prop('_id', action)
     const idx = findIndex(propEq('_id', actionId))(actions)
@@ -153,7 +150,6 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
         : insert(idx, criterion, remove(idx, 1, criteria))
 
     const newRule = mergeRight(_rule, { criteria: newCriteria })
-    // green('_criterionChange: newRule', newRule)
     _setRule(newRule)
     ruleTmpUpdate(newRule)
   }
@@ -170,9 +166,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
   }
 
   const _criterionRemove = criterionId => {
-    green('_criterionRemove: actionId', criterionId)
     const { criteria } = _rule
-    // const actionId = prop('_id', action)
     const idx = findIndex(propEq('_id', criterionId))(criteria)
     const newCriteria = remove(idx, 1, criteria)
     const newRule = mergeRight(_rule, { criteria: newCriteria })
@@ -182,10 +176,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
   }
 
   const _deleteClick = async () => {
-    green('_deleteClick: ruleId', ruleId)
     await ruleDeleteRequest(ruleId)
-    // await rulesReadRequest()
-    // await viewReadRequest(_currentViewName)
     await updateRulesAndView()
     ruleTmpRemove(ruleId)
     removeRuleId(ruleId)

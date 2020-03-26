@@ -73,7 +73,6 @@ const AllDataByDescription = () => {
 
   const getViewData = () => {
     const { direction, fieldName } = _sort
-    // _viewData.forEach(d => green('category1', typeof d.category1))
     if (direction === sortDirections.ascending) {
       return sortWith([ascend(prop(fieldName))])(_viewData)
     }

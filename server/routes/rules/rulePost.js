@@ -18,7 +18,6 @@ const rulePost = wrap(async (req, res) => {
     const { body } = req
     // new rule could be sent with tmp ids. Remove them
     const { criteria, actions } = body
-
     // Change number types to number
     const convertedCriteria = convertCriteriaTypes(criteria)
 
@@ -31,7 +30,7 @@ const rulePost = wrap(async (req, res) => {
     await runRules()
     res.send({ _id: _id })
   } catch (e) {
-    redf('rules.newRule.newRule: ERROR', e.message)
+    redf('rules.newRule.rulePost: ERROR', e.message)
     console.log(e)
   }
 })

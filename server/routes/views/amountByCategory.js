@@ -7,7 +7,6 @@ import { red, green, yellow, logRequest } from 'logger'
 
 const amountByCategory = wrap(async (req, res) => {
   // const f = await find(DATA_COLLECTION_NAME, {})
-  // yellow('f', f)
   const match1 = {
     $match: { omit: false }
   }
@@ -56,7 +55,6 @@ const amountByCategory = wrap(async (req, res) => {
 
   const ret = await executeAggregate(DATA_COLLECTION_NAME, q)
 
-  // yellow('ret.length', ret.length)
   res.send(ret)
 })
 

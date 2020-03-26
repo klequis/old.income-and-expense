@@ -115,7 +115,6 @@ export const insertOne = async (collection, data) => {
   try {
     const { db } = await connectDB()
     const r = await db.collection(collection).insertOne(data)
-    // yellow('insertOne: r.ops', r.ops)
     return r.ops
   } catch (e) {
     redf('dbFunctions ERROR', e.message)
@@ -139,10 +138,6 @@ export const find = async (
 ) => {
   try {
     const { db } = await connectDB()
-    // console.group('dbFunction.find')
-    // yellow('collection', collection)
-    // yellow('filter', filter)
-    // console.groupEnd()
     const ret = await db
       .collection(collection)
       .find(filter)
@@ -247,23 +242,6 @@ export const findOneAndUpdate = async (
   returnOriginal = false
 ) => {
   try {
-    // console.group('dbFunctions.findOneAndUpdate: params')
-    // yellow('collection', collection)
-    // yellow('filter', filter)
-    // yellow('update', update)
-    // yellow('returnOriginal', returnOriginal)
-    // yellow('criteria', update.$set.criteria)
-    // yellow('actions', update.$set.actions)
-    // console.groupEnd()
-
-    // const f = idStringToObjectID(filter)
-    //   ? mergeRight(filter, { _id: idStringToObjectID(filter._id) })
-    //   : filter
-    // const f = idStringToObjectID(filter)
-    // yellow('f', f)
-    // if the update has the _id prop, remove it
-    // const u = removeIdProp(update)
-
     const _id = filter._id
     const objId = new ObjectID(_id)
     const f = { _id: objId }
@@ -273,7 +251,6 @@ export const findOneAndUpdate = async (
     const r = await db
       .collection(collection)
       .findOneAndUpdate(f, update, { returnOriginal: returnOriginal })
-    // yellow('r', r)
     return [r.value]
   } catch (e) {
     console.group('dbFunctions.findOneAndUpdate ERROR')
@@ -290,10 +267,6 @@ export const updateMany = async (collection, filter = {}, update) => {
     const { db } = await connectDB()
 
     const r = await db.collection(collection).updateMany(filter, update)
-    // console.log('updateMany: r', r)
-    // green('**************************')
-    // green(r.modifiedCount)
-    // green(r.matchedCount)
     return { matchedCount: r.matchedCount, modifiedCount: r.modifiedCount }
   } catch (e) {
     console.group('dbFunctions.updateMany ERROR')
@@ -318,15 +291,3 @@ export const executeAggregate = async (collection, query) => {
     .toArray()
   return ret
 }
-
-// const a = {
-//   result: { n: 1, nModified: 1, ok: 1 },
-//   connection: { id: 0, host: 'localhost', port: 27017 },
-//   modifiedCount: 1,
-//   upsertedId: null,
-//   upsertedCount: 0,
-//   matchedCount: 1,
-//   n: 1,
-//   nModified: 1,
-//   ok: 1
-// }

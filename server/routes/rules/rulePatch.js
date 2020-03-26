@@ -28,12 +28,6 @@ import convertCriteriaTypes from 'lib/convertCriteriaTypes'
 import { red, redf, green, yellow, logRequest } from 'logger'
 
 const rulePatch = wrap(async (req, res) => {
-  console.log()
-  console.log()
-  console.log()
-  yellow('-----------')
-  yellow('new')
-  yellow('-----------')
   try {
     const { body, params } = req
 
@@ -46,8 +40,6 @@ const rulePatch = wrap(async (req, res) => {
         `_id in params ${paramsId} does not match _id in body ${_id}`
       )
     }
-
-    yellow('rulePatch: paramsId', paramsId)
 
     const convertedCriteria = convertCriteriaTypes(criteria)
 
@@ -80,8 +72,6 @@ const rulePatch = wrap(async (req, res) => {
       },
       false
     )
-
-    yellow('updatedRule', updatedRule)
 
     await runRules()
     // findOneAndUpdate returns an array even though it always returns one item.

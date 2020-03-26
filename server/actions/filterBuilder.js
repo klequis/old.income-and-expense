@@ -7,17 +7,6 @@ import { mergeAll } from 'ramda'
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
 
-export const readRules = async () => {
-  try {
-    const rulesFullPath = path.join(__dirname, 'rules-wf-chk.json')
-    const rules = await fs.promises.readFile(rulesFullPath)
-    const json = await JSON.parse(rules)
-    return json
-  } catch (e) {
-    redf('readRules ERROR: ', e.message)
-  }
-}
-
 export const wrappedFind = async filter => {
   return find(
     DATA_COLLECTION_NAME,
@@ -64,7 +53,7 @@ export const conditionBuilder = criteria => {
 
   const { field: origField, operation, value } = criteria
   const field = origField === 'description' ? 'origDescription' : origField
-  // yellow('operation', operation)
+
   switch (operation) {
     case 'beginsWith':
       return operationBeginsWith(field, value)
@@ -89,10 +78,8 @@ export const conditionBuilder = criteria => {
 
 export const filterBuilder = criteria => {
   if (criteria.length === 1) {
-    // const a = criteria.map(c => {
-      return [conditionBuilder(criteria)]
-    // })
-    // return a
+    const o = conditionBuilder(criteria[0])
+    return o
   } else {
     const b = criteria.map(c => conditionBuilder(c))
     const c = { $and: b }

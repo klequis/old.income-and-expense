@@ -18,7 +18,6 @@ import { TOAST_WARN } from 'global-constants'
 // eslint-disable-next-line
 import { orange } from 'logger'
 
-
 // export const ruleNew = newRule => {
 //   return {
 //     type: RULE_NEW_KEY,
@@ -34,7 +33,6 @@ import { orange } from 'logger'
 // }
 
 export const ruleTmpAddAction = data => {
-  // orange('ruleTmpAdd: data', data)
   return {
     type: RULETMP_ADD_KEY,
     payload: data
@@ -48,7 +46,7 @@ export const ruleTmpUpdateAction = data => {
   }
 }
 
-export const ruleTmpRemoveAction = (ruleId) => {
+export const ruleTmpRemoveAction = ruleId => {
   return {
     type: RULETMP_REMOVE_KEY,
     payload: { ruleId }

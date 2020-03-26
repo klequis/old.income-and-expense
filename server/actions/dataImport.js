@@ -53,10 +53,8 @@ const _swapCreditDebit = value => {
 }
 
 const transformCreditDebit = (swapCreditDebit, value) => {
-  // yellow('value', value)
   const nv1 = typeof value === 'string' ? 0 : value
   const nv2 = swapCreditDebit ? _swapCreditDebit(nv1) : nv1
-  // yellow('nv2', nv2)
   return nv2
 }
 
@@ -129,8 +127,6 @@ const dataImport = async (loadRaw = false) => {
       const { name: dataFileName, hasHeaders } = accounts[i].dataFile
       const dataFileHasHeaders = hasHeaders === false ? hasHeaders : true
       const rawData = await readCsvFile(dataFileName, dataFileHasHeaders)
-      yellow('dataFileName', dataFileName)
-      yellow('rawData.length', rawData.length)
       if (loadRaw) {
         await insertMany('raw-data', rawData)
       }

@@ -1,30 +1,11 @@
 import wrap from 'routes/wrap'
 import { find } from 'db'
 import { DATA_COLLECTION_NAME } from 'db/constants'
-import { filterBuilder } from 'actions/actionUtils'
+import { filterBuilder } from 'actions/filterBuilder'
 import { mergeRight } from 'ramda'
-import convertCriteriaTypes from 'lib/convertCriteriaTypes'
 
 // eslint-disable-next-line
 import { redf, green, logRequest } from 'logger'
-
-// const hasDebit = has('debit')
-// const hasCredit = has('credit')
-
-const incoming = [
-  {
-    _id: 'tmp_dHoUBR7ztk',
-    field: 'description',
-    operation: 'beginsWith',
-    value: 'SSA TREAS 310'
-  },
-  {
-    _id: 'w8EZlU_-k',
-    field: 'credit',
-    operation: 'equals',
-    value: '1222'
-  }
-]
 
 const criteriaTest = wrap(async (req, res) => {
   green('criteriaTest -----------------')

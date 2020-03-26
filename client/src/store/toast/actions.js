@@ -13,7 +13,6 @@ export const setToast = ({
   level,
   message
 }) => {
-  // yellow('setToast: error', error)
   return {
     type: SET_TOAST,
     payload: { error, id, level, message }

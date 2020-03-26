@@ -20,7 +20,7 @@ import { orange, green, redf } from 'logger'
 export default {
   criteria: {
     async read(criteria) {
-      orange('criteria.read: criteria', criteria)
+      // orange('criteria.read: criteria', criteria)
       try {
         const url = `/api/criteria/criteria-test/`
         const data = await fetchJson(url, {
@@ -56,12 +56,13 @@ export default {
       return data
     },
     async create(rule) {
+      // orange('api.rules.create: rule', rule)
       const url = `api/rules/new-rule`
       const data = await fetchJson(url, {
         method: 'POST',
         body: JSON.stringify(rule)
       })
-      orange('rules.create: data.length', data.length)
+      // orange('rules.create: data', data)
       return data
     },
     async delete(ruleId) {
@@ -69,7 +70,7 @@ export default {
       const data = await fetchJson(url, {
         method: 'DELETE'
       })
-      orange('rules.delete: data.length', data.length)
+      // orange('rules.delete: data.length', data.length)
       return data
     },
     async update(_id, rule) {
@@ -78,7 +79,7 @@ export default {
         method: 'PATCH',
         body: JSON.stringify(rule)
       })
-      orange('api.rules.update: data.length', data.length)
+      // orange('api.rules.update: data.length', data.length)
       return data
     }
   },

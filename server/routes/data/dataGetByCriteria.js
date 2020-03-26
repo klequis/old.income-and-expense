@@ -1,7 +1,7 @@
 import wrap from 'routes/wrap'
 import { find } from 'db'
 import { DATA_COLLECTION_NAME } from 'db/constants'
-import { filterBuilder } from 'actions/actionUtils'
+import { filterBuilder } from 'actions/filterBuilder'
 
 // eslint-disable-next-line
 import { red, green, logRequest } from 'logger'

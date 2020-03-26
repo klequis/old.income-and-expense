@@ -9,12 +9,6 @@ const ruleGet = wrap(async (req, res) => {
   const { params } = req
   const { ruleid } = params
   const f = await findById(RULES_COLLECTION_NAME, ruleid)
-
-  // console.group('get-rule.getRules')
-  // yellow('params', params)
-  // yellow('ruleid', ruleid)
-  // yellow('f', f)
-  // console.groupEnd()
   res.send(f)
 })
 
