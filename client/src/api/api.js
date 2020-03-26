@@ -20,6 +20,7 @@ import { orange, green, redf } from 'logger'
 export default {
   criteria: {
     async read(criteria) {
+      orange('criteria.read: criteria', criteria)
       try {
         const url = `/api/criteria/criteria-test/`
         const data = await fetchJson(url, {

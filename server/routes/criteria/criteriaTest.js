@@ -39,7 +39,7 @@ const criteriaTest = wrap(async (req, res) => {
 
     // All values come in as stings and most field values
     // for a criteria are strings with the exception of
-    // credit/ debit & numAdditionalChars which need to
+    // credit, debit & numAdditionalChars which need to
     // be converted to Number
 
     const convertedCriteria = body.map(c => {
@@ -51,6 +51,8 @@ const criteriaTest = wrap(async (req, res) => {
       }
       return c
     })
+
+    green('convertedCriteria', convertedCriteria)
 
     const filter = filterBuilder(convertedCriteria)
     green('criteriaTest: filter', filter)

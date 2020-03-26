@@ -88,17 +88,16 @@ export const conditionBuilder = criteria => {
 }
 
 export const filterBuilder = criteria => {
-  // if (criteria.length === 1) {
-  // yellow('criteria', criteria)
-  return mergeAll(
-    criteria.map(c => {
-      return conditionBuilder(c)
-    })
-  )
-  // } else {
-  //   const b = criteria.map(c => conditionBuilder(c))
-  //   return { $and: b }
-  // }
+  if (criteria.length === 1) {
+    // const a = criteria.map(c => {
+      return [conditionBuilder(criteria)]
+    // })
+    // return a
+  } else {
+    const b = criteria.map(c => conditionBuilder(c))
+    const c = { $and: b }
+    return c
+  }
 }
 
 export const printResult = (id, expectRows, actualRows) => {
