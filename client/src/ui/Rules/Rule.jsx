@@ -87,7 +87,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
 
   // local vars
 
-  const _ruleTmp = useSelector(state => getRule(ruleId, state))
+  // const _ruleTmp = useSelector(state => getRule(ruleId, state))
   const _criteriaTestResults = useSelector(state => state.criteriaTestResults)
   const _classes = useStyles()
 
@@ -197,6 +197,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     } else {
       await ruleUpdateRequest(ruleId, _rule, _currentViewName)
     }
+    criteriaTestClear()
     ruleTmpRemove(ruleId)
     _setViewMode(viewModes.modeView)
     removeRuleId(ruleId)
@@ -204,7 +205,8 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
   }
 
   const _criteriaTestClick = async () => {
-    const { criteria } = _ruleTmp
+    const { criteria } = _rule
+    // green('_criteriaTestClick: _ruleTmp', )
     await criteriaTestReadRequest(criteria)
   }
 
