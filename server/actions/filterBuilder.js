@@ -1,21 +1,8 @@
 import { DATA_COLLECTION_NAME } from 'db/constants'
-import { find } from 'db/dbFunctions'
-import fs from 'fs'
-import path from 'path'
-import { mergeAll } from 'ramda'
 
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
-
-export const wrappedFind = async filter => {
-  return find(
-    DATA_COLLECTION_NAME,
-    filter,
-    {},
-    // { caseLevel: true, locale: 'en_US' }
-    { locale: 'en', strength: 2 }
-  )
-}
+import { operators } from '../constants'
 
 const operationBeginsWith = (field, value) => {
   return { [field]: { $regex: `^${value}`, $options: 'im' } }
@@ -41,9 +28,13 @@ const operationRegex = (field, value) => {
 //   return new RegExp(regExAsString)
 // }
 
-const operationIn = (field, value) => {
-  const regex = new RegExp(value)
-  return { [field]: { $in: [regex] } }
+// const operationIn = (field, value) => {
+//   const regex = new RegExp(value)
+//   return { [field]: { $in: [regex] } }
+// }
+
+const operationDoesNotContain = (field, value) => {
+  return { [field]: { $not: { $regex: value } } }
 }
 
 export const conditionBuilder = criteria => {
@@ -55,16 +46,16 @@ export const conditionBuilder = criteria => {
   const field = origField === 'description' ? 'origDescription' : origField
 
   switch (operation) {
-    case 'beginsWith':
+    case operators.beginsWith:
       return operationBeginsWith(field, value)
-    case 'equals':
-      return operationEquals(field, value)
-    case 'contains':
+    case operators.contains:
       return operationContains(field, value)
-    case 'regex':
+    case operators.doesNotContain:
+      return operationDoesNotContain(field, value)
+    case operators.equals:
+      return operationEquals(field, value)
+    case operators.regex:
       return operationRegex(field, value)
-    case '$in':
-      return operationIn(field, value)
     default:
       redf(
         'deleteAction ERROR: ',

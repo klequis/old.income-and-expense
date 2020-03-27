@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/styles'
 import { operators, dataFields } from 'global-constants'
 import TextField from 'ui/elements/TextField'
 import { mergeRight } from 'ramda'
-import ActionButton, {buttonTypes} from 'ui/elements/ActionButton'
+import ActionButton, { buttonTypes } from 'ui/elements/ActionButton'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -29,14 +29,18 @@ const useStyles = makeStyles({
   }
 })
 
-const CriterionEdit = ({ criterion, criterionRemove, handleCriterionChange, handleDirtyChange }) => {
-
+const CriterionEdit = ({
+  criterion,
+  criterionRemove,
+  handleCriterionChange,
+  handleDirtyChange
+}) => {
   const { _id, field, operation, value } = criterion
 
   const [values, setValues] = useState({
     _id,
-    field: dataFields.description,
-    operation: operators.beginsWith,
+    field: field || dataFields.description,
+    operation: operation || operators.beginsWith,
     value
   })
 
@@ -57,7 +61,7 @@ const CriterionEdit = ({ criterion, criterionRemove, handleCriterionChange, hand
 
   return (
     <div className={_classes.wrapper}>
-      <div /*className={classes.fields}*/>
+      <div>
         <Select
           className={_classes.field}
           name="field"
@@ -76,8 +80,9 @@ const CriterionEdit = ({ criterion, criterionRemove, handleCriterionChange, hand
           value={values.operation}
           onChange={_handleChange}
         >
-          <MenuItem value={operators.beginsWith}>Begins With</MenuItem>
+          <MenuItem value={operators.beginsWith}>Begins with</MenuItem>
           <MenuItem value={operators.contains}>Contains</MenuItem>
+          <MenuItem value={operators.doesNotContain}>Does not contain</MenuItem>
           <MenuItem value={operators.equals}>Equals</MenuItem>
           <MenuItem value={operators.regex}>RegEx</MenuItem>
           <MenuItem value={operators.in}>In</MenuItem>
@@ -90,7 +95,10 @@ const CriterionEdit = ({ criterion, criterionRemove, handleCriterionChange, hand
           onChange={_handleChange}
           fullWidth
         />
-        <ActionButton buttonType={buttonTypes.remove} onClick={_criterionRemove} />
+        <ActionButton
+          buttonType={buttonTypes.remove}
+          onClick={_criterionRemove}
+        />
       </div>
     </div>
   )

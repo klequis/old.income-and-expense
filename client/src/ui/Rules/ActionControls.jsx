@@ -26,7 +26,7 @@ const ActionControls = ({ values, handleChange }) => {
       <>
         <Select name="field" value={field} onChange={handleChange}>
           <MenuItem value={dataFields.description}>Description</MenuItem>
-          <MenuItem value={dataFields.origType}>Type</MenuItem>
+          <MenuItem value={dataFields.type}>Type</MenuItem>
         </Select>
         <TextField name="findValue" label="findValue" value={findValue} />
         <TextField
@@ -42,7 +42,7 @@ const ActionControls = ({ values, handleChange }) => {
       <>
         <Select name="field" value={field} onChange={handleChange}>
           <MenuItem value={dataFields.description}>Description</MenuItem>
-          <MenuItem value={dataFields.origType}>Type</MenuItem>
+          <MenuItem value={dataFields.type}>Type</MenuItem>
         </Select>
         <TextField
           name="replaceWithValue"

@@ -7,9 +7,10 @@ export const TOAST_INFO = 'TOAST_INFO'
 export const operators = {
   beginsWith: 'beginsWith',
   contains: 'contains',
+  doesNotContain: 'doesNotContain',
   equals: 'equals',
   regex: 'regex',
-  in: 'in'
+  // in: 'in'
 }
 
 export const dataFields = {
@@ -20,10 +21,10 @@ export const dataFields = {
 }
 
 export const actionTypes = {
+  replaceAll: 'replaceAll',
+  categorize: 'categorize',
   omit: 'omit',
   strip: 'strip',
-  replaceAll: 'replaceAll',
-  categorize: 'categorize'
 }
 
 export const viewModes = {
