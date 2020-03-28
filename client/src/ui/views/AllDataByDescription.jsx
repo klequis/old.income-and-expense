@@ -44,12 +44,6 @@ const AllDataByDescription = () => {
     direction: sortDirections.ascending
   })
 
-  // Methods
-  const _updateRulesAndView = useCallback(async () => {
-    await rulesReadRequest()
-    await viewReadRequest(views.allDataByDescription)
-  }, [rulesReadRequest, viewReadRequest])
-
   // Effects
 
   useEffect(() => {
@@ -65,9 +59,15 @@ const AllDataByDescription = () => {
   const _viewData = useSelector(state => state.viewData)
   const _classes = useStyles()
 
+  // Methods
+  const _updateRulesAndView = useCallback(async () => {
+    await rulesReadRequest()
+    await viewReadRequest(views.allDataByDescription)
+  }, [rulesReadRequest, viewReadRequest])
+
   if (_loading) {
     return <h1>Loading</h1>
-  }
+  }  
 
   const getViewData = () => {
     const { direction, fieldName } = _sort

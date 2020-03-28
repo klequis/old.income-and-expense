@@ -10,6 +10,7 @@ import categories from 'routes/categories'
 import views from 'routes/views'
 import rules from 'routes/rules'
 import criteria from 'routes/criteria'
+import exportData from 'routes/exportData'
 import debug from 'debug'
 
 // eslint-disable-next-line
@@ -47,6 +48,7 @@ app.use('/api/categories', categories)
 app.use('/api/views', views)
 app.use('/api/rules', rules)
 app.use('/api/criteria', criteria)
+app.use('/api/export', exportData)
 
 app.get('*', function(req, res) {
   throw new Error(`unknown route: ..${req.url}`)

@@ -36,6 +36,7 @@ export const SortButtons = ({ fieldName, updateSort }) => {
   const _classes = useStyles()
 
   const _sortAscending = () => {
+    
     updateSort(fieldName, sortDirections.ascending)
   }
 

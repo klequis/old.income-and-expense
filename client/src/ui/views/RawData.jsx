@@ -10,6 +10,18 @@ import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import { dataFieldNames, sortDirections } from 'global-constants'
+import ColumnHeading from './Table/ColumnHeading'
+import {
+  ascend,
+  compose,
+  descend,
+  map,
+  mergeRight,
+  prop,
+  sortWith,
+  toLower
+} from 'ramda'
 
 // eslint-disable-next-line
 import { green } from 'logger'
@@ -25,29 +37,6 @@ const useStyles = makeStyles({
     padding: 4
   }
 })
-
-// const sortByDate = sortBy(prop('date'))
-
-const TDPaper = ({ children }) => {
-  const _classes = useStyles()
-  // return <TDPaper className={_classes.tableDataPaper}>{data}</TDPaper>
-  return <td>{children}</td>
-}
-
-const TR = ({ rowData }) => {
-  green('rowData', rowData)
-  // const _classes = useStyles()
-  const { _id, date, description } = rowData
-  return (
-    <tr>
-      {/* <TDPaper data={format(new Date(date), 'MM/dd/yyyy')} /> */}
-      <TDPaper>{format(new Date(date), 'MM/dd/yyyy')}</TDPaper>
-      <TDPaper>{description}</TDPaper>
-
-      <TDPaper>{_id}</TDPaper>
-    </tr>
-  )
-}
 
 const Row = ({ data }) => {
   const {
@@ -75,6 +64,8 @@ const Row = ({ data }) => {
       <TableCell>{checkNumber}</TableCell>
       <TableCell>
         <div>{category1}</div>
+      </TableCell>
+      <TableCell>
         <div>{category2}</div>
       </TableCell>
       <TableCell>{type}</TableCell>
@@ -89,6 +80,13 @@ const RawData = () => {
   const { viewReadRequest, currentViewNameSet } = useFinanceContext()
   const _classes = useStyles()
 
+  // State
+  const [_sort, _setSort] = useState({
+    fieldName: dataFieldNames.description,
+    direction: sortDirections.ascending
+  })
+
+  // Effects
   useEffect(() => {
     ;(async () => {
       await viewReadRequest(views.rawData)
@@ -96,24 +94,88 @@ const RawData = () => {
   }, [viewReadRequest])
   const _viewData = useSelector(state => state.viewData)
 
+  // Methods
+
+  // const getViewData = () => {
+  //   const { direction, fieldName } = _sort
+  //   if (direction === sortDirections.ascending) {
+
+  //     return sortWith([ascend(prop(fieldName))])(_viewData)
+
+  //   }
+  //   return sortWith([descend(prop(fieldName))])(_viewData)
+  // }
+
+  const addSortField = field => data => {
+    const y = toLower(prop(field, data))
+    return mergeRight(data, { sortField: y })
+  }
+
+  /*
+    restoreField() won't work bec the orig field value is gone
+    1. add new field that isn't displayed
+    2. sort on the new field
+
+  */
+
+  const getViewData = () => {
+    const { direction, fieldName } = _sort
+    return compose(
+      sortWith(
+        direction === 'ascending'
+          ? [ascend(prop('sortField'))]
+          : [descend(prop('sortField'))]
+      ),
+      map(addSortField(fieldName))
+    )(_viewData)
+  }
+
+  const _updateSort = (fieldName, direction) => {
+    _setSort({
+      fieldName,
+      direction
+    })
+  }
+
   return (
     <TableContainer>
-      <Table size='small'>
+      <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>Debit</TableCell>
-            <TableCell>Credit</TableCell>
-            <TableCell>Check#</TableCell>
-            <TableCell>Categories</TableCell>
-            <TableCell>Type</TableCell>
-            <TableCell>Omit</TableCell>
-            <TableCell>_id</TableCell>
+            <ColumnHeading fieldName="date" updateSort={_updateSort}>
+              Date
+            </ColumnHeading>
+            <ColumnHeading fieldName="description" updateSort={_updateSort}>
+              Description
+            </ColumnHeading>
+            <ColumnHeading fieldName="debit" updateSort={_updateSort}>
+              Debit
+            </ColumnHeading>
+            <ColumnHeading fieldName="credit" updateSort={_updateSort}>
+              Credit
+            </ColumnHeading>
+            <ColumnHeading fieldName="checkNumber" updateSort={_updateSort}>
+              Check#
+            </ColumnHeading>
+            <ColumnHeading fieldName="category1" updateSort={_updateSort}>
+              Category1
+            </ColumnHeading>
+            <ColumnHeading fieldName="category2" updateSort={_updateSort}>
+              Category2
+            </ColumnHeading>
+            <ColumnHeading fieldName="type" updateSort={_updateSort}>
+              Type
+            </ColumnHeading>
+            <ColumnHeading fieldName="omit" updateSort={_updateSort}>
+              Omit
+            </ColumnHeading>
+            <ColumnHeading fieldName="_id" updateSort={_updateSort}>
+              _id
+            </ColumnHeading>
           </TableRow>
         </TableHead>
         <TableBody>
-          {_viewData.map(data => (
+          {getViewData().map(data => (
             <Row key={data._id} data={data} />
           ))}
         </TableBody>
