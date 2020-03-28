@@ -48,3 +48,9 @@ export const sortDirections = {
   ascending: 'ascending',
   descending: 'descending'
 }
+
+export const views = {
+  amountByCategory: 'amount-by-category',
+  allDataByDescription: 'all-data-by-description',
+  rawData: 'raw-data'
+}

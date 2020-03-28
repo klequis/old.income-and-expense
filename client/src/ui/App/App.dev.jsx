@@ -5,6 +5,9 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/styles'
 import Nav from 'ui/Nav'
 import AllDataByDescription from 'ui/views/AllDataByDescription'
+import AmountByCategory from 'ui/views/AmountByCategory'
+import RawData from 'ui/views/RawData'
+import { views } from 'global-constants'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -30,8 +33,14 @@ const App = () => {
       <Container maxWidth={false}>
         <Nav />
         <Switch>
-          <Route path='/all-data-by-description'>
+          <Route exact path={`/${views.allDataByDescription}`}>
             <AllDataByDescription />
+          </Route>
+          <Route exact path={`/${views.amountByCategory}`}>
+            <AmountByCategory />
+          </Route>
+          <Route exact path={`/${views.rawData}`}>
+            <RawData />
           </Route>
         </Switch>
         

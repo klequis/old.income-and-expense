@@ -6,13 +6,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TR from './TR'
 import { useFinanceContext } from 'financeContext'
 import SortButtons from 'ui/elements/SortButtons'
-import { sortWith, prop, ascend, descend, mergeRight } from 'ramda'
-import { dataFieldNames, sortDirections } from 'global-constants'
+import { sortWith, prop, ascend, descend } from 'ramda'
+import { dataFieldNames, sortDirections, views } from 'global-constants'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
-
-const VIEW_NAME = 'all-data-by-description'
 
 const useStyles = makeStyles({
   th: {
@@ -49,7 +47,7 @@ const AllDataByDescription = () => {
   // Methods
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
-    await viewReadRequest(VIEW_NAME)
+    await viewReadRequest(views.allDataByDescription)
   }, [rulesReadRequest, viewReadRequest])
 
   // Effects
@@ -58,7 +56,7 @@ const AllDataByDescription = () => {
     _setLoading(true)
     ;(async () => {
       await _updateRulesAndView()
-      currentViewNameSet(VIEW_NAME)
+      currentViewNameSet(views.allDataByDescription)
     })()
     _setLoading(false)
   }, [currentViewNameSet, _updateRulesAndView])
@@ -151,7 +149,7 @@ const AllDataByDescription = () => {
                 showOrigDescription={_switchState.showOrigDescription}
                 showOmitted={_switchState.showOmitted}
                 updateRulesAndView={_updateRulesAndView}
-                view={VIEW_NAME}
+                view={views.allDataByDescription}
               />
             )
           })}
