@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-// import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/styles'
 import { useFinanceContext } from 'financeContext'
 import { views } from 'global-constants'
-
+import { prop, sortBy } from 'ramda'
 // eslint-disable-next-line
 import { green, red } from 'logger'
+
+const sortById = sortBy(prop('_id'))
+
+const useStyles = makeStyles({
+  numberCell: {
+    textAlign: 'right'
+  }
+})
 
 const AmountByCategory = () => {
   // Actions
@@ -26,7 +34,8 @@ const AmountByCategory = () => {
 
   // Local vars
   const _viewData = useSelector(state => state.viewData)
-  green('_viewData', _viewData)
+  const _sortedViewData = sortById(_viewData)
+  const _classes = useStyles()
 
   if (_loading) {
     return <h1>Loading</h1>
@@ -42,12 +51,16 @@ const AmountByCategory = () => {
           </tr>
         </thead>
         <tbody>
-          {_viewData.map(doc => {
+          {_sortedViewData.map(doc => {
             const { _id, amount } = doc
             return (
               <tr key={_id}>
                 <td>{_id}</td>
-                <td>{amount}</td>
+                <td className={_classes.numberCell}>
+                  {amount.toLocaleString(undefined, {
+                    minimumFractionDigits: 2
+                  })}
+                </td>
               </tr>
             )
           })}

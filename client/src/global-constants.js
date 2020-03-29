@@ -34,12 +34,15 @@ export const viewModes = {
 }
 
 export const dataFieldNames = {
+  _id: '_id',
   date: 'date',
   description: 'description',
+  origDescription: 'origDescription',
   credit: 'credit',
   debit: 'debit',
   category1: 'category1',
   category2: 'category2',
+  checkNumber: 'checkNumber',
   type: 'type',
   omit: 'omit'
 }

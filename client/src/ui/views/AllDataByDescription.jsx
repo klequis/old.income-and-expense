@@ -44,6 +44,11 @@ const AllDataByDescription = () => {
     direction: sortDirections.ascending
   })
 
+  const _updateRulesAndView = useCallback(async () => {
+    await rulesReadRequest()
+    await viewReadRequest(views.allDataByDescription)
+  }, [rulesReadRequest, viewReadRequest])
+
   // Effects
 
   useEffect(() => {
@@ -60,10 +65,6 @@ const AllDataByDescription = () => {
   const _classes = useStyles()
 
   // Methods
-  const _updateRulesAndView = useCallback(async () => {
-    await rulesReadRequest()
-    await viewReadRequest(views.allDataByDescription)
-  }, [rulesReadRequest, viewReadRequest])
 
   if (_loading) {
     return <h1>Loading</h1>
