@@ -1,7 +1,8 @@
 import wrap from 'routes/wrap'
 import { find } from 'db'
 import { DATA_COLLECTION_NAME } from 'db/constants'
-import { redf } from 'logger'
+// eslint-disable-next-line
+import { yellow, redf } from 'logger'
 
 const allDataByDescription = wrap(async (req, res) => {
   try {

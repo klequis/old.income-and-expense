@@ -19,27 +19,26 @@ import {
   // values
 } from 'ramda'
 import { sortDirections } from 'global-constants'
+import shortid from 'shortid'
 
 // eslint-disable-next-line
 import { green } from 'logger'
 
 const Table = ({ data, columns, initialSortField }) => {
-  green('Table: data', data)
-
+  // State
   const [_sort, _setSort] = useState({
-    fieldName: initialSortField,
-    direction: sortDirections.ascending
+      fieldNames: initialSortField,
+      direction: sortDirections.ascending
   })
 
+  // Methods
   const addSortField = field => data => {
     const y = toLower(prop(field, data))
     return mergeRight(data, { sortField: y })
   }
 
   const getViewData = () => {
-    const { direction, fieldName } = _sort
-    green('getViewData: direction', direction)
-    green('getViewData: fieldName', fieldName)
+    const { direction, fieldNames: fieldName } = _sort
     return compose(
       sortWith(
         direction === 'ascending'
@@ -50,83 +49,71 @@ const Table = ({ data, columns, initialSortField }) => {
     )(data)
   }
 
-  const _updateSort = (fieldName, direction) => {
+  const _updateSort = (fieldNames, direction) => {
+    // currently all field names are an array but safe to check
     _setSort({
-      fieldName,
+      fieldNames: type(fieldNames === 'Array') ? fieldNames[0] : fieldNames,
       direction
     })
   }
 
-  // A Row has a collection of Cells
-
-  // const Row = items => {
-  //   green('Row: items', items)
-  //   return <MuiTableRow>{items}</MuiTableRow>
-  // }
-  // const Cell = value => {
-  //   green('Cell: value', value)
-  //   // green('Cell: values', values(value))
-  //   return <TableCell>{value}</TableCell>
-  // }
-
-  // // const printData = data => green('printData', data)
-
-  // const TableRows = ({ allData }) => {
-  //   // green('TableRow: rowData', rowData)
-  //   return compose(Row, map(Cell), map(values))(allData)
-  // }
+  const boolToString = val => {
+    if (type(val) === 'Boolean') {
+      return val ? 'yes' : 'no'
+    }
+    return val
+  }
 
   const makeTableCellData = vals => {
     // green('vals', vals)
 
     if (vals.length === 1) {
-      return vals[0]
+      return boolToString(vals[0])
     } else {
       return vals.map((v, idx) => (
-        <div style={idx === 0 ? { paddingBottom: 10 } : { paddingBottom: 0 }}>
-          {v}
+        <div
+          key={shortid.generate()}
+          style={idx === 0 ? { paddingBottom: 10 } : { paddingBottom: 0 }}
+        >
+          {boolToString(v)}
         </div>
       ))
     }
-
-    // if (type(vals) === 'Array') {
-    //   return vals.map(v => <div>{v}</div>)
-    // } else if(type(vals) === 'Boolean') {
-    //   return vals ? 'yes' : 'no'
-    // }
-    // return vals
   }
 
   const Row = ({ rowData }) => {
-    // green('values(rowData)', values(rowData))
-    // const rowValues = values(rowData)
-    // green('rowData', rowData)
     return (
       <TableRow>
         {columns.map(c => {
           const { fieldNames } = c
           const vals = fieldNames.map(f => rowData[f])
-          return <TableCell>{makeTableCellData(vals)}</TableCell>
+          return (
+            <TableCell key={fieldNames[0]}>{makeTableCellData(vals)}</TableCell>
+          )
         })}
       </TableRow>
     )
   }
-
-  // While 
-
+  green('_sort', _sort)
   return (
     <TableContainer>
       <MuiTable size="small">
         <TableHead>
-          {columns.map(c => (
-            <ColumnHeading fieldName={c.fieldNames} updateSort={_updateSort}>
-              {c.fieldDescription}
-            </ColumnHeading>
-          ))}
+          <TableRow>
+            {columns.map(c => (
+              <ColumnHeading
+                key={c.fieldNames[0]}
+                fieldName={c.fieldNames}
+                updateSort={_updateSort}
+              >
+                {c.fieldDescription}
+              </ColumnHeading>
+            ))}
+          </TableRow>
         </TableHead>
         <TableBody>
           {getViewData().map(d => (
-            <Row key={data._id} rowData={d} />
+            <Row key={d._id} rowData={d} />
           ))}
         </TableBody>
       </MuiTable>

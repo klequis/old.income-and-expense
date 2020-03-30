@@ -3,19 +3,19 @@ import { useSelector } from 'react-redux'
 import { useFinanceContext } from 'financeContext'
 import { makeStyles } from '@material-ui/styles'
 import { views } from 'global-constants'
-import { format } from 'date-fns'
+// import { format } from 'date-fns'
 import Table from './Table'
-import { dataFields, sortDirections } from 'global-constants'
-import {
-  ascend,
-  compose,
-  descend,
-  map,
-  mergeRight,
-  prop,
-  sortWith,
-  toLower
-} from 'ramda'
+import { dataFields } from 'global-constants'
+// import {
+//   ascend,
+//   compose,
+//   descend,
+//   map,
+//   mergeRight,
+//   prop,
+//   sortWith,
+//   toLower
+// } from 'ramda'
 
 // eslint-disable-next-line
 import { green } from 'logger'
@@ -46,7 +46,6 @@ const RawData = () => {
   if (_loading) {
     return <h1>Loading</h1>
   }
-  green('RawData: _viewData', _viewData)
 
   const _columns = [
     {
@@ -99,7 +98,7 @@ const RawData = () => {
     <Table
       columns={_columns}
       data={_viewData}
-      initialSortField={dataFields.description}
+      initialSortField={dataFields.description.name}
     ></Table>
   )
 }
