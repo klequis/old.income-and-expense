@@ -7,7 +7,7 @@ import TR from './TR'
 import { useFinanceContext } from 'financeContext'
 import SortButtons from 'ui/elements/SortButtons'
 import { sortWith, prop, ascend, descend } from 'ramda'
-import { dataFieldNames, sortDirections, views } from 'global-constants'
+import { dataFields, sortDirections, views } from 'global-constants'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -40,7 +40,7 @@ const AllDataByDescription = () => {
     showOmitted: false
   })
   const [_sort, _setSort] = useState({
-    fieldName: dataFieldNames.description,
+    fieldName: dataFields.description,
     direction: sortDirections.ascending
   })
 
@@ -126,15 +126,15 @@ const AllDataByDescription = () => {
       <table>
         <thead>
           <tr>
-            <ColumnHeading fieldName={dataFieldNames.date} />
-            <ColumnHeading fieldName={dataFieldNames.acctId} />
-            <ColumnHeading fieldName={dataFieldNames.description} />
-            <ColumnHeading fieldName={dataFieldNames.credit} />
-            <ColumnHeading fieldName={dataFieldNames.debit} />
-            <ColumnHeading fieldName={dataFieldNames.category1} />
-            <ColumnHeading fieldName={dataFieldNames.category2} />
-            <ColumnHeading fieldName={dataFieldNames.type} />
-            <ColumnHeading fieldName={dataFieldNames.omit} />
+            <ColumnHeading fieldName={dataFields.date.name} />
+            <ColumnHeading fieldName={dataFields.acctId.name} />
+            <ColumnHeading fieldName={dataFields.description.name} />
+            <ColumnHeading fieldName={dataFields.credit.name} />
+            <ColumnHeading fieldName={dataFields.debit.name} />
+            <ColumnHeading fieldName={dataFields.category1.name} />
+            <ColumnHeading fieldName={dataFields.category2.name} />
+            <ColumnHeading fieldName={dataFields.type.name} />
+            <ColumnHeading fieldName={dataFields.omit.name} />
           </tr>
         </thead>
         <tbody>

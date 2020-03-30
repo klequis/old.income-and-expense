@@ -1,3 +1,5 @@
+import { format } from 'date-fns'
+
 export const REQUEST_PENDING = 'REQUEST_PENDING'
 export const REQUEST_SUCCESS = 'REQUEST_SUCCESS'
 export const REQUEST_FAILURE = 'REQUEST_FAILURE'
@@ -13,7 +15,7 @@ export const operators = {
   // in: 'in'
 }
 
-export const dataFields = {
+export const dataFieldsZZ = {
   description: 'description',
   type: 'type',
   credit: 'credit',
@@ -46,6 +48,92 @@ export const dataFieldNames = {
   type: 'type',
   omit: 'omit'
 }
+
+
+export const dataFields = {
+  _id: {
+    name: '_id',
+    description: 'Id'
+  },
+  date: {
+    name: 'date',
+    description: 'Date',
+    formatFn: d => format(new Date(d), 'MM/dd/yyyy')
+  },
+  description: {
+    name: 'description',
+    description: 'Description'
+  },
+  origDescription: {
+    name: 'origDescription',
+    description: 'OrigDescription'
+  },
+  credit: {
+    name: 'credit',
+    description: 'Credidt'
+  },
+  debit: {
+    name: 'debit',
+    description: 'Debit'
+  },
+  category1: {
+    name: 'category1',
+    description: 'Category1'
+  },
+  category2: {
+    name: 'category2',
+    description: 'Category2'
+  },
+  checkNumber: {
+    name: 'checkNumber',
+    description: 'Check#'
+  },
+  taxDeduct: {
+    name: 'taxDeduct',
+    description: 'taxDeduct'
+  },
+  type: {
+    name: 'type',
+    description: 'Type'
+  },
+  omit: {
+    name: 'omit',
+    description: 'Omit'
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const sortDirections = {
   ascending: 'ascending',

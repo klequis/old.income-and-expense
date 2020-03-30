@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles'
 import { views } from 'global-constants'
 import { format } from 'date-fns'
 import Table from './Table'
-import { dataFieldNames, sortDirections } from 'global-constants'
+import { dataFields, sortDirections } from 'global-constants'
 import {
   ascend,
   compose,
@@ -49,23 +49,59 @@ const RawData = () => {
   green('RawData: _viewData', _viewData)
 
   const _columns = [
-    { fieldNames: [dataFieldNames.date], fieldDescription: 'Date'},
-    { fieldNames: [dataFieldNames.description, dataFieldNames.origDescription], fieldDescription: 'Description'},
-    { fieldNames: [dataFieldNames.debit], fieldDescription: 'Debit'},
-    { fieldNames: [dataFieldNames.credit], fieldDescription: 'Credit'},
-    { fieldNames: [dataFieldNames.checkNumber], fieldDescription: 'Check#'},
-    { fieldNames: [dataFieldNames.category1], fieldDescription: 'Category1'},
-    { fieldNames: [dataFieldNames.category2], fieldDescription: 'Category2'},
-    { fieldNames: [dataFieldNames.type], fieldDescription: 'Type'},
-    { fieldNames: [dataFieldNames.omit], fieldDescription: 'Omit'},
-    { fieldNames: [dataFieldNames._id], fieldDescription: '_id'},
+    {
+      fieldNames: [dataFields.date.name],
+      fieldDescription: dataFields.date.description
+    },
+    {
+      fieldNames: [
+        dataFields.description.name,
+        dataFields.origDescription.name
+      ],
+      fieldDescription: dataFields.description.description
+    },
+    {
+      fieldNames: [dataFields.debit.name],
+      fieldDescription: dataFields.debit.description
+    },
+    {
+      fieldNames: [dataFields.credit.name],
+      fieldDescription: dataFields.credit.description
+    },
+    {
+      fieldNames: [dataFields.checkNumber.name],
+      fieldDescription: dataFields.checkNumber.description
+    },
+    {
+      fieldNames: [dataFields.category1.name],
+      fieldDescription: dataFields.category1.description
+    },
+    {
+      fieldNames: [dataFields.category2.name],
+      fieldDescription: dataFields.category2.description
+    },
+    {
+      fieldNames: [dataFields.type.name],
+      fieldDescription: dataFields.type.description
+    },
+    {
+      fieldNames: [dataFields.omit.name],
+      fieldDescription: dataFields.omit.description
+    },
+    {
+      fieldNames: [dataFields._id.name],
+      fieldDescription: dataFields._id.description
+    }
   ]
 
   // Methods
   return (
-    <Table columns={_columns} data={_viewData} initialSortField={dataFieldNames.description}></Table>
+    <Table
+      columns={_columns}
+      data={_viewData}
+      initialSortField={dataFields.description}
+    ></Table>
   )
-
 }
 
 export default RawData

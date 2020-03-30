@@ -112,12 +112,14 @@ const Table = ({ data, columns, initialSortField }) => {
     )
   }
 
+  // While 
+
   return (
     <TableContainer>
       <MuiTable size="small">
         <TableHead>
           {columns.map(c => (
-            <ColumnHeading fieldName={c.fieldName} updateSort={_updateSort}>
+            <ColumnHeading fieldName={c.fieldNames} updateSort={_updateSort}>
               {c.fieldDescription}
             </ColumnHeading>
           ))}

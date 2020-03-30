@@ -4,6 +4,8 @@ import fs from 'fs'
 import { format } from 'date-fns'
 import { mergeRight } from 'ramda'
 
+import { yellow } from 'logger'
+
 const jsonToCsv = json => {
   const replacer = (key, value) => (value === null ? '' : value) // specify how you want to handle null values here
   const header = [
@@ -20,18 +22,22 @@ const jsonToCsv = json => {
     '_id'
   ]
 
-  let csv = json
-    .map(row =>
-      header.map(fieldName => {
-        const d =
-          fieldName === 'date'
-            ? format(new Date(row[fieldName]), 'MM/dd/yyyy')
-            : row[fieldName]
-        return JSON.stringify(d, replacer)
-      })
-    )
-    .join(',')
+  // let csv = json
+  //   .map(row =>
+  //     header.map(fieldName => {
+  //       const d =
+  //         fieldName === 'date'
+  //           ? format(new Date(row[fieldName]), 'MM/dd/yyyy')
+  //           : row[fieldName]
+  //       return JSON.stringify(d, replacer)
+  //     })
+  //   )
+  //   .join(',')
 
+  let csv = json.map(row =>
+    header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(',')
+  )
+  yellow('csv', csv)
   csv.unshift(header.join(','))
   csv = csv.join('\r\n')
   return csv

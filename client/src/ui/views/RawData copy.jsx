@@ -10,7 +10,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import { dataFieldNames, sortDirections } from 'global-constants'
+import { dataFields, sortDirections } from 'global-constants'
 import ColumnHeading from './Table/ColumnHeading'
 import {
   ascend,
@@ -82,7 +82,7 @@ const RawData = () => {
 
   // State
   const [_sort, _setSort] = useState({
-    fieldName: dataFieldNames.description,
+    fieldName: dataFields.description.name,
     direction: sortDirections.ascending
   })
 
