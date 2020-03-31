@@ -98,7 +98,8 @@ export const dataFields = {
   },
   omit: {
     name: 'omit',
-    description: 'Omit'
+    description: 'Omit',
+    formatFn: d => d ? 'yes' : 'no'
   }
 }
 

@@ -1,35 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useFinanceContext } from 'financeContext'
-import { makeStyles } from '@material-ui/styles'
 import { views } from 'global-constants'
-// import { format } from 'date-fns'
 import Table from './Table'
 import { dataFields } from 'global-constants'
-// import {
-//   ascend,
-//   compose,
-//   descend,
-//   map,
-//   mergeRight,
-//   prop,
-//   sortWith,
-//   toLower
-// } from 'ramda'
 
 // eslint-disable-next-line
 import { green } from 'logger'
 
-const useStyles = makeStyles({
-  tableDataPaper: {
-    padding: 4
-  }
-})
-
 const RawData = () => {
   // Actions
-  const { viewReadRequest, currentViewNameSet } = useFinanceContext()
-  const _classes = useStyles()
+  const { viewReadRequest } = useFinanceContext()
 
   // State
   const [_loading, _setLoading] = useState(false)
@@ -50,7 +31,8 @@ const RawData = () => {
   const _columns = [
     {
       fieldNames: [dataFields.date.name],
-      fieldDescription: dataFields.date.description
+      fieldDescription: dataFields.date.description,
+      formatFn: dataFields.date.formatFn
     },
     {
       fieldNames: [
@@ -98,7 +80,7 @@ const RawData = () => {
     <Table
       columns={_columns}
       data={_viewData}
-      initialSortField={dataFields.description.name}
+      initialSortField={dataFields.debit.name}
     ></Table>
   )
 }
