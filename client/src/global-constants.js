@@ -92,6 +92,10 @@ export const dataFields = {
     name: 'checkNumber',
     description: 'Check#'
   },
+  ruleIds: {
+    name: 'ruleIds',
+    description: 'RuleIds'
+  },
   taxDeduct: {
     name: 'taxDeduct',
     description: 'taxDeduct'
