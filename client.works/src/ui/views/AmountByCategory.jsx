@@ -19,12 +19,17 @@ const AmountByCategory = () => {
   // Actions
   const { viewReadRequest, currentViewNameSet } = useFinanceContext()
 
+  // State
+  const [_loading, _setLoading] = useState(false)
+
   // Effects
   useEffect(() => {
+    _setLoading(true)
     ;(async () => {
       await viewReadRequest(views.amountByCategory)
       currentViewNameSet(views.amountByCategory)
     })()
+    _setLoading(false)
   }, [currentViewNameSet, viewReadRequest])
 
   // Local vars
@@ -32,7 +37,7 @@ const AmountByCategory = () => {
   const _sortedViewData = sortById(_viewData)
   const _classes = useStyles()
 
-  if (_viewData.length === 0) {
+  if (_loading) {
     return <h1>Loading</h1>
   }
 

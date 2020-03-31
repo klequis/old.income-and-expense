@@ -12,20 +12,17 @@ const RawData = () => {
   // Actions
   const { viewReadRequest } = useFinanceContext()
 
-  // State
-  const [_loading, _setLoading] = useState(false)
   // Effects
   useEffect(() => {
-    _setLoading(true)
     ;(async () => {
+      
       await viewReadRequest(views.rawData)
+      
     })()
-    _setLoading(false)
   }, [viewReadRequest])
   const _viewData = useSelector(state => state.viewData)
-  green('RawData: _viewData', _viewData)
-
-  if (_loading) {
+  
+  if (_viewData.length === 0) {
     return <h1>Loading</h1>
   }
 
@@ -79,11 +76,12 @@ const RawData = () => {
 
   // Methods
   return (
+    // <h1>hi</h1>
     <Table
       columns={_columns}
       data={_viewData}
       initialSortField={dataFields.debit.name}
-    ></Table>
+    />
   )
 }
 

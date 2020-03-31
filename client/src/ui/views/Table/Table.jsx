@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import MuiTable from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -17,7 +17,7 @@ import {
   mergeRight,
   prop,
   sortWith,
-  tap,
+  // tap,
   toLower,
   transduce,
   type,
@@ -30,37 +30,14 @@ import shortid from 'shortid'
 // eslint-disable-next-line
 import { blue, green } from 'logger'
 
-// const formats = {
-//   omit: d => d ? 'yes' : 'no',
-//   // date: d => format(new Date(d), 'MM/dd/yyyy')
-//   date: d => `++${d}`
-// }
-
 const _makeFormats = columns => {
-  green('columns', columns)
-  const a = columns.map(c  => {
-    if (has('formatFn')(c)) {
-      return c.formatFn
-    }
-  }).filter(f => f !== undefined)
-  green('a', a)
-}
-
-const modValues = (value, key, obj)  => {
-  if (has(key)(_makeFormats)) {
-    return _makeFormats[key](value)
-  } else {
-    return value
-  }
-}
-const transform = compose(
-  // tap(x => console.log('start', x)),
-  rMap(mapObjIndexed(modValues))
-)
-
-const _formatData = (columns, data) => {
-  // rMap(mapIt, data)
-  transduce(transform, flip(append), [], data)
+  return columns
+    .map(c => {
+      if (has('formatFn')(c)) {
+        return c.formatFn
+      }
+    })
+    .filter(f => f !== undefined)
 }
 
 const Table = ({ data, columns, initialSortField }) => {
@@ -76,24 +53,51 @@ const Table = ({ data, columns, initialSortField }) => {
     fieldNames: initialSortField,
     direction: sortDirections.ascending
   })
+  const [_viewData, _setViewData] = useState([])
+  const [_formats, _setFormats] = useState()
 
-  const [_viewData, _setViewData] = useState()
+  const _modValues = (value, key, obj) => {
+    // console.log('modValues', `${value}, ${key}, ${obj}`)
+    green('_modValues: _formats', _formats)
+    if (has(key)(_formats)) {
+      return _formats[key](value)
+    } else {
+      return value
+    }
+  }
+  const transform = compose(
+    // tap(x => console.log('start', x)),
+    rMap(mapObjIndexed(_modValues))
+  )
 
-  green('data', data)
+  const _formatData = useCallback(data => {
+    // rMap(mapIt, data)
+    return transduce(transform, flip(append), [], data)
+  }, [transform])
+
   // Effects
+  // useEffect(() => {
+  //   // green('seting formats')
+  //   _setFormats(_makeFormats(columns))
+  // }, [_setFormats, columns])
+
+  // green('_formats', _formats)
+
   useEffect(() => {
-    green('setting _viewData START')
-    // _setViewData(_formatData(columns, data))
-    _setViewData(data)
-    green('setting _viewData END')
-  }, [_setViewData, columns, data])
+    // green('setting _viewData START')
+    const formats = _makeFormats(columns)
+    _setFormats(formats)
+    green('useEffect: formats', formats)
+    _setViewData(_formatData(columns, data))
+    // _setViewData(data)
+    // green('setting _viewData END')
+  }, [_setViewData, columns, data, _formatData])
 
-  green('Table: _viewData', _viewData)
-
+  if (_viewData.length === 0) {
+    return <h1>Loading</h1>
+  }
 
   // Methods
- 
-  
 
   const _addSortField = field => data => {
     const sortFieldValue = prop(field, data)
@@ -120,8 +124,8 @@ const Table = ({ data, columns, initialSortField }) => {
 
   const _updateSort = (fieldNames, direction) => {
     // currently all field names are an array but safe to check
-    green('_updateSort: fieldNames', fieldNames)
-    green('_updateSort: type fieldNames', type(fieldNames === 'Array'))
+    // green('_updateSort: fieldNames', fieldNames)
+    // green('_updateSort: type fieldNames', type(fieldNames === 'Array'))
     _setSort({
       fieldNames: type(fieldNames === 'Array') ? fieldNames[0] : fieldNames,
       direction
@@ -139,7 +143,7 @@ const Table = ({ data, columns, initialSortField }) => {
   // }
 
   const _makeTableCellData = (column, rowData) => {
-    const { fieldNames, formatFn } = column
+    const { fieldNames } = column
     const vals = fieldNames.map(f => rowData[f])
     if (vals.length === 1) {
       // return _cellTransforms(vals, formatFn)
