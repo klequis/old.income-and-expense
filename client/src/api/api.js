@@ -85,6 +85,7 @@ export default {
   },
   views: {
     async read(viewUrlPart) {
+      orange('api.views.read: viewUrlPart', viewUrlPart)
       try {
         const url = `/api/views/${viewUrlPart}`
         const data = await fetchJson(url, {

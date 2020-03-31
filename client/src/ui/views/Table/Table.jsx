@@ -7,18 +7,21 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import ColumnHeading from './ColumnHeading'
 import {
+  append,
   ascend,
   compose,
   descend,
+  flip,
   has,
   map as rMap,
   mergeRight,
   prop,
   sortWith,
+  tap,
   toLower,
+  transduce,
   type,
   mapObjIndexed
-  // has
   // values
 } from 'ramda'
 import { sortDirections } from 'global-constants'
@@ -27,28 +30,37 @@ import shortid from 'shortid'
 // eslint-disable-next-line
 import { blue, green } from 'logger'
 
-const formats = {
-  omit: d => d ? 'yes' : 'no',
-  // date: d => format(new Date(d), 'MM/dd/yyyy')
-  date: d => `++${d}`
+// const formats = {
+//   omit: d => d ? 'yes' : 'no',
+//   // date: d => format(new Date(d), 'MM/dd/yyyy')
+//   date: d => `++${d}`
+// }
+
+const _makeFormats = columns => {
+  green('columns', columns)
+  const a = columns.map(c  => {
+    if (has('formatFn')(c)) {
+      return c.formatFn
+    }
+  }).filter(f => f !== undefined)
+  green('a', a)
 }
 
-
 const modValues = (value, key, obj)  => {
-  if (has(key)(formats)) {
-    // console.log(`${key} has a format function`)
-    return formats[key](value)
+  if (has(key)(_makeFormats)) {
+    return _makeFormats[key](value)
   } else {
-    // console.log(`${key} DOES NOT HAVE format function`)
     return value
   }
 }
-
-
-const mapIt = m => R.mapObjIndexed(modValues, m)
+const transform = compose(
+  // tap(x => console.log('start', x)),
+  rMap(mapObjIndexed(modValues))
+)
 
 const _formatData = (columns, data) => {
-  rMap(mapIt, data)
+  // rMap(mapIt, data)
+  transduce(transform, flip(append), [], data)
 }
 
 const Table = ({ data, columns, initialSortField }) => {
@@ -67,26 +79,29 @@ const Table = ({ data, columns, initialSortField }) => {
 
   const [_viewData, _setViewData] = useState()
 
-
+  green('data', data)
   // Effects
   useEffect(() => {
-    _setViewData(_formatData(data))
-  })
+    green('setting _viewData START')
+    // _setViewData(_formatData(columns, data))
+    _setViewData(data)
+    green('setting _viewData END')
+  }, [_setViewData, columns, data])
+
+  green('Table: _viewData', _viewData)
 
 
   // Methods
+ 
+  
+
   const _addSortField = field => data => {
-    // green('addSortField: field', field)
-    // green('addSortField: data', data)
     const sortFieldValue = prop(field, data)
     const y =
       type(sortFieldValue) === 'String'
         ? toLower(sortFieldValue)
         : sortFieldValue
-
-    // green('addSortField: y', y)
     const withSortField = mergeRight(data, { sortField: y })
-    // green('addSortField: withSortField', withSortField)
     return withSortField
   }
 
@@ -100,7 +115,7 @@ const Table = ({ data, columns, initialSortField }) => {
           : [descend(prop('sortField'))]
       ),
       rMap(_addSortField(fieldName))
-    )(data)
+    )(_viewData)
   }
 
   const _updateSort = (fieldNames, direction) => {
@@ -113,44 +128,30 @@ const Table = ({ data, columns, initialSortField }) => {
     })
   }
 
-  const _cellTransforms = (vals, formatFn) => {
-    // green('cellTransforms: val', val)
-    if (type(vals) === 'Boolean') {
-      return vals ? 'yes' : 'no'
-    }
-    // if (has('formatFn')(vals)) {
-    //   green('it has one')
-    // }
-    if (formatFn) {
-      // green('it has one of type', typeof formatFn)
-      return vals.map(v => formatFn(v))
-    }
-    return vals
-  }
-
-  // const cellTransforms1 = (value, formatFn) => {
-
+  // const _cellTransforms = (vals, formatFn) => {
+  //   if (type(vals) === 'Boolean') {
+  //     return vals ? 'yes' : 'no'
+  //   }
+  //   if (formatFn) {
+  //     return vals.map(v => formatFn(v))
+  //   }
+  //   return vals
   // }
 
   const _makeTableCellData = (column, rowData) => {
-    // green('makeTableCellData: rowData', rowData)
-    // green('makeTableCellData: column', column)
-
     const { fieldNames, formatFn } = column
-
     const vals = fieldNames.map(f => rowData[f])
-
-    // green('has', has('formatFn')(column))
-
     if (vals.length === 1) {
-      return _cellTransforms(vals, formatFn)
+      // return _cellTransforms(vals, formatFn)
+      return vals
     } else {
       return vals.map((v, idx) => (
         <div
           key={shortid.generate()}
           style={idx === 0 ? { paddingBottom: 10 } : { paddingBottom: 0 }}
         >
-          {_cellTransforms(v, formatFn)}
+          {/* {_cellTransforms(v, formatFn)} */}
+          {v}
         </div>
       ))
     }

@@ -23,6 +23,7 @@ const RawData = () => {
     _setLoading(false)
   }, [viewReadRequest])
   const _viewData = useSelector(state => state.viewData)
+  green('RawData: _viewData', _viewData)
 
   if (_loading) {
     return <h1>Loading</h1>
@@ -67,7 +68,8 @@ const RawData = () => {
     },
     {
       fieldNames: [dataFields.omit.name],
-      fieldDescription: dataFields.omit.description
+      fieldDescription: dataFields.omit.description,
+      formatFn: dataFields.omit.formatFn
     },
     {
       fieldNames: [dataFields._id.name],
