@@ -11,6 +11,8 @@ import {
   ascend,
   compose,
   descend,
+  evolve,
+  filter,
   flip,
   has,
   map as rMap,
@@ -31,28 +33,19 @@ import { blue, green } from 'logger'
 
 const Table = ({ data, columns, columnSource, initialSortField }) => {
   // State
+
   const [_sort, _setSort] = useState({
     fieldName: initialSortField,
     direction: sortDirections.ascending
   })
   const [_viewData, _setViewData] = useState([])
 
-  useEffect(() => {
-    const _modValues = (value, key, obj) => {
-      const column = columnSource[key]
-      if (has('formatFn')(column)) {
-        const { formatFn } = column
-        return formatFn(value)
-      } else {
-        return value
-      }
-    }
-    const _transform = compose(
-      rMap(mapObjIndexed(_modValues))
-    )
-    const formattedData = transduce(_transform, flip(append), [], data)
-    _setViewData(formattedData)
+  // Effects
 
+  useEffect(() => {
+    const evolver = filter(Boolean, rMap(prop('formatFn'), columnSource))
+    const formattedData = rMap(evolve(evolver))(data)
+    _setViewData(formattedData)
   }, [_setViewData, columns, data, columnSource])
 
   if (_viewData.length === 0) {
@@ -98,11 +91,7 @@ const Table = ({ data, columns, columnSource, initialSortField }) => {
     return (
       <TableRow>
         {columns.map(c => {
-          return (
-            <TableCell key={c}>
-              {rowData[c]}
-            </TableCell>
-          )
+          return <TableCell key={c}>{rowData[c]}</TableCell>
         })}
       </TableRow>
     )
@@ -114,12 +103,7 @@ const Table = ({ data, columns, columnSource, initialSortField }) => {
         <TableHead>
           <TableRow>
             {columns.map(c => (
-              <ColumnHeading
-                key={c}
-
-                fieldName={c}
-                updateSort={_updateSort}
-              >
+              <ColumnHeading key={c} fieldName={c} updateSort={_updateSort}>
                 {columnSource[c].description}
               </ColumnHeading>
             ))}
