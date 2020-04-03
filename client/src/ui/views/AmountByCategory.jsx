@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/styles'
 import { useFinanceContext } from 'financeContext'
 import { views } from 'global-constants'
 import { prop, sortBy } from 'ramda'
+
 // eslint-disable-next-line
 import { green, red } from 'logger'
 
