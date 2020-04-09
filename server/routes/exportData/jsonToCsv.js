@@ -6,7 +6,7 @@ import { mergeRight } from 'ramda'
 
 import { yellow } from 'logger'
 
-const jsonToCsv = json => {
+const jsonToCsv = (json) => {
   const replacer = (key, value) => (value === null ? '' : value) // specify how you want to handle null values here
   const header = [
     'date',
@@ -17,7 +17,7 @@ const jsonToCsv = json => {
     'category2',
     'checkNumber',
     'origDescription',
-    'typeOrig',
+    'type',
     'omit',
     '_id'
   ]
@@ -34,8 +34,10 @@ const jsonToCsv = json => {
   //   )
   //   .join(',')
 
-  let csv = json.map(row =>
-    header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(',')
+  let csv = json.map((row) =>
+    header
+      .map((fieldName) => JSON.stringify(row[fieldName], replacer))
+      .join(',')
   )
   yellow('csv', csv)
   csv.unshift(header.join(','))
@@ -43,7 +45,7 @@ const jsonToCsv = json => {
   return csv
 }
 
-const writeFile = async csv => {
+const writeFile = async (csv) => {
   const res = await fs.promises.writeFile(
     // `/home/klequis/Downloads/${format(new Date(), 'ddMMyyyy')}data.csv`,
     `/home/klequis/Downloads/new-data.csv`,

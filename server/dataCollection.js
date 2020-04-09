@@ -6,7 +6,7 @@ const dataFields = {
   origDescription: 'origDescription',
   debit: 'debit',
   credit: 'credit',
-  type: 'typeOrig',
+  type: 'type',
   checkNumber: 'checkNumber',
   omit: 'omit'
 }

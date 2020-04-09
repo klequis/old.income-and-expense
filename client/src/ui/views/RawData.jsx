@@ -15,18 +15,29 @@ const RawData = () => {
   // Effects
   useEffect(() => {
     ;(async () => {
-      
       await viewReadRequest(views.rawData)
-      
     })()
   }, [viewReadRequest])
-  const _viewData = useSelector(state => state.viewData)
-  
+  const _viewData = useSelector((state) => state.viewData)
+
   if (_viewData.length === 0) {
     return <h1>Loading</h1>
   }
 
-  const _columns = ['_id', 'acctId', 'date', 'description', 'origDescription', 'credit', 'debit', 'category1', 'category2', 'checkNumber', 'type', 'omit']
+  const _columns = [
+    '_id',
+    'acctId',
+    'date',
+    'description',
+    'origDescription',
+    'credit',
+    'debit',
+    'category1',
+    'category2',
+    'checkNumber',
+    'type',
+    'omit'
+  ]
   // green('RawData dataFields', dataFields)
   // Methods
   return (
@@ -34,7 +45,10 @@ const RawData = () => {
     <Table
       columns={_columns}
       columnSource={dataFields}
-      data={_viewData}
+      data={_viewData.filter(
+        (doc) => doc.acctId === 'costco.citibank.credit-card.2791' &&  doc.credit === 0
+        
+      )}
       initialSortField={dataFields.debit.name}
     />
   )

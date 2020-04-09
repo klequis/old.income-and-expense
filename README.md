@@ -1,3 +1,67 @@
+# tmp
+
+## EDITS
+
+## Chase
+- has only Amount
+- (-) is debit/expense  => account balance goes down
+- (+) is credit/income => account balance goes up
+
+## Costco
+- has Debit & Credit columns
+- (+) is debit/expense  >>>> make this (-)
+- (-) is credit/income  >>>> make this (+)
+
+
+Debit
+- checking is a (-) number
+- credit   is a (+) number (costco only so far)
+
+
+Important Note
+
+In this program
+- Any money you spend is a debit & must be a (-) number.
+- Any money you receive is a credit & must be a (+) number
+- Any money that is transferred between accounts should be omitted
+  - E.g., a debit from a checking account to pay/credit a credit card. Both the debit in checking and the payment/debit in the credit card accounts must be omitted.
+
+
+
+An account can have an 'Amount' column which contains both positive & negative numbers.
+
+Money to you is income
+Money away from you is expense
+
+
+
+Acct 1 only has an amout column.
+- Gasoline is an expense and (-), so that is good
+- Return-refund is income and (+), so that is good as well
+- Payment is entered as a credit but it is not income nor an expense so needs to be excluded. You'll see how to do that later.
+
+
+| Description   | Amount  |
+|---------------|---------|
+| Gasoline      |  -40.34 |
+| Gym           |  -44.99 |
+| Grocery       | -114.95 |
+| Payment       |   44.99 |
+| Return-refund |   95.00 |
+
+
+Account 2
+- Has both a credit and debit column
+- Spending money on Dukin Donuts cost 2.58 and is listed as a debit.
+  - Since it is money I spend it is a debit but like all debits it should be (-)
+- COSTCO RETURN is a credit, I received money so credit is correct, but like all credits it should be (+)
+
+
+
+
+### Edits
+
+
 ## A program for categorizing and reporting on banking data.
 
 - Categorizes each transaction in two levels (done)
@@ -83,4 +147,4 @@ Additionally:
 - I don't want to share my data with 3rd parties.
 - I don't need another monthly subscription. They tend to add-up.
 
-If you are interested in this project open an issue labeled 'question'. 
+If you are interested in this project open an issue labeled 'question'.
