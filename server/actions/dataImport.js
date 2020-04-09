@@ -112,23 +112,38 @@ const log = (label) => (message) => yellow(label, message)
 
 const _transformDataNew = (account, data) => {
   const { fieldToCol, swapCreditDebit, acctId } = account
+
+  /*
+    The idea here is mapToFields sends in a fieldName. getColNumber checks
+    if a mapping exists in fieldToCol:
+    T => returns column number
+    F => returns null
+  */
+
+  const getColNumber = (fieldName) => {
+    if (R.has(fieldName)(fieldToCol)) {
+      const { [fieldName]: col } = fieldToCol
+      yellow('col', col)
+      return col
+    } else {
+      return null
+    }
+  }
+
   try {
-    
     const mapToFields = (doc) => {
       // yellow('doc', doc)
       // yello(R.has(`field${fieldToCol.checkNumber.col}`)
 
-      
-      console.group(`acct: ${acctId} fieldToCols`)
-      yellow('has date', R.has('date')(fieldToCol))
-      yellow('has description', R.has('description')(fieldToCol))
-      yellow('has originalDescription', R.has('originalDescription')(fieldToCol))
-      yellow('has debit', R.has('debit')(fieldToCol))
-      yellow('has credit', R.has('credit')(fieldToCol))
-      yellow('has type', R.has('type')(fieldToCol))
-      yellow('has checkNumber', R.has('checkNumber')(fieldToCol))
-      console.groupEnd()
-
+      // console.group(`acct: ${acctId} fieldToCols`)
+      // yellow('has date', R.has('date')(fieldToCol))
+      // yellow('has description', R.has('description')(fieldToCol))
+      // yellow('has originalDescription', R.has('originalDescription')(fieldToCol))
+      // yellow('has debit', R.has('debit')(fieldToCol))
+      // yellow('has credit', R.has('credit')(fieldToCol))
+      // yellow('has type', R.has('type')(fieldToCol))
+      // yellow('has checkNumber', R.has('checkNumber')(fieldToCol))
+      // console.groupEnd()
 
       const ret = {
         description: getFieldValue(fieldToCol.description.col, doc),
@@ -148,12 +163,12 @@ const _transformDataNew = (account, data) => {
         checkNumber: R.cond([
           [
             // R.has(`field${fieldToCol.checkNumber.col}`),
-            R.has('checkNumber')(fieldToCol),
-            // getFieldValue(fieldToCol.checkNumber.col, doc)
-            R.always('a')
+            R.F,
+            getFieldValue(fieldToCol.checkNumber.col, doc),
+            // R.always('a')
           ],
-          [R.T, R.always('')]
-        ])
+          [R.T, R.always('')],
+        ]),
         // type: R.ifElse(
         //   R.has(dataFields.type),
         //   getFieldValue(fieldToCol.type.col, doc),
