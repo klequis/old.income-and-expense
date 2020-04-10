@@ -1,71 +1,73 @@
-# tmp
+> This project is a work in progress and is not ready for use. If you are interested in contributing open an issue and let me know.
 
-## EDITS
+# Income & Expense
 
-## Chase
-- has only Amount
-- (-) is debit/expense  => account balance goes down
-- (+) is credit/income => account balance goes up
+**A program for categorizing and reporting on banking data.**
 
-## Costco
-- has Debit & Credit columns
-- (+) is debit/expense  >>>> make this (-)
-- (-) is credit/income  >>>> make this (+)
+- Categorizes each transaction in two levels.
+- Creates report of spending by category.
+- Shows spending by month (future)
+- UI for categorizing transactions (done)
+- UI to explore data by filtering & sorting (sorting done, filtering pending)
 
-
-Debit
-- checking is a (-) number
-- credit   is a (+) number (costco only so far)
-
-
-Important Note
+## Necessary Understanding
 
 In this program
-- Any money you spend is a debit & must be a (-) number.
-- Any money you receive is a credit & must be a (+) number
-- Any money that is transferred between accounts should be omitted
-  - E.g., a debit from a checking account to pay/credit a credit card. Both the debit in checking and the payment/debit in the credit card accounts must be omitted.
+1. Any money you spend is a debit & must be a (-) number.
+2. Any money you receive is a credit & must be a (+) number
+3. Any money that is transferred between accounts should be omitted
+
+The below will elaborate on this rules and explain how to conform to them when using Income & Expense.
+
+### Debits & Credits
+
+Different banking institutions and account types list debits and credits differently. Let's look at a couple of examples.
+
+#### Ex 1 - Signle Amount Column
+
+The below is an example of a checking account ledger.
+
+| Description         | Amount  |
+|---------------------|---------|
+| Gasoline            |  -40.34 |
+| Gym                 |  -44.99 |
+| Grocery             | -114.95 |
+| Credit Card Payment |   50.00 |
+| Pay check           |1,500.00 |
+| Return-refund       |   95.00 |
+
+The table above has a single column, 'Amount', for both credits and debits. Debits are money you spent such as buying gasoline and are (-) numbers. Credits are money you receive such as 'Pay check' and are (+) numbers.
+
+There is one exception, 'Credit Card Payment'. This is a transfer from one account to another. It will show on the credit card statement as well. It is neither money you receive nor money you spent as the actual expenditures are the individual purchase transaction which will show on the credit card ledger. It must be omitted from you Income & Expense records. How to do so will be explained below.
+
+In summary, for this account:
+- Debits and credits are in the same Amount column.
+- (+) numbers are credits - money you receive
+- (-) numbers are debits - money you spent
+- Transfers between your accounts such as Credit Card Payment are neither money received nor spent and must be omitted.
+
+#### Ex 2 - Separate Debit & Credit columns
+
+This example comes from a credit card ledger.
+
+| Description          | Debit | Credit |
+|----------------------|-------|--------|
+| DUNKIN DONUTS        | 2.58  |        |
+| SOME HOSTING SERVICE | 4.53  |        |
+| COSTCO RETURN        |       | -21.84 |
+| GROCERY              | 2.17  |        |
+| PAYMENT              |       | -50.00 |
+| GASOLINE             | 38.12 |        |
+
+In the table above debits are still money you spent and credits are money you receive. However, the debits are (-) numbers and credits are (+) numbers. This makes sense from the credit card companies perspective. However, from your perspective, debits must be (-) numbers and credits must be (+) numbers. Income & Expense has a way of correcting this which will be explained in a later section.
+
+Let's look at some of the data.
+- DUNKIN DONUTS is an expense so it needs to be a (-) number.
+- COSTCO RETURN is income, you are receiving this money and it needs to be a (+) number.
+- PAYMENT is a transfer from another of your accounts and needs to be omitted.
 
 
 
-An account can have an 'Amount' column which contains both positive & negative numbers.
-
-Money to you is income
-Money away from you is expense
-
-
-
-Acct 1 only has an amout column.
-- Gasoline is an expense and (-), so that is good
-- Return-refund is income and (+), so that is good as well
-- Payment is entered as a credit but it is not income nor an expense so needs to be excluded. You'll see how to do that later.
-
-
-| Description   | Amount  |
-|---------------|---------|
-| Gasoline      |  -40.34 |
-| Gym           |  -44.99 |
-| Grocery       | -114.95 |
-| Payment       |   44.99 |
-| Return-refund |   95.00 |
-
-
-Account 2
-- Has both a credit and debit column
-- Spending money on Dukin Donuts cost 2.58 and is listed as a debit.
-  - Since it is money I spend it is a debit but like all debits it should be (-)
-- COSTCO RETURN is a credit, I received money so credit is correct, but like all credits it should be (+)
-
-
-
-
-### Edits
-
-
-## A program for categorizing and reporting on banking data.
-
-- Categorizes each transaction in two levels (done)
-- Creates report of spending by year (soon) (other reports to come)
 
 ## How it works (in brief)
 
