@@ -6,6 +6,7 @@ import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import ColumnHeading from './ColumnHeading'
+import * as R from 'ramda'
 import {
   append,
   ascend,
@@ -39,6 +40,7 @@ const Table = ({ data, columns, columnSource, initialSortField }) => {
     direction: sortDirections.ascending
   })
   const [_viewData, _setViewData] = useState([])
+  const [_rowCount, _setRowCount] = useState(0)
 
   // Effects
 
@@ -110,9 +112,10 @@ const Table = ({ data, columns, columnSource, initialSortField }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {_getViewData().map(d => (
-            <Row key={d._id} rowData={d} />
-          ))}
+          {_getViewData().map(d => {
+            _setRowCount(R.inc(_rowCount))
+            return <Row key={d._id} rowData={d} />
+          })}
         </TableBody>
       </MuiTable>
     </TableContainer>

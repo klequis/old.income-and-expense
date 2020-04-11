@@ -61,6 +61,7 @@ const _replaceStringWithZero = (value) =>
 
 const evolver = {
   description: R.pipe(removeDoubleSpace, R.trim),
+  origDescription: R.pipe(removeDoubleSpace, R.trim),
   date: R.identity,
   credit: R.pipe(
     _replaceStringWithZero,

@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TR from './TR'
 import { useFinanceContext } from 'financeContext'
 import SortButtons from 'ui/elements/SortButtons'
-import { sortWith, prop, ascend, descend } from 'ramda'
+import { sortWith, prop, ascend, descend, map, mergeRight } from 'ramda'
 import { dataFields, sortDirections, views } from 'global-constants'
 
 // eslint-disable-next-line
@@ -34,15 +34,17 @@ const AllDataByDescription = () => {
   } = useFinanceContext()
 
   // State
-  
+
   const [_switchState, _setSwitchState] = useState({
     showOrigDescription: false,
     showOmitted: false
   })
   const [_sort, _setSort] = useState({
-    fieldName: dataFields.description,
+    fieldName: dataFields.description.name,
     direction: sortDirections.ascending
   })
+
+  green('_sort', _sort)
 
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
@@ -59,24 +61,50 @@ const AllDataByDescription = () => {
   }, [currentViewNameSet, _updateRulesAndView])
 
   // Local vars
-  const _viewData = useSelector(state => state.viewData)
+  const _viewData = useSelector((state) => state.viewData)
   const _classes = useStyles()
 
   // Methods
 
   if (_viewData.length === 0) {
     return <h1>Loading</h1>
-  }  
+  }
+
+  green('_sort', _sort)
 
   const getViewData = () => {
-    const { direction, fieldName } = _sort
+    const { fieldName, direction  } = _sort
+    // green('getViewData: _sort', _sort)
+    // green('getViewData: fieldName', fieldName)
+    // green('getViewData: direction', direction)
+    
+    //---------------------------------------------------------------------------------
+    // // TODO: This should be fixed elsewhere.
+    // // TODO: Date is a string & therefore not sorting properly
+    // // TODO: The problem likely originates in the server when importing
+
+    // if (fieldName === 'date') {
+    //   let ret
+    //   const dateSortData = map(
+    //     (x) => mergeRight(x, { date: Date.parse(x) })
+    //     )(_viewData)
+    //   green('dateSortData', dateSortData)
+    //   if (direction === sortDirections.ascending) {
+    //     ret = sortWith([ascend(prop(fieldName))])(dateSortData)
+    //   }
+    //   ret = sortWith([descend(prop(fieldName))])(dateSortData)
+    //   green('ret', ret)
+    //   return ret
+    // }
+
+    //---------------------------------------------------------------------------------
     if (direction === sortDirections.ascending) {
       return sortWith([ascend(prop(fieldName))])(_viewData)
     }
     return sortWith([descend(prop(fieldName))])(_viewData)
   }
 
-  const _handleSwitchChange = name => event => {
+  const _handleSwitchChange = (name) => (event) => {
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
   }
 
@@ -136,7 +164,7 @@ const AllDataByDescription = () => {
           </tr>
         </thead>
         <tbody>
-          {getViewData().map(doc => {
+          {getViewData().map((doc) => {
             const { _id, omit } = doc
             if (_switchState.showOmitted === false && omit) {
               return null
